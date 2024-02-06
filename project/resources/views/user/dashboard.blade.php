@@ -22,7 +22,7 @@
                         <div class="form-group w-100 d-flex flex-wrap align-items-center justify-content-evenly justify-content-sm-between">
                           <h3 class="my-1 text-center text-sm-start">{{ __('You have a information to submit for kyc verification.') }}</h3>
                           <div class="my-1">
-                            <a href="{{ route('user.kyc.form') }}" class="btn btn-warning">@lang('Submit')</a>
+                            <a href="{{ route('user.kycupdated.index') }}" class="btn btn-warning">@lang('Submit')</a>
                           </div>
                       </div>
                   </div>

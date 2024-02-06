@@ -4,7 +4,9 @@ use Illuminate\Contracts\Http\Kernel;
 use Illuminate\Http\Request;
 
 define('LARAVEL_START', microtime(true));
-
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 /*
 |--------------------------------------------------------------------------
 | Check If The Application Is Under Maintenance
@@ -14,10 +16,10 @@ define('LARAVEL_START', microtime(true));
 | we will load this file so that any pre-rendered content can be shown
 | instead of starting the framework, which could cause an exception.
 |
-*/
+ */
 
-if (file_exists(__DIR__.'/project/storage/framework/maintenance.php')) {
-    require __DIR__.'/project/storage/framework/maintenance.php';
+if (file_exists(__DIR__ . '/project/storage/framework/maintenance.php')) {
+    require __DIR__ . '/project/storage/framework/maintenance.php';
 }
 
 /*
@@ -29,9 +31,9 @@ if (file_exists(__DIR__.'/project/storage/framework/maintenance.php')) {
 | this application. We just need to utilize it! We'll simply require it
 | into the script here so we don't need to manually load our classes.
 |
-*/
+ */
 
-require __DIR__.'/project/vendor/autoload.php';
+require __DIR__ . '/project/vendor/autoload.php';
 
 /*
 |--------------------------------------------------------------------------
@@ -42,9 +44,9 @@ require __DIR__.'/project/vendor/autoload.php';
 | the application's HTTP kernel. Then, we will send the response back
 | to this client's browser, allowing them to enjoy our application.
 |
-*/
+ */
 
-$app = require_once __DIR__.'/project/bootstrap/app.php';
+$app = require_once __DIR__ . '/project/bootstrap/app.php';
 
 $kernel = $app->make(Kernel::class);
 

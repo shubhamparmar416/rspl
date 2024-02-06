@@ -12,7 +12,7 @@ return [
     | location for this type of information, allowing packages to have
     | a conventional file to locate the various service credentials.
     |
-    */
+     */
 
     'mailgun' => [
         'domain' => env('MAILGUN_DOMAIN'),
@@ -35,20 +35,24 @@ return [
         'key' => env('STRIPE_KEY'),
         'secret' => env('STRIPE_SECRET'),
     ],
-    'facebook' => [ 
+    'facebook' => [
         'client_id' => '',
         'client_secret' => '',
         'redirect' => '',
     ],
 
-    'google' => [ 
+    'google' => [
         'client_id' => '',
         'client_secret' => '',
         'redirect' => '',
     ],
 
     'genius' => [
-        'ocean' => ''
+        'ocean' => '',
+    ],
+    'digitap_aadhar' => [
+        'api_key' => env('DIGITAP_AADHAR_API_KEY'),
+        // Add other credentials if required
     ],
 
 ];
