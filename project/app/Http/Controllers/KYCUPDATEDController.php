@@ -92,18 +92,31 @@ class KYCUPDATEDController extends Controller
         $client = new \GuzzleHttp\Client([
             'verify' => false
         ]);
+        // print_r($data);die;
+
         switch ($_POST['type']) {
             case('aadhaar'):
                 $url = 'https://svcdemo.digitap.work/validation/kyc/v1/aadhaar';
+                $data = [
+                    'aadhaar' => $_POST['document'],
+                    'client_ref_num' => 'test',
+                ];
                 break;
 
             case('pan'):
-                $url = 'https://svcdemo.digitap.work/validation/kyc/v1/aadhaar';
+                $url = 'https://svcdemo.digitap.work/validation/kyc/v1/pan_details';
+                $data = [
+                    'pan' => $_POST['document'],
+                    'client_ref_num' => 'test',
+                ];
                 break;
 
             default:
                 $url = '';
+                $data = [];
         }
+        if ($url == '')
+            \Response::json(['status' => 0, 'data' => []]);
         $username = '48130178';
         $password = '6RBkqcF5iarvmWeK5pLhjXrvfcEC8FLe';
         $auth = 'Basic ' . base64_encode($username . ':' . $password);
@@ -112,21 +125,10 @@ class KYCUPDATEDController extends Controller
             'headers' => [
                 'Authorization' => $auth,
             ],
-            'json' => [
-                'aadhaar' => $_POST['aadhar'],
-                'client_ref_num' => 'test',
-            ],
+            'json' => $data
 
         ]);
-
-
-        // $statusCode = $response->getStatusCode();
-        // $content = $response->getBody();
-        // print_r($response->getBody()->getContents());
-        // die;
-        return $response->getBody()->getContents();
-
-
+        return \Response::json(['status' => 1, 'data' => $response->getBody()->getContents()]);
 
     }
 }

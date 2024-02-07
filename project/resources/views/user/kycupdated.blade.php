@@ -84,7 +84,7 @@
                                             <h4>Aadhar Number</h4>
                                             <div class="form-group">
                                                 <input type="text" name="aadhar_number" class="form-control"
-                                                    id="aadhar_number" onblur="verifyDocApi()"
+                                                    id="aadhar_number" onblur="verifyDocApi('aadhaar')"
                                                     placeholder="e.g. 1234567890123456" required pattern="\d{16}">
                                                 <div class="invalid-feedback">
                                                     Please enter a valid 16-digit Aadhar number.
@@ -132,7 +132,7 @@
                                             <h4>Pan Number</h4>
                                             <div class="form-group">
                                                 <input type="text" name="panNumber" class="form-control" id="pan-number"
-                                                    placeholder="e.g. ABCDE1234F" required
+                                                    onblur="verifyDocApi('pan')" placeholder="e.g. ABCDE1234F" required
                                                     pattern="[A-Z]{5}[0-9]{4}[A-Z]">
                                                 <div class="invalid-feedback">
                                                     Please enter a valid PAN number (e.g., ABCDE1234F).
@@ -220,7 +220,7 @@
                                 <!-- Navigation buttons -->
                                 <button type="button" class="btn prev-step" style="display: none;">&lt;
                                     Previous</button>
-                                <button type="button" class="btn next-step">Next &gt;</button>
+                                <button type="button" disabled class="btn next-step">Next &gt;</button>
                             </div>
                         </form>
                         <!-- <a href="kyc.html" class="back-to-prev"><img src="https://uigaint.com/demo/html/anfraa/kyc-1/assets/images/arrow-left-grey.png" alt=""> Back to Previous</a> -->
@@ -240,6 +240,7 @@
     <script src="https://uigaint.com/demo/html/anfraa/kyc-1/assets/js/custom.js"></script>
 
     <script>
+        var isDocumentCorrect = 0;
         $(document).ready(function () {
             var currentStep = 1;
 
@@ -355,8 +356,8 @@
             });
         });
 
-        function verifyDocApi() {
-            var aadhar_number = $('#aadhar_number').val();
+        function verifyDocApi(type) {
+            var document = type == 'aadhaar' ? $('#aadhar_number').val() : $('#pan-number').val();
             $.ajax({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -364,21 +365,19 @@
                 type: "POST",
                 url: "{{URL::to('/user/kyc/document_verify')}}",
                 data: {
-                    'aadhar': aadhar_number,
-                    'type': 'aadhaar'
+                    'document': document,
+                    'type' : type
                 },
                 success: function (response) {
-                    console.log(response)
-                    var jsonData = JSON.parse(response);
+                    if (response.status) {
+                        var jsonData = JSON.parse(response.data);
+                        isDocumentCorrect = 1;
+                        $('.next-step').removeAttr("disabled");
 
-                    // // user is logged in successfully in the back-end 
-                    // // let's redirect 
-                    // if (jsonData.success == "1") {
-                    //     location.href = 'my_profile.php';
-                    // }
-                    // else {
-                    //     alert('Invalid Credentials!');
-                    // }
+                    } else {
+                        $('.next-step').prop("disabled", true);
+
+                    }
                 },
                 error: function (error) {
                     console.log(error)
