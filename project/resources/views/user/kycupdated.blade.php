@@ -18,15 +18,20 @@
     <!-- Favicon -->
     <link rel="icon" href="https://uigaint.com/demo/html/anfraa/kyc-1/assets/images/favicon.png">
     <link rel="apple-touch-icon" href="https://uigaint.com/demo/html/anfraa/kyc-1/assets/images/apple-touch-icon.png">
-    <link rel="apple-touch-icon" sizes="72x72" href="https://uigaint.com/demo/html/anfraa/kyc-1/assets/images/icon-72x72.png">
-    <link rel="apple-touch-icon" sizes="114x114" href="https://uigaint.com/demo/html/anfraa/kyc-1/assets/images/icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="72x72"
+        href="https://uigaint.com/demo/html/anfraa/kyc-1/assets/images/icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="114x114"
+        href="https://uigaint.com/demo/html/anfraa/kyc-1/assets/images/icon-114x114.png">
+    <meta name="csrf-token" content="{{ csrf_token() }}" />
+
 </head>
 
 <body>
     <div class="ugf-bg ufg-main-container">
         <div class="ugf-progress">
             <div class="progress">
-                <div class="progress-bar" role="progressbar" style="width: 66.66%" aria-valuenow="66.66" aria-valuemin="0" aria-valuemax="100"></div>
+                <div class="progress-bar" role="progressbar" style="width: 66.66%" aria-valuenow="66.66"
+                    aria-valuemin="0" aria-valuemax="100"></div>
             </div>
         </div>
         <div class="container">
@@ -43,20 +48,31 @@
                                             <div class="file-input-wrap">
                                                 <div class="custom-file">
                                                     <!-- <input type="file" class="custom-file-input" id="nidf"> -->
-                                                    <input type="file" name="fId" class="custom-file-input" id="upload-input-1" accept="image/*" onchange="previewImage(event, 1)" required>
-                                                    <label class="custom-file-label" for="upload-input-1"><img src="#" id="preview-1" alt="icon" class="img-fluid preview"><img src="https://uigaint.com/demo/html/anfraa/kyc-1/assets/images/cloud.png" class="upload-icon"></label>
+                                                    <input type="file" name="fId" class="custom-file-input"
+                                                        id="upload-input-1" accept="image/*"
+                                                        onchange="previewImage(event, 1)" required>
+                                                    <label class="custom-file-label" for="upload-input-1"><img src="#"
+                                                            id="preview-1" alt="icon" class="img-fluid preview"><img
+                                                            src="https://uigaint.com/demo/html/anfraa/kyc-1/assets/images/cloud.png"
+                                                            class="upload-icon"></label>
                                                     <span class="text">National ID Front</span>
                                                 </div>
                                                 <div class="custom-file">
                                                     <!-- <input type="file" class="custom-file-input" id="nidb"> -->
-                                                    <input type="file" name="bId" class="custom-file-input" id="upload-input-2" accept="image/*" onchange="previewImage(event, 2)" required>
-                                                    <label class="custom-file-label" for="upload-input-2"><img src="#" id="preview-2" alt="icon" class="img-fluid preview"><img src="https://uigaint.com/demo/html/anfraa/kyc-1/assets/images/cloud.png" class="upload-icon"></label>
+                                                    <input type="file" name="bId" class="custom-file-input"
+                                                        id="upload-input-2" accept="image/*"
+                                                        onchange="previewImage(event, 2)" required>
+                                                    <label class="custom-file-label" for="upload-input-2"><img src="#"
+                                                            id="preview-2" alt="icon" class="img-fluid preview"><img
+                                                            src="https://uigaint.com/demo/html/anfraa/kyc-1/assets/images/cloud.png"
+                                                            class="upload-icon"></label>
                                                     <span class="text">National ID Back</span>
                                                 </div>
                                             </div>
                                             <div class="conditions">
                                                 <ul>
-                                                    <li class="complete">File accepted: JPEG/JPG/PNG (Max size: 250 KB)</li>
+                                                    <li class="complete">File accepted: JPEG/JPG/PNG (Max size: 250 KB)
+                                                    </li>
                                                     <li>Document should be good condition</li>
                                                     <li>Document must be valid period</li>
                                                     <li>Face must be clear visible</li>
@@ -67,10 +83,12 @@
                                         <div class="input-block">
                                             <h4>Aadhar Number</h4>
                                             <div class="form-group">
-                                            <input type="text" name="nidNumber" class="form-control" id="nid-number" placeholder="e.g. 1234567890123456" required pattern="\d{16}">
-        <div class="invalid-feedback">
-            Please enter a valid 16-digit Aadhar number.
-        </div>
+                                                <input type="text" name="aadhar_number" class="form-control"
+                                                    id="aadhar_number" onblur="verifyDocApi()"
+                                                    placeholder="e.g. 1234567890123456" required pattern="\d{16}">
+                                                <div class="invalid-feedback">
+                                                    Please enter a valid 16-digit Aadhar number.
+                                                </div>
                                             </div>
                                         </div>
                                         <div class="input-block">
@@ -78,20 +96,31 @@
                                             <div class="file-input-wrap">
                                                 <div class="custom-file">
                                                     <!-- <input type="file" class="custom-file-input" id="nidf"> -->
-                                                    <input type="file" name="fIdp" class="custom-file-input" id="upload-input-3" accept="image/*" onchange="previewImage(event, 3)" required>
-                                                    <label class="custom-file-label" for="upload-input-3"><img src="#" id="preview-3" alt="icon" class="img-fluid preview"><img src="https://uigaint.com/demo/html/anfraa/kyc-1/assets/images/cloud.png" class="upload-icon"></label>
+                                                    <input type="file" name="fIdp" class="custom-file-input"
+                                                        id="upload-input-3" accept="image/*"
+                                                        onchange="previewImage(event, 3)" required>
+                                                    <label class="custom-file-label" for="upload-input-3"><img src="#"
+                                                            id="preview-3" alt="icon" class="img-fluid preview"><img
+                                                            src="https://uigaint.com/demo/html/anfraa/kyc-1/assets/images/cloud.png"
+                                                            class="upload-icon"></label>
                                                     <span class="text">National ID Front</span>
                                                 </div>
                                                 <div class="custom-file">
                                                     <!-- <input type="file" class="custom-file-input" id="nidb"> -->
-                                                    <input type="file" name="bIdp" class="custom-file-input" id="upload-input-4" accept="image/*" onchange="previewImage(event, 4)" required>
-                                                    <label class="custom-file-label" for="upload-input-4"><img src="#" id="preview-4" alt="icon" class="img-fluid preview"><img src="https://uigaint.com/demo/html/anfraa/kyc-1/assets/images/cloud.png" class="upload-icon"></label>
+                                                    <input type="file" name="bIdp" class="custom-file-input"
+                                                        id="upload-input-4" accept="image/*"
+                                                        onchange="previewImage(event, 4)" required>
+                                                    <label class="custom-file-label" for="upload-input-4"><img src="#"
+                                                            id="preview-4" alt="icon" class="img-fluid preview"><img
+                                                            src="https://uigaint.com/demo/html/anfraa/kyc-1/assets/images/cloud.png"
+                                                            class="upload-icon"></label>
                                                     <span class="text">National ID Back</span>
                                                 </div>
                                             </div>
                                             <div class="conditions">
                                                 <ul>
-                                                    <li class="complete">File accepted: JPEG/JPG/PNG (Max size: 250 KB)</li>
+                                                    <li class="complete">File accepted: JPEG/JPG/PNG (Max size: 250 KB)
+                                                    </li>
                                                     <li>Document should be good condition</li>
                                                     <li>Document must be valid period</li>
                                                     <li>Face must be clear visible</li>
@@ -102,10 +131,12 @@
                                         <div class="input-block">
                                             <h4>Pan Number</h4>
                                             <div class="form-group">
-                                            <input type="text" name="panNumber" class="form-control" id="pan-number" placeholder="e.g. ABCDE1234F" required pattern="[A-Z]{5}[0-9]{4}[A-Z]">
-        <div class="invalid-feedback">
-            Please enter a valid PAN number (e.g., ABCDE1234F).
-        </div>
+                                                <input type="text" name="panNumber" class="form-control" id="pan-number"
+                                                    placeholder="e.g. ABCDE1234F" required
+                                                    pattern="[A-Z]{5}[0-9]{4}[A-Z]">
+                                                <div class="invalid-feedback">
+                                                    Please enter a valid PAN number (e.g., ABCDE1234F).
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -121,7 +152,8 @@
                                             <p>Should be your government issue photo identity</p>
                                             <fieldset>
                                                 <div class="custom-form-group">
-                                                    <input type="radio" name="package-plan" class="custom-form-control" id="nid" required>
+                                                    <input type="radio" name="package-plan" class="custom-form-control"
+                                                        id="nid" required>
                                                     <label for="nid">
                                                         <span class="text">Bank Statement</span>
                                                         <span class="icon">
@@ -130,11 +162,13 @@
                                                     </label>
                                                 </div>
                                                 <div class="custom-form-group">
-                                                    <input type="radio" name="package-plan" class="custom-form-control" id="passport" required>
+                                                    <input type="radio" name="package-plan" class="custom-form-control"
+                                                        id="passport" required>
                                                     <label for="passport">
                                                         <span class="text">Net Banking</span>
                                                         <span class="icon">
-                                                            <img src="assets/images/passport.png" class="img-fluid" alt="">
+                                                            <img src="assets/images/passport.png" class="img-fluid"
+                                                                alt="">
                                                         </span>
                                                     </label>
                                                 </div>
@@ -152,7 +186,8 @@
                                             </div>
                                             <div class="conditions">
                                                 <ul>
-                                                    <li class="complete">File accepted: JPEG/JPG/PNG (Max size: 250 KB)</li>
+                                                    <li class="complete">File accepted: JPEG/JPG/PNG (Max size: 250 KB)
+                                                    </li>
                                                     <li>Document should be good condition</li>
                                                     <li>Document must be valid period</li>
                                                     <li>Face must be clear visible</li>
@@ -161,27 +196,30 @@
                                             </div>
                                         </div>
                                         <div class="netbank" id="netbankSection" style="display:none;">
-                                        <h4>Select Identity Type</h4>
+                                            <h4>Select Identity Type</h4>
                                             <p>Should be your government issue photo identity</p>
-                                        <div class="input-block">
-                                            <h4>Username</h4>
-                                            <div class="form-group">
-                                                <input type="text" name="nidNumber" class="form-control" placeholder="e.g.  1234 0256 0145" id="nid-number" required>
+                                            <div class="input-block">
+                                                <h4>Username</h4>
+                                                <div class="form-group">
+                                                    <input type="text" name="nidNumber" class="form-control"
+                                                        placeholder="e.g.  1234 0256 0145" id="nid-number" required>
+                                                </div>
                                             </div>
-                                        </div>
-                                        <div class="input-block">
-                                            <h4>Password</h4>
-                                            <div class="form-group">
-                                                <input type="text" name="nidNumber" class="form-control" placeholder="e.g.  1234 0256 0145" id="nid-number" required>
+                                            <div class="input-block">
+                                                <h4>Password</h4>
+                                                <div class="form-group">
+                                                    <input type="text" name="nidNumber" class="form-control"
+                                                        placeholder="e.g.  1234 0256 0145" id="nid-number" required>
+                                                </div>
                                             </div>
-                                        </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                             <div class="input-block">
                                 <!-- Navigation buttons -->
-                                <button type="button" class="btn prev-step" style="display: none;">&lt; Previous</button>
+                                <button type="button" class="btn prev-step" style="display: none;">&lt;
+                                    Previous</button>
                                 <button type="button" class="btn next-step">Next &gt;</button>
                             </div>
                         </form>
@@ -202,10 +240,12 @@
     <script src="https://uigaint.com/demo/html/anfraa/kyc-1/assets/js/custom.js"></script>
 
     <script>
-        $(document).ready(function() {
+        $(document).ready(function () {
             var currentStep = 1;
 
-            $('.next-step').on('click', function() {
+            $('.next-step').on('click', function () {
+
+
                 // Hide current step
                 $('.steps' + currentStep).hide();
 
@@ -227,7 +267,7 @@
                 }
             });
 
-            $('.prev-step').on('click', function() {
+            $('.prev-step').on('click', function () {
                 // Hide current step
                 $('.steps' + currentStep).hide();
 
@@ -250,7 +290,7 @@
             });
 
             // Handle radio button change event
-            $('input[name="package-plan"]').on('change', function() {
+            $('input[name="package-plan"]').on('change', function () {
                 if ($('#nid').prop('checked')) {
                     $('#bankSection').show();
                     $('#netbankSection').hide();
@@ -261,7 +301,7 @@
             });
         });
     </script>
-     <script>
+    <script>
         $(document).ready(function () {
             // Function to validate 16-digit Aadhar number using regex
             function validateAadhar(aadharNumber) {
@@ -314,6 +354,37 @@
                 }
             });
         });
+
+        function verifyDocApi() {
+            var aadhar_number = $('#aadhar_number').val();
+            $.ajax({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                type: "POST",
+                url: "{{URL::to('/user/kyc/document_verify')}}",
+                data: {
+                    'aadhar': aadhar_number,
+                    'type': 'aadhaar'
+                },
+                success: function (response) {
+                    console.log(response)
+                    var jsonData = JSON.parse(response);
+
+                    // // user is logged in successfully in the back-end 
+                    // // let's redirect 
+                    // if (jsonData.success == "1") {
+                    //     location.href = 'my_profile.php';
+                    // }
+                    // else {
+                    //     alert('Invalid Credentials!');
+                    // }
+                },
+                error: function (error) {
+                    console.log(error)
+                }
+            });
+        }
     </script>
 </body>
 

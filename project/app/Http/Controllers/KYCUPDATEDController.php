@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreKYCUPDATEDRequest;
 use App\Http\Requests\UpdateKYCUPDATEDRequest;
 use App\Models\KYCUPDATED;
+use Illuminate\Support\Facades\Http;
+
 
 class KYCUPDATEDController extends Controller
 {
@@ -83,5 +85,48 @@ class KYCUPDATEDController extends Controller
     public function destroy(KYCUPDATED $kYCUPDATED)
     {
         //
+    }
+
+    public function documentVerify()
+    {
+        $client = new \GuzzleHttp\Client([
+            'verify' => false
+        ]);
+        switch ($_POST['type']) {
+            case('aadhaar'):
+                $url = 'https://svcdemo.digitap.work/validation/kyc/v1/aadhaar';
+                break;
+
+            case('pan'):
+                $url = 'https://svcdemo.digitap.work/validation/kyc/v1/aadhaar';
+                break;
+
+            default:
+                $url = '';
+        }
+        $username = '48130178';
+        $password = '6RBkqcF5iarvmWeK5pLhjXrvfcEC8FLe';
+        $auth = 'Basic ' . base64_encode($username . ':' . $password);
+
+        $response = $client->request('POST', $url, [
+            'headers' => [
+                'Authorization' => $auth,
+            ],
+            'json' => [
+                'aadhaar' => $_POST['aadhar'],
+                'client_ref_num' => 'test',
+            ],
+
+        ]);
+
+
+        // $statusCode = $response->getStatusCode();
+        // $content = $response->getBody();
+        // print_r($response->getBody()->getContents());
+        // die;
+        return $response->getBody()->getContents();
+
+
+
     }
 }

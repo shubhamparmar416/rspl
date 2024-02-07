@@ -46,6 +46,7 @@ Route::prefix('user')->group(function () {
     Route::get('/login', [UserLoginController::class, 'showLoginForm'])->name('user.login');
     Route::post('/login', [UserLoginController::class, 'login'])->name('user.login.submit');
     Route::get('/kyc', [KYCUPDATEDController::class, 'index'])->name('user.kycupdated.index');
+    Route::post('/kyc/document_verify', [KYCUPDATEDController::class, 'documentVerify']);
 
     Route::get('/otp', [OTPController::class, 'showotpForm'])->name('user.otp');
     Route::post('/otp', [OTPController::class, 'otp'])->name('user.otp.submit');
