@@ -38,13 +38,13 @@
             <div class="row">
                 <div class="col-lg-6 offset-lg-3 p-sm-0">
                     <div class="ugf-form">
-                        <form action="kyc-3.html" id="commentForm" method="get" action="">
+                        <form id="step_1_form" method="post" enctype="multipart/form-data">
                             <div class="steps1">
                                 <!-- Step 1 content -->
                                 <div class="input-block">
                                     <div class="steps1">
                                         <div class="input-block">
-                                            <h4>Verify Aadhar</h4>
+                                            <h4>Verify Aadhardd</h4>
                                             <div class="file-input-wrap">
                                                 <div class="custom-file">
                                                     <!-- <input type="file" class="custom-file-input" id="nidf"> -->
@@ -55,7 +55,7 @@
                                                             id="preview-1" alt="icon" class="img-fluid preview"><img
                                                             src="https://uigaint.com/demo/html/anfraa/kyc-1/assets/images/cloud.png"
                                                             class="upload-icon"></label>
-                                                    <span class="text">National ID Front</span>
+                                                    <span class="text">National ID Frontd</span>
                                                 </div>
                                                 <div class="custom-file">
                                                     <!-- <input type="file" class="custom-file-input" id="nidb"> -->
@@ -86,6 +86,7 @@
                                                 <input type="text" name="aadhar_number" class="form-control"
                                                     id="aadhar_number" onblur="verifyDocApi('aadhaar')"
                                                     placeholder="e.g. 1234567890123456" required pattern="\d{16}">
+                                                    <img src="https://uigaint.com/demo/html/anfraa/kyc-1/assets/images/check-green.svg" id="aadhaar_check_image" style="position: absolute; top: 25px;right: 15px;display: none;">
                                                 <div class="invalid-feedback">
                                                     Please enter a valid 16-digit Aadhar number.
                                                 </div>
@@ -134,6 +135,7 @@
                                                 <input type="text" name="panNumber" class="form-control" id="pan-number"
                                                     onblur="verifyDocApi('pan')" placeholder="e.g. ABCDE1234F" required
                                                     pattern="[A-Z]{5}[0-9]{4}[A-Z]">
+                                                    <img src="https://uigaint.com/demo/html/anfraa/kyc-1/assets/images/check-green.svg" id="pan_check_image" style="position: absolute; top: 25px;right: 15px;display: none;">
                                                 <div class="invalid-feedback">
                                                     Please enter a valid PAN number (e.g., ABCDE1234F).
                                                 </div>
@@ -142,6 +144,8 @@
                                     </div>
                                 </div>
                             </div>
+                        </form>
+                        <form action="" id="step_2_form" method="post"  enctype="multipart/form-data">
                             <div class="steps2" style="display: none;">
                                 <!-- Step 2 content -->
                                 <div class="input-block">
@@ -220,7 +224,7 @@
                                 <!-- Navigation buttons -->
                                 <button type="button" class="btn prev-step" style="display: none;">&lt;
                                     Previous</button>
-                                <button type="button" disabled class="btn next-step">Next &gt;</button>
+                                <button type="button" data-form_name="step_1_form" disabled class="btn next-step">Next &gt;</button><!--disabled-->
                             </div>
                         </form>
                         <!-- <a href="kyc.html" class="back-to-prev"><img src="https://uigaint.com/demo/html/anfraa/kyc-1/assets/images/arrow-left-grey.png" alt=""> Back to Previous</a> -->
@@ -241,11 +245,43 @@
 
     <script>
         var isDocumentCorrect = 0;
+        var isPanCorrect = 0;
+        var isAadhaarCorrect = 0;
         $(document).ready(function () {
             var currentStep = 1;
 
             $('.next-step').on('click', function () {
+                //var form_name = $(this).data('form_name');
 
+                //var data = $("#"+form_name).serialize();
+
+                var formData = new FormData();
+                formData.append('username', 'Chris');
+                formData.append('fId', document.getElementById('upload-input-1').files[0]);
+                formData.append('bId', document.getElementById('upload-input-2').files[0]);
+                formData.append('fIdp', document.getElementById('upload-input-3').files[0]);
+                formData.append('bIdp', document.getElementById('upload-input-4').files[0]);
+                formData.append('aadhar_number',document.getElementById('aadhar_number').value);
+                formData.append('pan-number',document.getElementById('pan-number').value);
+
+                console.log(formData);
+                console.log(document.getElementById('upload-input-1').files[0]);
+                console.log(document.getElementById('aadhar_number').value);
+               
+                $.ajax({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    type: 'POST',
+                    url: "{{URL::to('/user/kyc/step1_document')}}",
+                    data: {data:formData},
+                    contentType: false,
+                    cache: false,
+                    processData:false,
+                    success: function(data){
+                        alert(data.data);
+                    }
+                });
 
                 // Hide current step
                 $('.steps' + currentStep).hide();
@@ -358,31 +394,56 @@
 
         function verifyDocApi(type) {
             var document = type == 'aadhaar' ? $('#aadhar_number').val() : $('#pan-number').val();
-            $.ajax({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                },
-                type: "POST",
-                url: "{{URL::to('/user/kyc/document_verify')}}",
-                data: {
-                    'document': document,
-                    'type' : type
-                },
-                success: function (response) {
-                    if (response.status) {
-                        var jsonData = JSON.parse(response.data);
-                        isDocumentCorrect = 1;
-                        $('.next-step').removeAttr("disabled");
+            
+            if(document!=""){
+                $.ajax({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    type: "POST",
+                    url: "{{URL::to('/user/kyc/document_verify')}}",
+                    data: {
+                        'document': document,
+                        'type' : type
+                    },
+                    success: function (response) {
+                        if (response.status) {
+                            var jsonData = JSON.parse(response.data);
+                            if(jsonData.result_code==101){
+                                if(type=='aadhaar'){
+                                    $("#aadhaar_check_image").show();
+                                    isAadhaarCorrect = 1;
+                                }
+                                if(type=='pan'){
+                                    $("#pan_check_image").show();
+                                    isPanCorrect = 1;
+                                }
+                                if(isPanCorrect==1 && isAadhaarCorrect==1){
+                                    $('.next-step').removeAttr("disabled");
+                                }else{
+                                    $('.next-step').prop("disabled", true);
+                                }
+                            }else{
+                                alert(jsonData.message);
+                            }
+                        } else {
+                            if(type=='aadhaar'){
+                                $("#aadhaar_check_image").hide();
+                                isAadhaarCorrect = 0;
+                            }
+                            if(type=='pan'){
+                                $("#pan_check_image").hide();
+                                isPanCorrect = 0;
+                            }
+                            $('.next-step').prop("disabled", true);
 
-                    } else {
-                        $('.next-step').prop("disabled", true);
-
+                        }
+                    },
+                    error: function (error) {
+                        console.log(error)
                     }
-                },
-                error: function (error) {
-                    console.log(error)
-                }
-            });
+                });
+            }
         }
     </script>
 </body>
