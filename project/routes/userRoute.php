@@ -48,7 +48,11 @@ Route::prefix('user')->group(function () {
 
     Route::get('/kyc', [KYCUPDATEDController::class, 'index'])->name('user.kycupdated.index');
     Route::post('/kyc/document_verify', [KYCUPDATEDController::class, 'documentVerify']);
+    Route::post('/kyc/digilocker_verify', [KYCUPDATEDController::class, 'digilockerVerify']);
+    Route::post('/kyc/digilocker_verify_check', [KYCUPDATEDController::class, 'digilockerVerifyCheck']);
+    Route::post('/kyc/upload_statement', [KYCUPDATEDController::class, 'uploadStatement']);
     Route::post('/kyc/step1_document', [KYCUPDATEDController::class, 'step1_document']);
+    Route::get('/kyc/kyc_verify_status', [KYCUPDATEDController::class, 'kycVerifyStatus']);
 
     Route::get('/otp', [OTPController::class, 'showotpForm'])->name('user.otp');
     Route::post('/otp', [OTPController::class, 'otp'])->name('user.otp.submit');
@@ -152,6 +156,8 @@ Route::prefix('user')->group(function () {
 
         Route::get('/deposits', [DepositController::class, 'index'])->name('user.deposit.index');
         Route::get('/deposit/create', [DepositController::class, 'create'])->name('user.deposit.create');
+        Route::get('/repayment/add', [DepositController::class, 'add'])->name('user.repayment.add');
+        Route::get('/repayment/addid/{id}', [DepositController::class, 'addid'])->name('user.repayment.addid');
 
         Route::post('/deposit/stripe-submit', [StripeController::class, 'store'])->name('deposit.stripe.submit');
 
@@ -224,6 +230,5 @@ Route::prefix('user')->group(function () {
     });
 
     Route::get('/logout', [UserLoginController::class, 'logout'])->name('user.logout');
-
 });
 Route::get('/kyc-form', [KYCController::class, 'kycform'])->name('user.kyc.form');

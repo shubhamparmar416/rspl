@@ -8,12 +8,12 @@
 <div class="container-xl">
 
     <div class="page-header d-print-none">
-
+      
     </div>
   </div>
   <div class="page-body">
     <div class="container-xl">
-
+      @includeIf('includes.flash')
       @if (auth()->user()->kyc_status != 1)
         <div class="row mb-3">
           <div class="col-md-12">
@@ -29,6 +29,29 @@
               </div>
           </div>
         </div>
+
+      @elseif (isset($_GET['kyc']) && $_GET['kyc'] == 1)
+        <div class="row mb-3">
+          <div class="col-md-12">
+              <div class="card">
+                  <div class="card-body">
+                        <div class="form-group w-100 d-flex flex-wrap align-items-center justify-content-evenly justify-content-sm-between">
+                          <h3 class="my-1 text-center text-sm-start">{{ __('Kyc updated successfully.') }}</h3>
+                          <div class="my-1">
+                            <a href="javascript:void(0)" class="btn btn-success">Done</a>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+          </div>
+        </div>
+      
+      @endif
+
+      @if (isset($_GET['kyc']) && $_GET['kyc'] == 0)
+        <script type="text/javascript">
+          alert('Kyc not done, Please try again.');
+        </script>
       @endif
 
       <div class="row row-deck row-cards mb-2">

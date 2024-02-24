@@ -48,13 +48,28 @@
           </div>
 
           <div class="form-group">
-            <label for="installment_interval">{{ __('Installment Interval') }}</label>
-            <input type="number" class="form-control" id="installment_interval" name="installment_interval" placeholder="{{ __('Installment Interval') }}" min="1" value="" required>
+            <label for="installment_interval">{{ __('Repayment Frequency') }}</label>
+            <!-- <input type="number" class="form-control" id="installment_interval" name="installment_interval" placeholder="{{ __('Repayment Frequency') }}" min="1" value="" required> -->
+            <select class="form-control" id="installment_interval" name="installment_interval" required="">
+              <option value="">Select</option>
+              <option value="1" data-id="daily">Daily</option>
+              <option value="7" data-id="weekly">Weekly</option>
+              <option value="30" data-id="monthly">Monthly</option>
+              <option value="45" data-id="quarterly">Quarterly</option>
+              <option value="180" data-id="daily">Half Yearly</option>
+              <option value="365">Yearly</option>
+            </select>
           </div>
 
           <div class="form-group">
             <label for="total_installment">{{ __('Total Installment') }}</label>
-            <input type="number" class="form-control" id="total_installment" name="total_installment" placeholder="{{ __('Total Installment') }}" min="1" value="" required>
+            <!-- <input type="number" class="form-control" id="total_installment" name="total_installment" placeholder="{{ __('Total Installment') }}" min="1" value="" required> -->
+            <select class="form-control" id="total_installment" name="total_installment" required="">
+              <option value="">Select</option>
+              @for ($i = 1; $i<=20; $i++)
+                <option value="{{$i*12}}">{{$i}}</option>
+              @endfor
+            </select>
           </div>
 
           <div class="form-group">

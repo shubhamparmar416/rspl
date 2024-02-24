@@ -10,7 +10,7 @@
       <div class="row align-items-center">
         <div class="col">
           <h2 class="page-title">
-            {{__('Deposit Now')}}
+            {{__('Repayment Now')}}
           </h2>
         </div>
       </div>
@@ -26,8 +26,19 @@
                     <form class="deposit-form" action="" method="POST" enctype="multipart/form-data">
                         @csrf
                         <div class="form-group">
-                            <label class="form-label required">{{__('Payment Method')}}</label>
-                            <select name="method" id="withmethod" class="form-select" required>
+                            <label class="form-label required">{{__('Select Loan')}}</label>
+                            <select name="loan_plan" id="loan_plan" class="form-select" required>
+                                <option value="">{{ __('Select Payment Method') }}</option>
+                                @foreach ($loans as $loan)
+                                    @if ($loan->status != 2)
+                                        <option value="{{$loan->id}}" data-id="{{$loan->per_installment_amount}}" {{$loan->id == $id ? 'selected' : ''}}>{{$loan->plan->title}} ({{ $loan->transaction_no }})</option>
+                                    @endif
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label required" style="display: none;">{{__('Payment Method')}}</label>
+                            <!-- <select name="method" id="withmethod" class="form-select" hidden="" required>
                                 <option value="">{{ __('Select Payment Method') }}</option>
                                 @foreach ($gateways as $gateway)
                                     @if ($gateway->type == 'manual')
@@ -37,6 +48,9 @@
                                         <option value="{{$gateway->keyword}}">{{ $gateway->name }}</option>
                                     @endif
                                 @endforeach
+                            </select> -->
+                            <select name="method" id="withmethod" class="form-select" hidden="" required>
+                                <option value="razorpay">Razorpay</option>
                             </select>
                         </div>
 
@@ -94,8 +108,8 @@
                         <input type="hidden" name="paystackInfo" id="paystackInfo" value="{{ $paystackKey }}">
 
                         <div class="form-group mb-3 mt-3">
-                            <label class="form-label required">{{__('Deposit Amount')}}</label>
-                            <input name="amount" id="amount" class="form-control" autocomplete="off" placeholder="{{__('0.0')}}" type="number" value="{{ old('amount') }}" min="1" required>
+                            <label class="form-label required">{{__('Payment Amount')}}</label>
+                            <input name="amount" id="amount" readonly="true" class="form-control" autocomplete="off" placeholder="{{__('0.0')}}" type="number" value="" min="1" required>
                         </div>
 
                         <div class="form-group mb-3 ">
@@ -121,6 +135,22 @@
 @push('js')
 
 <script type="text/javascript">
+$(document).ready( function(){
+    var dataid = $("#loan_plan option:selected").attr('data-id');
+    $("#amount").val(dataid);
+});
+$('#loan_plan').on("change",function(){
+    var dataid = $("#loan_plan option:selected").attr('data-id');
+    $("#amount").val(dataid);
+});
+$(document).ready(function() {
+    $('.deposit-form').prop('action','{{ route('deposit.razorpay.submit') }}');
+    $('.deposit-form').prop('id','');
+    $('#card-view').addClass('d-none');
+    $('.card-elements').prop('required',false);
+    $('#manual_transaction_id').prop('required',false);
+    $('.manual-payment').addClass('d-none');
+});
 'use strict';
 
 $(document).on('change','#withmethod',function(){

@@ -42,7 +42,7 @@
     </div>
   </li>
 
-  <li class="nav-item">
+  <!-- <li class="nav-item">
     <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#dps" aria-expanded="true" aria-controls="collapseTable">
       <i class="fas fa-warehouse"></i>
     <span>{{ __('DPS Management') }}</span>
@@ -70,7 +70,7 @@
         <a class="collapse-item" href="{{ route('admin.fdr.closed') }}">{{ __('Closed Fdr') }}</a>
       </div>
     </div>
-  </li>
+  </li> -->
 
   <li class="nav-item">
     <a class="nav-link" href="{{ route('admin.other.banks.index') }}">

@@ -89,9 +89,18 @@
                                           </td>
                                           <td data-label="{{__('View Log')}}">
                                             <div class="btn-list flex-nowrap">
-                                              <a href="{{ route('user.loans.logs',$data->id) }}" class="btn">
-                                                @lang('Logs')
+                                              <a href="{{ route('user.loans.logs',$data->id) }}" class="btn btn-info">
+                                                @lang('Installment')
                                               </a>
+                                              @if ($data->status != 2)
+                                                <a href="{{ route('user.repayment.addid',$data->id) }}" class="btn btn-danger">
+                                                  @lang('Pay Now')
+                                                </a>
+                                              @else
+                                                <a href="#" class="btn btn-danger disabled">
+                                                  @lang('Pay Now')
+                                                </a>
+                                              @endif
                                             </div>
                                           </td>
                                       </tr>
