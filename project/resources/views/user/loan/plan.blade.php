@@ -77,6 +77,23 @@
                                         {{ $data->total_installment }}
                                     </div>
                                 </li>
+                                @if ($data->required_information)
+                                  @foreach (json_decode($data->required_information,true) as $key=>$value)
+                                      @if ($value['type'] == 'file')
+                                        <li>
+                                            <div class="name">
+                                                {{$value['field_name']}}
+                                            </div>
+
+                                            <div class="info">
+                                              
+                                                        
+                                                    
+                                            </div>
+                                        </li>
+                                      @endif
+                                    @endforeach
+                                @endif
                             </ul>
                             <a href="javascript:;" class="btn btn-green w-100 apply-loan" data-id="{{ $data->id}}" data-bs-toggle="modal" data-bs-target="#modal-apply">
                                 {{__('Apply')}}

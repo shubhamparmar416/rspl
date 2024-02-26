@@ -87,7 +87,7 @@
                                           <td  data-label="{{ __('View Logs') }}">
                                             <div class="btn-list flex-nowrap">
                                               <a href="{{ route('user.loans.logs',$data->id) }}" class="btn">
-                                                @lang('Logs')
+                                                @lang('Installment')
                                               </a>
                                             </div>
                                           </td>

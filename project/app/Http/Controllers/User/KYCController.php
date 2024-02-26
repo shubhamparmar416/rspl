@@ -23,6 +23,7 @@ class KYCController extends Controller
 
     public function kyc(Request $request)
     {
+        dd('here');
         $userType = 'user';
         $userForms = KycForm::where('user_type', $userType == 'user' ? 1 : 2)->get();
 
@@ -42,7 +43,6 @@ class KYCController extends Controller
         $details = [];
         foreach ($requireInformations as $key => $infos) {
             foreach ($infos as $index => $info) {
-
                 if ($request->has($info)) {
                     if ($request->hasFile($info)) {
                         if ($file = $request->file($info)) {

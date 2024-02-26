@@ -27,21 +27,74 @@
                         <table class="table">
                             <tbody>
                                 @if ($kycInformations != NULL)
-                                    @foreach ($kycInformations as $key=>$value)
-                                        @if ($value[1] == 'file')
-                                        <tr>
-                                            <th width="45%">{{$key}}</th>
+
+                                   <tr>
+                                       <th>Current Address</th>
+                                       <td>{{$kycInformations->current_address}}</td>
+                                   </tr>
+                                   <tr>
+                                       <th>Aadhar No</th>
+                                       <td>{{$kycInformations->aadhaar_no}}<img src="https://uigaint.com/demo/html/anfraa/kyc-1/assets/images/check-green.svg" style="position: absolute;"></td>
+                                   </tr>
+                                   <tr>
+                                        <th>Aadhar Image</th>
+                                        <td><a href="{{url('project/storage/kyc/').'/'.$kycInformations->aadhaar_front}}" target="_blank"><img src="{{url('project/storage/kyc/').'/'.$kycInformations->aadhaar_front}}" class="img-thumbnail"></a><a href="{{url('project/storage/kyc/').'/'.$kycInformations->aadhaar_back}}" target="_blank"><img src="{{url('project/storage/kyc/').'/'.$kycInformations->aadhaar_back}}" class="img-thumbnail"></a><img src="https://uigaint.com/demo/html/anfraa/kyc-1/assets/images/check-green.svg" style="position: absolute;"></td>
+                                    </tr>
+                                   <tr>
+                                       <th>Aadhar State</th>
+                                       <td>{{$aadharDetails->result->aadhaar_state}}</td>
+                                   </tr>
+                                   <tr>
+                                       <th>Aadhar Age Band</th>
+                                       <td>{{$aadharDetails->result->aadhaar_age_band}}</td>
+                                   </tr>
+                                   <tr>
+                                       <th>Aadhar Status</th>
+                                       <td>{{$aadharDetails->result->aadhaar_result}}</td>
+                                   </tr>
+                                   <tr><th>Pan Image</th><td><a href="{{url('project/storage/kyc/').'/'.$kycInformations->pan_front}}" target="_blank"><img src="{{url('project/storage/kyc/').'/'.$kycInformations->pan_front}}" class="img-thumbnail"></a><a href="{{url('project/storage/kyc/').'/'.$kycInformations->pan_back}}" target="_blank"><img src="{{url('project/storage/kyc/').'/'.$kycInformations->pan_back}}" class="img-thumbnail"></a><img src="https://uigaint.com/demo/html/anfraa/kyc-1/assets/images/check-green.svg" style="position: absolute;"></td></tr>
+                                   <tr>
+                                       <th>Pan Name</th>
+                                       <td>{{$panDetails->result->fullname}}</td>
+                                   </tr>
+                                   <tr>
+                                       <th>Pan Number</th>
+                                       <td>{{$panDetails->result->pan}}<img src="https://uigaint.com/demo/html/anfraa/kyc-1/assets/images/check-green.svg" style="position: absolute;"></td>
+                                   </tr>
+                                   <tr>
+                                       <th>Pan DOB</th>
+                                       <td>{{$panDetails->result->dob}}</td>
+                                   </tr>
+                                   <tr>
+                                       <th>Pan Gender</th>
+                                       <td>{{$panDetails->result->gender}}</td>
+                                   </tr>
+                                   <tr>
+                                       <th>Pan Mobile</th>
+                                       <td>{{$panDetails->result->mobile}}</td>
+                                   </tr>
+                                   <tr>
+                                       <th>Pan Address</th>
+                                       <td>{{$panDetails->result->address->building_name}} {{$panDetails->result->address->street_name}} {{$panDetails->result->address->locality}} {{$panDetails->result->address->pincode}} {{$panDetails->result->address->city}} {{$panDetails->result->address->state}} {{$panDetails->result->address->country}}</td>
+                                   </tr>
+                                   <tr>
+                                       <th>Pan Type</th>
+                                       <td>{{$panDetails->result->pan_type}}</td>
+                                   </tr>
+                                        
+                                       <!--  <tr>
+                                            <th width="45%"></th>
                                             <td width="10%">:</td>
-                                            <td width="45%"><a href="{{asset('assets/images/'.$value[0])}}" download><img src="{{asset('assets/images/'.$value[0])}}" class="img-thumbnail"></a></td>
+                                            <td width="45%"><a href="{{asset('assets/images/')}}" download><img src="{{asset('assets/images/')}}" class="img-thumbnail"></a></td>
                                         </tr>
-                                        @else 
+                                         
                                             <tr>
-                                                <th width="45%">{{$key}}</th>
+                                                <th width="45%"></th>
                                                 <td width="10%">:</td>
-                                                <td width="45%">{{ $value[0] }}</td>
-                                            </tr>
-                                        @endif
-                                    @endforeach
+                                                <td width="45%"></td>
+                                            </tr> -->
+                                        
+                                    
                                 @else 
                                     <p class="text-center mt-5">@lang('KYC NOT SUBMITTTED')</p>
                                 @endif

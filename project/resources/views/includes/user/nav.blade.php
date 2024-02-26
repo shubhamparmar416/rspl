@@ -57,7 +57,7 @@
             @endif
 
             @if (!in_array('DPS',$modules))
-              <li class="nav-item dropdown {{ request()->routeIs('user.dps.plan') || request()->routeIs('user.dps.index') || request()->routeIs('user.dps.running') || request()->routeIs('user.dps.matured') ? 'active' : '' }}">
+              <!-- <li class="nav-item dropdown {{ request()->routeIs('user.dps.plan') || request()->routeIs('user.dps.index') || request()->routeIs('user.dps.running') || request()->routeIs('user.dps.matured') ? 'active' : '' }}">
                 <a class="nav-link dropdown-toggle" href="#navbar-extra" data-bs-toggle="dropdown" data-bs-auto-close="outside" role="button" aria-expanded="false" >
                   <span class="nav-link-icon d-md-none d-lg-inline-block">
                     <i class="fas fa-warehouse"></i>
@@ -84,11 +84,11 @@
                   </a>
 
                 </div>
-              </li>
+              </li> -->
             @endif
 
             @if (!in_array('FDR',$modules))
-              <li class="nav-item dropdown {{ request()->routeIs('user.fdr.plan') || request()->routeIs('user.fdr.index') || request()->routeIs('user.fdr.running') || request()->routeIs('user.fdr.closed') ? 'active' : '' }}">
+              <!-- <li class="nav-item dropdown {{ request()->routeIs('user.fdr.plan') || request()->routeIs('user.fdr.index') || request()->routeIs('user.fdr.running') || request()->routeIs('user.fdr.closed') ? 'active' : '' }}">
                 <a class="nav-link dropdown-toggle" href="#navbar-extra" data-bs-toggle="dropdown" data-bs-auto-close="outside" role="button" aria-expanded="false" >
                   <span class="nav-link-icon d-md-none d-lg-inline-block">
                     <i class="fas fa-user-shield"></i>
@@ -114,11 +114,11 @@
                     {{__('Closed Fdr')}}
                   </a>
                 </div>
-              </li>
+              </li> -->
             @endif
 
             @if (!in_array('Request Money',$modules))
-              <li class="nav-item dropdown {{ request()->routeIs('user.money.request.index') || request()->routeIs('user.request.money.receive') ? 'active' : '' }}">
+              <!-- <li class="nav-item dropdown {{ request()->routeIs('user.money.request.index') || request()->routeIs('user.request.money.receive') ? 'active' : '' }}">
                 <a class="nav-link dropdown-toggle" href="#navbar-extra" data-bs-toggle="dropdown" data-bs-auto-close="outside" role="button" aria-expanded="false" >
                   <span class="nav-link-icon d-md-none d-lg-inline-block">
                     <i class="fas fa-file-signature"></i>
@@ -136,24 +136,24 @@
                     {{__('Receive Request Money')}}
                   </a>
                 </div>
-              </li>
+              </li> -->
             @endif
 
             @if (!in_array('Deposit',$modules))
               <li class="nav-item {{ request()->routeIs('user.deposit.index') ? 'active' : '' }}">
-                  <a class="nav-link" href="{{route('user.deposit.index')}}" >
+                  <a class="nav-link" href="{{route('user.repayment.add')}}" >
                     <span class="nav-link-icon d-md-none d-lg-inline-block">
                       <i class="fas fa-hand-holding-usd"></i>
                     </span>
                     <span class="nav-link-title">
-                      {{__('Deposit')}}
+                      {{__('Repayment')}}
                     </span>
                   </a>
               </li>
             @endif
 
             @if (!in_array('Wire Transfer',$modules))
-              <li class="nav-item {{ request()->routeIs('user.wire.transfer.index') ? 'active' : '' }}">
+              <!-- <li class="nav-item {{ request()->routeIs('user.wire.transfer.index') ? 'active' : '' }}">
                 <a class="nav-link" href="{{route('user.wire.transfer.index')}}" >
                   <span class="nav-link-icon d-md-none d-lg-inline-block">
                     <i class="fas fa-tram"></i>
@@ -162,11 +162,11 @@
                     {{__('Wire Transfer')}}
                   </span>
                 </a>
-              </li>
+              </li> -->
             @endif
 
             @if (!in_array('Transfer',$modules))
-              <li class="nav-item dropdown {{ request()->routeIs('send.money.create') || request()->routeIs('user.beneficiaries.index') || request()->routeIs('user.other.bank') || request()->routeIs('tranfer.logs.index') ? 'active' : '' }}">
+              <!-- <li class="nav-item dropdown {{ request()->routeIs('send.money.create') || request()->routeIs('user.beneficiaries.index') || request()->routeIs('user.other.bank') || request()->routeIs('tranfer.logs.index') ? 'active' : '' }}">
                 <a class="nav-link dropdown-toggle" href="#navbar-extra" data-bs-toggle="dropdown" data-bs-auto-close="outside" role="button" aria-expanded="false" >
                   <span class="nav-link-icon d-md-none d-lg-inline-block">
                     <i class="fas fa-exchange-alt"></i>
@@ -192,12 +192,12 @@
                     {{__('Transfer History')}}
                   </a>
                 </div>
-              </li>
+              </li> -->
             @endif
 
             @if ($gs->withdraw_status == 1)
               @if (!in_array('Withdraw',$modules))
-                <li class="nav-item {{ request()->routeIs('user.withdraw.index') ? 'active' : '' }}">
+                <!-- <li class="nav-item {{ request()->routeIs('user.withdraw.index') ? 'active' : '' }}">
                   <a class="nav-link" href="{{route('user.withdraw.index')}}" >
                     <span class="nav-link-icon d-md-none d-lg-inline-block">
                       <i class="fas fa-file-signature"></i>
@@ -206,12 +206,12 @@
                       {{__('Withdraw')}}
                     </span>
                   </a>
-                </li>
+                </li> -->
               @endif
             @endif
 
             @if (!in_array('Pricing Plan',$modules))
-              <li class="nav-item {{ request()->routeIs('user.package.index') ? 'active' : '' }}">
+              <!-- <li class="nav-item {{ request()->routeIs('user.package.index') ? 'active' : '' }}">
                 <a class="nav-link" href="{{route('user.package.index')}}" >
                   <span class="nav-link-icon d-md-none d-lg-inline-block">
                     <i class="fab fa-affiliatetheme"></i>
@@ -220,7 +220,7 @@
                     {{__('Pricing Plan')}}
                   </span>
                 </a>
-              </li>
+              </li> -->
             @endif
 
             @if (!in_array('More',$modules))
