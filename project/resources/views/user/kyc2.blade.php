@@ -138,6 +138,50 @@
         function showPosition(position) {
             $('#latitude').val(position.coords.latitude);
             $('#longitude').val(position.coords.longitude);
+
+            $.ajax({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                type: 'POST',
+                url: "{{URL::to('/user/kyc/get_address_lat_long')}}",
+                data: {'latitude':position.coords.latitude, 'longitude':position.coords.longitude},
+                success: function(response){
+                    var dataRes = JSON.parse(response);
+                    if(dataRes.code == '200') {
+                        /*var dataRes = {
+                            "code": "200",
+                            "model": {
+                                "address": "179, Abhinandan Nagar Rd, DDU Nagar, Sukhlia, Indore, Madhya Pradesh 452010, India",
+                                "pincode": "452010",
+                                "district": "Indore Division",
+                                "state": "Madhya Pradesh"
+                            }
+                        };*/
+                        /*console.log(data);*/
+                        //console.log(JSON.stringify(data));
+                        //console.log(dataRes);
+                        //console.log(dataRes.model.address);
+                        var str = dataRes.model.address;
+                        var myarray = str.split(', ');
+                        var dist = dataRes.model.district;
+                        var distArray = dist.split(' ');
+                        $("#house_no").val(myarray[0]);
+                        $("#street").val(myarray[1]);
+                        //$("#landmark").val(myarray[2]);
+                        $("#district").val(distArray[0]);
+                        $("#city").val(myarray[4]);
+                        $("#pincode").val(dataRes.model.pincode);
+                        $("#state").val(dataRes.model.state);
+                    } else {
+                        alert('Current address not found.');
+                        /*$("#backgroundimage").hide();
+                        $(".container").show();*/
+                        window.location.href = "{{URL::to('/user/dashboard?kyc=0')}}";
+                        return false;
+                    }
+                }
+            });
         }
 
         function verifyCurrentAddress() {

@@ -56,6 +56,7 @@ Route::prefix('user')->group(function () {
     Route::post('/kyc/step1_document', [KYCUPDATEDController::class, 'step1_document']);
     Route::post('/kyc/step2_document', [KYCUPDATEDController::class, 'step2_document']);
     Route::get('/kyc/kyc_verify_status', [KYCUPDATEDController::class, 'kycVerifyStatus']);
+    Route::post('/kyc/get_address_lat_long', [KYCUPDATEDController::class, 'getAddressLatLong']);
 
     Route::get('/otp', [OTPController::class, 'showotpForm'])->name('user.otp');
     Route::post('/otp', [OTPController::class, 'otp'])->name('user.otp.submit');

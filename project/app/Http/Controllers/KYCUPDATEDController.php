@@ -709,7 +709,7 @@ class KYCUPDATEDController extends Controller
         $size = $request->fId->getSize();
         $addressproofImg = $request->fId->move(storage_path('kyc'), $addressproof);
 
-        $random= substr(str_shuffle("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"), 0, 10);
+        /*$random= substr(str_shuffle("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"), 0, 10);
         $client = new \GuzzleHttp\Client([
             'verify' => false
         ]);
@@ -735,62 +735,63 @@ class KYCUPDATEDController extends Controller
 
         $result = $response->getBody()->getContents();
         $statusCheckApiStatus = json_decode($result);
-        $statusCheck = $statusCheckApiStatus->code;
+        $statusCheck = $statusCheckApiStatus->code;*/
       
         $document = UserKycDocument::where('user_id', $user_id)->first();
-
+        //dd($document->api_response_digilocker_status);
         $update='';
         
-        if ($statusCheck == '200') {
-            if (!empty($document) && !empty($addressproof)) {
-                if ($document->api_response_digilocker_status != null) {
-                    $api_response_digilocker_status = json_decode($document->api_response_digilocker_status);
-                    if ($api_response_digilocker_status->model->address->dist != $_POST['district']) {
-                        return \Response::json(['status' => 0, 'message' => "District not matched."]);
-                    } elseif ($api_response_digilocker_status->model->address->vtc != $_POST['city']) {
-                        return \Response::json(['status' => 0, 'message' => "City not matched."]);
-                    } elseif ($api_response_digilocker_status->model->address->state != $_POST['state']) {
-                        return \Response::json(['status' => 0, 'message' => "State not matched."]);
-                    } elseif ($api_response_digilocker_status->model->address->pc != $_POST['pincode']) {
-                        return \Response::json(['status' => 0, 'message' => "Pincode not matched."]);
-                    } elseif ($api_response_digilocker_status->model->address->country != $_POST['country']) {
-                        return \Response::json(['status' => 0, 'message' => "Country not matched."]);
-                    }
-                } elseif ($document->api_response_aadhar_front_img != null && $document->api_response_aadhar_back_img != null) {
-                    $api_response_aadhar_back_img = json_decode($document->api_response_aadhar_back_img);
-                    /*print_r($api_response_aadhar_back_img->result[0]->details->address->house_number);
-                    die;*/
-                    if ($api_response_aadhar_back_img->result[0]->details->address->district != $_POST['district']) {
-                        return \Response::json(['status' => 0, 'message' => "District not matched."]);
-                    } elseif ($api_response_aadhar_back_img->result[0]->details->address->city != $_POST['city']) {
-                        return \Response::json(['status' => 0, 'message' => "City not matched."]);
-                    } elseif ($api_response_aadhar_back_img->result[0]->details->address->state != $_POST['state']) {
-                        return \Response::json(['status' => 0, 'message' => "State not matched."]);
-                    } elseif ($api_response_aadhar_back_img->result[0]->details->address->pin != $_POST['pincode']) {
-                        return \Response::json(['status' => 0, 'message' => "Pincode not matched."]);
-                    }
-                } else {
-                    return \Response::json(['status' => 2, 'message' => "Details not found."]);
+        //if ($statusCheck == '200') {
+        if (!empty($document) && !empty($addressproof)) {
+            if ($document->api_response_digilocker_status != null) {
+                $api_response_digilocker_status = json_decode($document->api_response_digilocker_status);
+                //dd($api_response_digilocker_status);
+                if ($api_response_digilocker_status->model->address->dist != $_POST['district']) {
+                    return \Response::json(['status' => 0, 'message' => "District not matched."]);
+                } elseif ($api_response_digilocker_status->model->address->vtc != $_POST['city']) {
+                    return \Response::json(['status' => 0, 'message' => "City not matched."]);
+                } elseif ($api_response_digilocker_status->model->address->state != $_POST['state']) {
+                    return \Response::json(['status' => 0, 'message' => "State not matched."]);
+                } elseif ($api_response_digilocker_status->model->address->pc != $_POST['pincode']) {
+                    return \Response::json(['status' => 0, 'message' => "Pincode not matched."]);
+                } elseif ($api_response_digilocker_status->model->address->country != $_POST['country']) {
+                    return \Response::json(['status' => 0, 'message' => "Country not matched."]);
                 }
-
-                $document->api_response_address = $result;
-                $document->addressproof = $addressproof;
-                $document->current_address = $_POST['house_no'].', '.$_POST['street'].', '.$_POST['landmark'].', '.$_POST['district'].', '.$_POST['pincode'].', '.$_POST['city'].', '.$_POST['state'].', '.$_POST['country'];
-                $update = $document->save();
+            } elseif ($document->api_response_aadhar_front_img != null && $document->api_response_aadhar_back_img != null) {
+                $api_response_aadhar_back_img = json_decode($document->api_response_aadhar_back_img);
+                /*print_r($api_response_aadhar_back_img->result[0]->details->address->house_number);
+                die;*/
+                if ($api_response_aadhar_back_img->result[0]->details->address->district != $_POST['district']) {
+                    return \Response::json(['status' => 0, 'message' => "District not matched."]);
+                } elseif ($api_response_aadhar_back_img->result[0]->details->address->city != $_POST['city']) {
+                    return \Response::json(['status' => 0, 'message' => "City not matched."]);
+                } elseif ($api_response_aadhar_back_img->result[0]->details->address->state != $_POST['state']) {
+                    return \Response::json(['status' => 0, 'message' => "State not matched."]);
+                } elseif ($api_response_aadhar_back_img->result[0]->details->address->pin != $_POST['pincode']) {
+                    return \Response::json(['status' => 0, 'message' => "Pincode not matched."]);
+                }
+            } else {
+                return \Response::json(['status' => 2, 'message' => "Details not found."]);
             }
+
+            //$document->api_response_address = $result;
+            $document->addressproof = $addressproof;
+            $document->current_address = $_POST['house_no'].', '.$_POST['street'].', '.$_POST['landmark'].', '.$_POST['district'].', '.$_POST['pincode'].', '.$_POST['city'].', '.$_POST['state'].', '.$_POST['country'];
+            $update = $document->save();
+        }
             //echo '1';
             $userKyc_update = User::where('id', $user_id)->first();
             $userKyc_update->kyc_status = 1;
             $userKyc_update->kyc_info = 1;
             $userKyc_update->save();
             return \Response::json(['status' => 1, 'message' => "Kyc updated successfully."]);
-            //return redirect('/user/dashboard?kyc=1');
+            return redirect('/user/dashboard?kyc=1');
             //return redirect('/user/kyc2');
-        } else {
+        /*} else {
             return \Response::json(['status' => 2, 'message' => "Details not found."]);
-            //echo '0';
-            //return redirect('/user/dashboard?kyc=0');
-        }
+
+            return redirect('/user/dashboard?kyc=0');
+        }*/
     }
 
     public function kycVerifyStatus()
@@ -849,12 +850,16 @@ class KYCUPDATEDController extends Controller
             ]);
             
             $result = $response->getBody()->getContents();
+            //dd($result);
+            $filaName = $user_id . '_bank_details_' . time().'_file.txt';
+            Storage::disk('local')->put($filaName, $result);
             $result = json_decode($result);
             
             unset($result->accounts->transactions);
             
             $document = UserKycDocument::where('user_id', $user_id)->first();
             $document->api_response_banking_details = json_encode($result);
+            $document->bank_details_file_name = $filaName;
             $document->save();
             
 
@@ -872,5 +877,50 @@ class KYCUPDATEDController extends Controller
         } else {
             return redirect('/user/dashboard?kyc=0');
         }
+    }
+
+    function getAddressLatLong(Request $request)
+    {
+        $user_id = \Auth::id();
+        $document = UserKycDocument::where('user_id', $user_id)->first();
+        if ($document->api_response_banking_details == null) {
+            return redirect('/user/dashboard');
+        }
+
+        $random= substr(str_shuffle("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"), 0, 10);
+        $client = new \GuzzleHttp\Client([
+            'verify' => false
+        ]);
+
+        $url = 'https://api.digitap.ai/ent/v1/address-verification';
+        $data = [
+            'uniqueId' => $random,
+            'latitude' => $_POST['latitude'],
+            'longitude' => $_POST['longitude']
+        ];
+
+        $username = '34469987';
+        $password = 'RSzF0t3ZQNhqGqqtTyFrMmEMqxpTK728';
+        $auth = base64_encode($username . ':' . $password);
+
+        $response = $client->request('POST', $url, [
+            'headers' => [
+                'Authorization' => $auth,
+            ],
+            'json' => $data
+
+        ]);
+
+        $result = $response->getBody()->getContents();
+        $document = UserKycDocument::where('user_id', $user_id)->first();
+        $document->api_response_address = $result;
+        $document->save();
+        return $result;
+        //return '';
+        /*if ($result) {
+            return \Response::json(['status' => 1, 'message' => "", 'response' => $result]);
+        } else {
+            return \Response::json(['status' => 0, 'message' => ""]);
+        }*/
     }
 }
