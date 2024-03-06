@@ -16,6 +16,10 @@ use Symfony\Component\HttpFoundation\IpUtils;
 
 class KYCUPDATEDController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
     /**
      * Display a listing of the resource.
      *
@@ -785,7 +789,7 @@ class KYCUPDATEDController extends Controller
             $userKyc_update->kyc_info = 1;
             $userKyc_update->save();
             return \Response::json(['status' => 1, 'message' => "Kyc updated successfully."]);
-            return redirect('/user/dashboard?kyc=1');
+            //return redirect('/user/dashboard?kyc=1');
             //return redirect('/user/kyc2');
         /*} else {
             return \Response::json(['status' => 2, 'message' => "Details not found."]);
@@ -854,24 +858,31 @@ class KYCUPDATEDController extends Controller
             $filaName = $user_id . '_bank_details_' . time().'_file.txt';
             Storage::disk('local')->put($filaName, $result);
             $result = json_decode($result);
-            
+            $document = UserKycDocument::where('user_id', $user_id)->first();
+
+            if ($document->api_response_digilocker_status != null) {
+                $api_response_digilocker_status = json_decode($document->api_response_digilocker_status);
+                
+                if (str_contains($result->customer_info->name, $api_response_digilocker_status->model->name) {
+                    return \Response::json(['status' => 0, 'message' => "Name is not matched."]);
+                }
+            } elseif ($document->api_response_aadhar_front_img != null && $document->api_response_aadhar_back_img != null) {
+                $api_response_aadhar_front_img = json_decode($document->api_response_aadhar_front_img);
+
+                if (str_contains($result->customer_info->name, $api_response_aadhar_front_img->result[0]->details->name->value, )) {
+                    return \Response::json(['status' => 0, 'message' => "Name is not matched."]);
+                }
+            } else {
+                return \Response::json(['status' => 2, 'message' => "Details not found."]);
+            }
+
             unset($result->accounts->transactions);
             
-            $document = UserKycDocument::where('user_id', $user_id)->first();
             $document->api_response_banking_details = json_encode($result);
             $document->bank_details_file_name = $filaName;
             $document->save();
             
-
             $document = UserKycDocument::where('user_id', $user_id)->first();
-            
-            /*$random= substr(str_shuffle("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"), 0, 10);
-            $data = [
-                'clientRefId' => $random,
-                'name_to_match' => 'RAJVIR SECURITIES AND FINANCE PVT LTD',
-                'input_name' => $result->customer_info->name
-            ];
-            $nameComparisonRes = nameComparison($data);*/
             
             return redirect('/user/kyc2');
         } else {

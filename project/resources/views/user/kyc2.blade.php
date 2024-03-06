@@ -53,7 +53,7 @@
     <div class="ugf-bg ufg-main-container">
         <div class="ugf-progress">
             <div class="progress">
-                <div class="progress-bar" role="progressbar" style="width: 66.66%" aria-valuenow="66.66"
+                <div class="progress-bar" role="progressbar" style="width: 75%" aria-valuenow="75"
                     aria-valuemin="0" aria-valuemax="100"></div>
             </div>
         </div>
@@ -116,6 +116,8 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script>
         $(document).ready(function () {
+            $("#backgroundimage").show();
+            $(".container").hide();
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(showPosition);
             } else { 
@@ -173,6 +175,8 @@
                         $("#city").val(myarray[4]);
                         $("#pincode").val(dataRes.model.pincode);
                         $("#state").val(dataRes.model.state);
+                        $("#backgroundimage").hide();
+                        $(".container").show();
                     } else {
                         alert('Current address not found.');
                         /*$("#backgroundimage").hide();
@@ -275,15 +279,16 @@
                 success: function(data){
                     console.log(JSON.stringify(data));
                     if(data.status == 1) {
-                        alert(data.message);
+                        //alert(data.message);
                         /*$("#backgroundimage").hide();
                         $(".container").show();*/
                         window.location.href = "{{URL::to('/user/dashboard?kyc=1')}}";
                     } else {
-                        alert(data.error);
+                        alert(data.message);
+                        $("#backgroundimage").hide(); $(".container").show();
                         /*$("#backgroundimage").hide();
                         $(".container").show();*/
-                        window.location.href = "{{URL::to('/user/dashboard?kyc=0')}}";
+                        //window.location.href = "{{URL::to('/user/dashboard?kyc=0')}}";
                         return false;
                     }
                 }

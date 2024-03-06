@@ -57,8 +57,8 @@
     <div class="ugf-bg ufg-main-container">
         <div class="ugf-progress">
             <div class="progress">
-                <div class="progress-bar" role="progressbar" style="width: 66.66%" aria-valuenow="66.66"
-                    aria-valuemin="0" aria-valuemax="100"></div>
+                <div class="progress-bar pb1" role="progressbar" style="width: 25%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                <div class="progress-bar pb2" role="progressbar" style="width: 50%; display: none;" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
             </div>
         </div>
 
@@ -477,6 +477,8 @@
                             currentStep++;
                             $('.steps' + currentStep).show();
                             $('.upload-step').show();
+                            $('.pb1').hide();
+                            $('.pb2').show();
 
                             // Display or hide navigation buttons based on the step
                             $('.prev-step').toggle(currentStep > 1);
@@ -577,6 +579,10 @@
     </script>
     <script>
         $(document).ready(function () {
+                      /*window.onscroll = function () {
+    var scrolll = document.documentElement.scrollTop || document.body.scrollTop;
+    console.log(scrolll);
+};*/
             // Function to validate PAN number using regex
             function validatePan(panNumber) {
                 // PAN number regex pattern
@@ -603,6 +609,7 @@
         });
 
         function verifyDocApi(type) {
+            var pageyscroll = window.pageYOffset;
             var document;
             //var document = type == 'aadhaar' ? $('#aadhar_number').val() : $('#pan-number').val();
             if (type == 'aadhaar' && $("#aadhar_number").val().length == 12) {
@@ -674,6 +681,7 @@
                         }
                         $("#backgroundimage").hide();
                         $(".container").show();
+                        window.scrollTo(0, pageyscroll);
                     },
                     error: function (error) {
                         alert('Wrong information.');
