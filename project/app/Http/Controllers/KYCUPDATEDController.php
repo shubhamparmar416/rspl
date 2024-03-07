@@ -863,7 +863,7 @@ class KYCUPDATEDController extends Controller
             if ($document->api_response_digilocker_status != null) {
                 $api_response_digilocker_status = json_decode($document->api_response_digilocker_status);
                 
-                if (str_contains($result->customer_info->name, $api_response_digilocker_status->model->name) {
+                if (str_contains($result->customer_info->name, $api_response_digilocker_status->model->name)) {
                     return \Response::json(['status' => 0, 'message' => "Name is not matched."]);
                 }
             } elseif ($document->api_response_aadhar_front_img != null && $document->api_response_aadhar_back_img != null) {

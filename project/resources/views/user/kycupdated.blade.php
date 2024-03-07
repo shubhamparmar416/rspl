@@ -112,7 +112,7 @@
                                             </div>
                                             <!-- <h4>Last Name</h4> -->
                                             <div class="form-group">
-                                                <input type="hidden" value="{{ $userName[1] ?? '' }}" name="digilocker_lname" class="form-control"
+                                                <input type="hidden" value="{{ $userName[1] ?? $userName[0] }}" name="digilocker_lname" class="form-control"
                                                     id="digilocker_lname" placeholder="e.g. Doe" required>
                                             </div>
                                             <!-- <h4>Mobile</h4> -->
