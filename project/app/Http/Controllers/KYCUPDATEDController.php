@@ -781,6 +781,7 @@ class KYCUPDATEDController extends Controller
             //$document->api_response_address = $result;
             $document->addressproof = $addressproof;
             $document->current_address = $_POST['house_no'].', '.$_POST['street'].', '.$_POST['landmark'].', '.$_POST['district'].', '.$_POST['pincode'].', '.$_POST['city'].', '.$_POST['state'].', '.$_POST['country'];
+            $document->office_current_address = $_POST['house_no1'].', '.$_POST['street1'].', '.$_POST['landmark1'].', '.$_POST['district1'].', '.$_POST['pincode1'].', '.$_POST['city1'].', '.$_POST['state1'].', '.$_POST['country1'];
             $update = $document->save();
         }
             //echo '1';

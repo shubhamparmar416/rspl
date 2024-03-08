@@ -157,20 +157,31 @@ class KycManageController extends Controller
         $kycInformationsStatus = json_decode($data['user']->kyc_info, true);
         if ($kycInformationsStatus) {
             $data['kycInformations'] = UserKycDocument::where('user_id', $id)->first();
+            //dd($data['kycInformations']->api_response_digilocker);
             if ($data['kycInformations']) {
-                $data['kycApiResponse'] = json_decode($data['kycInformations']);
-                $data['aadharDetails'] = json_decode($data['kycApiResponse']->api_response_aadhar);
-                $data['panDetails'] = json_decode($data['kycApiResponse']->api_response_pan);
+                if ($data['kycInformations']->api_response_digilocker == null) {
+                    $data['kycApiResponse'] = json_decode($data['kycInformations']);
+                    $data['aadharDetails'] = json_decode($data['kycApiResponse']->api_response_aadhar);
+                    $data['panDetails'] = json_decode($data['kycApiResponse']->api_response_pan);
+                    $data['api_response_digilocker'] = '';
+                } else {
+                    $data['kycApiResponse'] = json_decode($data['kycInformations']);
+                    $data['api_response_digilocker'] = $data['kycInformations']->api_response_digilocker;
+                    $data['api_response_digilocker_status'] = json_decode($data['kycInformations']->api_response_digilocker_status);
+                    $data['aadharDetails'] = '';
+                }
             } else {
                 $data['kycApiResponse'] = '';
                 $data['aadharDetails'] = '';
                 $data['panDetails'] = '';
+                $data['api_response_digilocker'] = '';
             }
         } else {
             $data['kycInformations'] = '';
             $data['kycApiResponse'] = '';
             $data['aadharDetails'] = '';
             $data['panDetails'] = '';
+            $data['api_response_digilocker'] = '';
         }
         
         return view('admin.kyc.details', $data);

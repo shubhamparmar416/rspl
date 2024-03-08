@@ -27,7 +27,62 @@
                         <table class="table">
                             <tbody>
                                 @if ($kycInformations != NULL)
+                                    @if ($api_response_digilocker != '')
+                                    <tr>
+                                       <th>KYC Verify</th>
+                                       <td>Digilocker</td>
+                                   </tr>
+                                   <tr>
+                                       <th>Name</th>
+                                       <td>{{$api_response_digilocker_status->model->name}}</td>
+                                   </tr>
+                                   <tr>
+                                       <th>CareOf</th>
+                                       <td>{{$api_response_digilocker_status->model->careOf}}</td>
+                                   </tr>
+                                   <tr>
+                                       <th>Current Address</th>
+                                       <td>{{$kycInformations->current_address}}</td>
+                                   </tr>
+                                   <tr>
+                                       <th>Masked Aadhar Number</th>
+                                       <td>{{$api_response_digilocker_status->model->maskedAdharNumber}}</td>
+                                   </tr>
+                                   <tr>
+                                       <th>Gender</th>
+                                       <td>{{$api_response_digilocker_status->model->gender}}</td>
+                                   </tr>
+                                   <tr>
+                                       <th>DOB</th>
+                                       <td>{{$api_response_digilocker_status->model->dob}}</td>
+                                   </tr>
+                                   <tr>
+                                       <th>Digilocker Address</th>
+                                       <td>
+                                        {{$api_response_digilocker_status->model->address->house}}
+                                        {{$api_response_digilocker_status->model->address->street}}
+                                        {{$api_response_digilocker_status->model->address->landmark}}
+                                        {{$api_response_digilocker_status->model->address->loc}}
+                                        {{$api_response_digilocker_status->model->address->po}}
+                                        {{$api_response_digilocker_status->model->address->dist}}
+                                        {{$api_response_digilocker_status->model->address->subdist}}
+                                        {{$api_response_digilocker_status->model->address->vtc}}
+                                        {{$api_response_digilocker_status->model->address->pc}}
+                                        {{$api_response_digilocker_status->model->address->state}}
+                                        {{$api_response_digilocker_status->model->address->country}}
+                                        </td>
+                                   </tr>
+                                   <tr>
+                                        <th>Image</th>
+                                        <td><img src="data:image/png;base64, {{ $api_response_digilocker_status->model->image }}" alt="Image Preview" style="width: 100%;max-height: 100%;" /></td>
+                                    </tr>
+                                   @endif
 
+                                   @if ($aadharDetails != '')
+                                   <tr>
+                                       <th>KYC Verify</th>
+                                       <td>Manually uploaded Aadhar, Pan, and Voter</td>
+                                   </tr>
                                    <tr>
                                        <th>Current Address</th>
                                        <td>{{$kycInformations->current_address}}</td>
@@ -81,19 +136,7 @@
                                        <th>Pan Type</th>
                                        <td>{{$panDetails->result->pan_type}}</td>
                                    </tr>
-                                        
-                                       <!--  <tr>
-                                            <th width="45%"></th>
-                                            <td width="10%">:</td>
-                                            <td width="45%"><a href="{{asset('assets/images/')}}" download><img src="{{asset('assets/images/')}}" class="img-thumbnail"></a></td>
-                                        </tr>
-                                         
-                                            <tr>
-                                                <th width="45%"></th>
-                                                <td width="10%">:</td>
-                                                <td width="45%"></td>
-                                            </tr> -->
-                                        
+                                   @endif
                                     
                                 @else 
                                     <p class="text-center mt-5">@lang('KYC NOT SUBMITTTED')</p>

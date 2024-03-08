@@ -43,8 +43,8 @@
           </div>
 
           <div class="form-group">
-            <label for="per_installment">{{ __('Per Installment') }} (%)</label>
-            <input type="number" class="form-control" id="per_installment" name="per_installment" placeholder="{{ __('Per Installment') }}" min="1" value="" required>
+            <label for="per_installment">{{ __('Rate of Interest Annual(ROI)') }} (%)</label>
+            <input type="number" class="form-control" id="per_installment" name="per_installment" placeholder="{{ __('Rate of Interest Annual') }}" min="1" value="" required>
           </div>
 
           <div class="form-group">
@@ -62,18 +62,18 @@
           </div>
 
           <div class="form-group">
-            <label for="total_installment">{{ __('Total Installment') }}</label>
-            <!-- <input type="number" class="form-control" id="total_installment" name="total_installment" placeholder="{{ __('Total Installment') }}" min="1" value="" required> -->
-            <select class="form-control" id="total_installment" name="total_installment" required="">
+            <label for="total_installment">{{ __('Tenure') }}</label>
+            <input type="number" class="form-control" id="total_installment" name="total_installment" placeholder="{{ __('Tenure') }}" min="1" max="60" value="" required>
+            <!-- <select class="form-control" id="total_installment" name="total_installment" required="">
               <option value="">Select</option>
               @for ($i = 1; $i<=20; $i++)
                 <option value="{{$i*12}}">{{$i}}</option>
               @endfor
-            </select>
+            </select> -->
           </div>
 
           <div class="form-group">
-            <h3 id="profitShow" class="text-center"></h3>
+            <!-- <h3 id="profitShow" class="text-center"></h3> -->
           </div>
           
           <div class="lang-tag-top-filds" id="lang-section">
