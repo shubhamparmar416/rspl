@@ -23,6 +23,7 @@ use App\Http\Controllers\Admin\KycManageController;
 use App\Http\Controllers\Admin\LanguageController;
 use App\Http\Controllers\Admin\LoanController;
 use App\Http\Controllers\Admin\LoanPlanController;
+use App\Http\Controllers\Admin\LoanChargesController;
 use App\Http\Controllers\Admin\LoginController;
 use App\Http\Controllers\Admin\MessageController;
 use App\Http\Controllers\Admin\OtherBankController;
@@ -138,6 +139,13 @@ Route::prefix('admin')->group(function(){
         Route::get('/loan/status/{id1}/{id2}', [LoanController::class,'status'])->name('admin.loan.status');
         Route::get('/loan/show/{id}', [LoanController::class,'show'])->name('admin.loan.show');
         Route::get('/loan-log/show/{id}', [LoanController::class,'logShow'])->name('admin.loan.log.show');
+
+        // Loan charges
+        Route::get('/loan-charges',[LoanChargesController::class,'index'])->name('admin.loan.charges.index');
+        Route::get('/loan-charges/datatables', [LoanChargesController::class,'datatables'])->name('admin.loan.charges.datatables');
+        Route::get('/loan-charges/edit/{id}', [LoanChargesController::class,'edit'])->name('admin.loan.charges.edit');
+        Route::post('/loan-charges/update/{id}', [LoanChargesController::class,'update'])->name('admin.loan.charges.update');
+
       });
 
       Route::group(['middleware'=>'permissions:DPS Management'],function(){

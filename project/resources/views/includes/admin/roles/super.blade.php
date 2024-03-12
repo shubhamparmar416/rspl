@@ -42,6 +42,18 @@
     </div>
   </li>
 
+   <li class="nav-item">
+    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#loan_charges" aria-expanded="true" aria-controls="collapseTable">
+      <i class="fas fa-cash-register"></i>
+    <span>{{ __('Loan Charges') }}</span>
+  </a>
+    <div id="loan_charges" class="collapse" aria-labelledby="headingTable" data-parent="#accordionSidebar">
+      <div class="bg-white py-2 collapse-inner rounded">
+        <a class="collapse-item" href="{{ route('admin.loan.charges.index') }}">{{ __('All Charges') }}</a>
+      </div>
+    </div>
+  </li>
+
   <!-- <li class="nav-item">
     <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#dps" aria-expanded="true" aria-controls="collapseTable">
       <i class="fas fa-warehouse"></i>
