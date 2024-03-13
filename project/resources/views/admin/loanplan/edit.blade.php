@@ -58,6 +58,46 @@
           </div>
           
           <div class="form-group">
+            <label for="type1">{{ __('All Type Charges') }}</label> <br>
+            <select id="type1" name="type1[]" id="type1" multiple>
+              <?php
+              // Loop through the array to generate options
+              foreach ($type1 as $value) {
+               $selected = in_array($value->id, explode(",",$data->loan_charges)) ? 'selected' : '';
+                echo "<option value='$value->id' $selected>$value->name</option>";
+              }
+              ?>
+            </select>
+          </div> 
+
+          <div class="form-group">
+            <label for="type2">{{ __('Legal Charges') }}</label> <br>
+            <select id="type2" name="type2[]" id="type2" multiple>
+              <?php
+              // Loop through the array to generate options
+              foreach ($type2 as $value) {
+                  $selected = in_array($value->id, explode(",",$data->loan_charges)) ? 'selected' : '';
+                  echo "<option value='$value->id' $selected>$value->name</option>";
+              }
+              ?>
+            </select>
+          </div> 
+
+          <div class="form-group">
+            <label for="type3">{{ __('Insurance & Third Party Charges') }}</label> <br>
+            <select id="type3" name="type3[]" id="type3" multiple>
+              <?php
+              // Loop through the array to generate options
+              foreach ($type3 as $value) {
+                $selected = in_array($value->id,explode(",",$data->loan_charges)) ? 'selected' : '';
+                echo "<option value='$value->id' $selected>$value->name</option>";
+              }
+              ?>
+            </select>
+          </div> 
+
+          
+          <div class="form-group">
             <h3 id="profitShow" class="text-center"></h3>
           </div>
 

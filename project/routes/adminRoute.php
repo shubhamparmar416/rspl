@@ -279,6 +279,9 @@ Route::prefix('admin')->group(function(){
 
         Route::get('/twilio-sms-settings', [GeneralSettingController::class,'twilio'])->name('admin.gs.twilio');
         Route::get('/nexmo-sms-settings', [GeneralSettingController::class,'nexmo'])->name('admin.gs.nexmo');
+
+        Route::get('/general-settings/message', [GeneralSettingController::class,'message'])->name('admin.gs.message');
+        Route::post('/general-settings/message/update', [GeneralSettingController::class,'messageUpdate'])->name('admin.gs.message.update');
       });
 
 

@@ -175,6 +175,7 @@
         <a class="collapse-item" href="{{ route('admin.gs.customcss') }}">{{ __('Custom css') }}</a>
         <a class="collapse-item" href="{{ route('admin.gs.user.modules') }}">{{ __('User Modules') }}</a>
         <a class="collapse-item" href="{{ route('admin.gs.error.banner') }}">{{ __('Error Banner') }}</a>
+        <a class="collapse-item" href="{{ route('admin.gs.message') }}">{{ __('Message Integration') }}</a>
       </div>
     </div>
   </li>

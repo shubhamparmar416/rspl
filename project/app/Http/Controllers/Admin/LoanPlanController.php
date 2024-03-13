@@ -8,6 +8,7 @@ use App\Models\LoanPlan;
 use Illuminate\Http\Request;
 use Datatables;
 use Illuminate\Support\Facades\Validator;
+use App\Models\LoanCharges;
 
 use function GuzzleHttp\json_decode;
 
@@ -73,6 +74,9 @@ class LoanPlanController extends Controller
     public function create()
     {
         $data['currency'] = Currency::whereIsDefault(1)->first();
+        $data['type1'] = LoanCharges::select('id','name')->where('status', '1')->where('type', '1')->orWhere('type', '2')->get();
+        $data['type2'] = LoanCharges::select('id','name')->where('status', '1')->where('type', '3')->get();
+        $data['type3'] = LoanCharges::select('id','name')->where('status', '1')->where('type', '4')->get();
 
         return view('admin.loanplan.create', $data);
     }
@@ -94,7 +98,21 @@ class LoanPlanController extends Controller
             return response()->json(array('errors' => $validator->getMessageBag()->toArray()));
         }
 
+        $chargesArray = array();
+
+        if(isset($request['type1']))  $chargesArray = array_merge($request['type1'],$chargesArray);
+
+        if(isset($request['type2']))  $chargesArray = array_merge($request['type2'],$chargesArray);
+
+        if(isset($request['type3']))  $chargesArray = array_merge($request['type3'],$chargesArray);
+
         $input = $request->all();
+
+        $chargesArrayString = implode(", ",$chargesArray);
+        if(count($chargesArray)) {
+            $input['loan_charges'] = $chargesArrayString;
+        }
+
         $data = new LoanPlan();
 
         if ($request->form_builder) {
@@ -111,6 +129,9 @@ class LoanPlanController extends Controller
         $data['data'] = LoanPlan::findOrFail($id);
         $data['currency'] = Currency::whereIsDefault(1)->first();
         $data['informations'] = $data['data']->required_information ? json_decode($data['data']->required_information, true) : [];
+        $data['type1'] = LoanCharges::select('id','name')->where('status', '1')->where('type', '1')->orWhere('type', '2')->get();
+        $data['type2'] = LoanCharges::select('id','name')->where('status', '1')->where('type', '3')->get();
+        $data['type3'] = LoanCharges::select('id','name')->where('status', '1')->where('type', '4')->get();
 
         return view('admin.loanplan.edit', $data);
     }
@@ -119,6 +140,19 @@ class LoanPlanController extends Controller
     {
         $data = LoanPlan::findOrFail($id);
         $input = $request->all();
+
+        $chargesArray = array();
+
+        if(isset($request['type1']))  $chargesArray = array_merge($request['type1'],$chargesArray);
+
+        if(isset($request['type2']))  $chargesArray = array_merge($request['type2'],$chargesArray);
+
+        if(isset($request['type3']))  $chargesArray = array_merge($request['type3'],$chargesArray);
+
+        $chargesArrayString = implode(", ",$chargesArray);
+        if(count($chargesArray)) {
+            $input['loan_charges'] = $chargesArrayString;
+        }
 
         if ($request->form_builder) {
             $input['required_information'] = json_encode($request->form_builder);

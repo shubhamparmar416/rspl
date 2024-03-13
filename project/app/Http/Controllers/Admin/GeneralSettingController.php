@@ -9,6 +9,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
+use App\Models\Message;
+
 
 class GeneralSettingController extends Controller
 {
@@ -231,7 +233,7 @@ class GeneralSettingController extends Controller
     public function footer()
     {
         return view('admin.generalsetting.footer');
-    }
+    } 
 
     public function menubuilder()
     {
@@ -336,11 +338,30 @@ class GeneralSettingController extends Controller
 
     private function setEnv($key, $value)
      {
-         file_put_contents(app()->environmentFilePath(), str_replace(
-             $key . '=' . env($key),
-             $key . '=' . $value,
-             file_get_contents(app()->environmentFilePath())
-         ));
+        file_put_contents(app()->environmentFilePath(), str_replace(
+            $key . '=' . env($key),
+            $key . '=' . $value,
+            file_get_contents(app()->environmentFilePath())
+        ));
      }
 
+    public function message()
+    {
+        $data = Message::first();
+        return view('admin.generalsetting.message',compact('data'));
+    }
+
+    public function messageUpdate(Request $request) 
+    {
+        $input = $request->all();
+        $data = Message::first();
+        $data->update($input);
+
+        $msg = 'Data Updated Successfully.';
+        $output = [
+            'data' => $data,
+            'msg' => $msg
+        ];
+        return response()->json($msg);
+    }
 }

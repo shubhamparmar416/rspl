@@ -59,7 +59,43 @@
               <option value="180" data-id="daily">Half Yearly</option>
               <option value="365">Yearly</option>
             </select>
-          </div>
+          </div>  
+
+          <div class="form-group">
+            <label for="type1">{{ __('All Type Charges') }}</label> <br>
+            <select id="type1" name="type1[]" id="type1" multiple>
+              <?php
+              // Loop through the array to generate options
+              foreach ($type1 as $value) {
+                  echo "<option value='$value->id'>$value->name</option>";
+              }
+              ?>
+            </select>
+          </div> 
+
+          <div class="form-group">
+            <label for="type2">{{ __('Legal Charges') }}</label> <br>
+            <select id="type2" name="type2[]" id="type2" multiple>
+              <?php
+              // Loop through the array to generate options
+              foreach ($type2 as $value) {
+                  echo "<option value='$value->id'>$value->name</option>";
+              }
+              ?>
+            </select>
+          </div> 
+
+          <div class="form-group">
+            <label for="type3">{{ __('Insurance & Third Party Charges') }}</label> <br>
+            <select id="type3" name="type3[]" id="type3" multiple>
+              <?php
+              // Loop through the array to generate options
+              foreach ($type3 as $value) {
+                  echo "<option value='$value->id'>$value->name</option>";
+              }
+              ?>
+            </select>
+          </div> 
 
           <div class="form-group">
             <label for="total_installment">{{ __('Tenure') }}</label>

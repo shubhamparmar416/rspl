@@ -18,6 +18,7 @@ class LoanPlan extends Model
         'instruction',
         'required_information',
         'status',
+        'loan_charges'
     ];
 
     public function loans(){
