@@ -46,8 +46,15 @@
                         <div class="row g-3">
                           <div class="col-md-6">
                             <div class="form-group">
-                              <label class="form-label required">{{__('User Name')}}</label>
-                              <input name="name" class="form-control form--control" autocomplete="off" placeholder="{{__('User Name')}}" type="text" value="{{ $user->name }}" required readonly>
+                              <label class="form-label required">{{__('User First Name')}}</label>
+                              <input name="name" class="form-control form--control" autocomplete="off" placeholder="{{__('User First Name')}}" type="text" value="{{ $user->name }}" required readonly>
+                            </div>
+                          </div>
+
+                          <div class="col-md-6">
+                            <div class="form-group">
+                              <label class="form-label required">{{__('User Last Name')}}</label>
+                              <input name="last_name" class="form-control form--control" autocomplete="off"  type="text" value="{{ $user->last_name }}"  readonly>
                             </div>
                           </div>
 

@@ -103,16 +103,16 @@
                                         </div>
                                         <div class="digilocker" id="digilocker" style="display:none;">
                                             <?php
-                                            $userName = explode(" ", $user->name);
+                                            // $userName = explode(" ", $user->name);
                                             ?>
                                             <!-- <h4>First Name</h4> -->
                                             <div class="form-group">
-                                                <input type="hidden" value="{{ $userName[0] }}" name="digilocker_fname" class="form-control"
+                                                <input type="hidden" value="{{ $user->name }}" name="digilocker_fname" class="form-control"
                                                     id="digilocker_fname" placeholder="e.g. John" required>
                                             </div>
                                             <!-- <h4>Last Name</h4> -->
                                             <div class="form-group">
-                                                <input type="hidden" value="{{ $userName[1] ?? $userName[0] }}" name="digilocker_lname" class="form-control"
+                                                <input type="hidden" value="{{ $user->last_name ?? $user->name}}" name="digilocker_lname" class="form-control"
                                                     id="digilocker_lname" placeholder="e.g. Doe" required>
                                             </div>
                                             <!-- <h4>Mobile</h4> -->

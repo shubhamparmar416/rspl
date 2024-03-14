@@ -35,9 +35,14 @@
                     @includeIf('includes.user.form-both')
                     @csrf
                     <div class="col-sm-6">
-                        <label for="name" class="form-label">@lang('Your Name')</label>
-                        <input type="text" id="name" name="name" class="form-control form--control">
+                        <label for="fname" class="form-label">@lang('Your First Name')</label>
+                        <input type="text" id="fname" name="fname" class="form-control form--control">
                     </div>
+                     <div class="col-sm-6">
+                        <label for="lname" class="form-label">@lang('Your Last Name')</label>
+                        <input type="text" id="lname" name="lname" class="form-control form--control">
+                    </div>
+
                     <div class="col-sm-6">
                         <label for="email" class="form-label">@lang('Your Email')</label>
                         <input type="text" id="email" name="email" class="form-control form--control">

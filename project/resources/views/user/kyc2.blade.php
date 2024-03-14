@@ -226,6 +226,15 @@
             formData.append('latitude',document.getElementById('latitude').value);
             formData.append('longitude',document.getElementById('longitude').value);
 
+            formData.append('house_no1',document.getElementById('house_no1').value);
+            formData.append('street1',document.getElementById('street1').value);
+            formData.append('landmark1',document.getElementById('landmark1').value);
+            formData.append('district1',document.getElementById('district1').value);
+            formData.append('pincode1',document.getElementById('pincode1').value);
+            formData.append('city1',document.getElementById('city1').value);
+            formData.append('state1',document.getElementById('state1').value);
+            formData.append('country1',document.getElementById('country1').value);
+
             if ($("#house_no").val() == "") {
                 $("#house_no").focus();
                 alert("Please insert house number.");

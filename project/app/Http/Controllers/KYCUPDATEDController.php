@@ -475,7 +475,6 @@ class KYCUPDATEDController extends Controller
             //     Storage::delete($filePath);
             // }
         }
-
         $aadharback = $user_id . '_aadharback_' . time().'.'. $request->bId->extension();
         $type = $request->bId->getClientMimeType();
         $size = $request->bId->getSize();
@@ -486,24 +485,25 @@ class KYCUPDATEDController extends Controller
 
         if ($aadharBackImage['status'] == 'sucess') {
             $responseAadhaBackData = json_decode($aadharBackImage['response'], true);
+
             if (isset($responseAadhaBackData['status'])) {
                 if ($responseAadhaBackData['status'] == 'failure') {
                     $errorArray[] = "Aadhar back image is not valid. ";
                 } elseif ($responseAadhaBackData['status'] == 'success') {
                     $backend = 0;
                     if (isset($responseAadhaBackData['result'][1])) {
-                        if ($responseAadhaBackData['result'][1]['type'] != "aadhaar_back") {
+                        if ($responseAadhaBackData['result'][1]['type'] == "aadhaar_back") {
                             $backend = 1;
                         }
                     }
 
                     if (isset($responseAadhaBackData['result'][0])) {
-                        if ($responseAadhaBackData['result'][0]['type'] != "aadhaar_back") {
+                        if ($responseAadhaBackData['result'][0]['type'] == "aadhaar_back") {
                             $backend = 1;
                         }
                     }
 
-                    if ($backend == 1) {
+                    if ($backend == 0) {
                         $errorArray[] = "Aadhar back image is not valid. ";
                     }
                 }
@@ -517,7 +517,6 @@ class KYCUPDATEDController extends Controller
         }
         //dd($aadharBackImage);
 
-        // print_r($errorArray);
         // print_r("aadhar_no ".$aadhar_no);
         // dd($request->all());
         $panfront = $user_id . '_panfront_' . time().'.'. $request->fIdp->extension();
@@ -568,6 +567,7 @@ class KYCUPDATEDController extends Controller
 
         if ($voterfrontImage['status'] == 'sucess') {
             $responseData = json_decode($voterfrontImage['response'], true);
+
             if (isset($responseData['status'])) {
                 if ($responseData['status'] == 'failure') {
                     // dd($responseData["status"]);
@@ -744,7 +744,6 @@ class KYCUPDATEDController extends Controller
         $document = UserKycDocument::where('user_id', $user_id)->first();
         //dd($document->api_response_digilocker_status);
         $update='';
-        
         //if ($statusCheck == '200') {
         if (!empty($document) && !empty($addressproof)) {
             if ($document->api_response_digilocker_status != null) {
@@ -752,26 +751,46 @@ class KYCUPDATEDController extends Controller
                 //dd($api_response_digilocker_status);
                 if ($api_response_digilocker_status->model->address->dist != $_POST['district']) {
                     return \Response::json(['status' => 0, 'message' => "District not matched."]);
-                } elseif ($api_response_digilocker_status->model->address->vtc != $_POST['city']) {
+                } 
+                if ($api_response_digilocker_status->model->address->vtc != $_POST['city']) {
                     return \Response::json(['status' => 0, 'message' => "City not matched."]);
-                } elseif ($api_response_digilocker_status->model->address->state != $_POST['state']) {
+                } 
+                if ($api_response_digilocker_status->model->address->state != $_POST['state']) {
                     return \Response::json(['status' => 0, 'message' => "State not matched."]);
-                } elseif ($api_response_digilocker_status->model->address->pc != $_POST['pincode']) {
+                } 
+                if ($api_response_digilocker_status->model->address->pc != $_POST['pincode']) {
                     return \Response::json(['status' => 0, 'message' => "Pincode not matched."]);
-                } elseif ($api_response_digilocker_status->model->address->country != $_POST['country']) {
+                } 
+                if ($api_response_digilocker_status->model->address->country != $_POST['country']) {
                     return \Response::json(['status' => 0, 'message' => "Country not matched."]);
                 }
             } elseif ($document->api_response_aadhar_front_img != null && $document->api_response_aadhar_back_img != null) {
                 $api_response_aadhar_back_img = json_decode($document->api_response_aadhar_back_img);
                 /*print_r($api_response_aadhar_back_img->result[0]->details->address->house_number);
                 die;*/
-                if ($api_response_aadhar_back_img->result[0]->details->address->district != $_POST['district']) {
+                $address = "";
+                if (isset($api_response_aadhar_back_img->result[1])) {
+                    if ($api_response_aadhar_back_img->result[1]->type == "aadhaar_back"){
+                        $address = $api_response_aadhar_back_img->result[1]->details->address;
+                    }  
+                }
+
+                if (isset($api_response_aadhar_back_img->result[0])) {
+                    if ($api_response_aadhar_back_img->result[0]->type == "aadhaar_back"){
+                        $address = $api_response_aadhar_back_img->result[0]->details->address;
+                    }  
+                }
+
+                if ($address->district != $_POST['district']) {
                     return \Response::json(['status' => 0, 'message' => "District not matched."]);
-                } elseif ($api_response_aadhar_back_img->result[0]->details->address->city != $_POST['city']) {
+                } 
+                if ($address->city != $_POST['city']) {
                     return \Response::json(['status' => 0, 'message' => "City not matched."]);
-                } elseif ($api_response_aadhar_back_img->result[0]->details->address->state != $_POST['state']) {
+                } 
+                if ($address->state != $_POST['state']) {
                     return \Response::json(['status' => 0, 'message' => "State not matched."]);
-                } elseif ($api_response_aadhar_back_img->result[0]->details->address->pin != $_POST['pincode']) {
+                } 
+                if ($address->pin != $_POST['pincode']) {
                     return \Response::json(['status' => 0, 'message' => "Pincode not matched."]);
                 }
             } else {

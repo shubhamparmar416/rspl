@@ -54,13 +54,15 @@ class RegisterController extends Controller
 
         $user = new User;
         $input = $request->all();
+        $input['name'] = $request->fname;
+        $input['last_name'] = $request->lname;
         $input['bank_plan_id'] = $subscription->id;
         $input['plan_end_date'] = Carbon::now()->addDays($subscription->days);
         $input['password'] = bcrypt($request['password']);
         $input['account_number'] = $gs->account_no_prefix.date('ydis').random_int(100000, 999999);
-        $token = md5(time().$request->name.$request->email);
+        $token = md5(time().$request->fname.$request->email);
         $input['verification_link'] = $token;
-        $input['affilate_code'] = md5($request->name.$request->email);
+        $input['affilate_code'] = md5($request->fname.$request->email);
         $user->fill($input)->save();
 
         if($gs->is_verification_email == 1)
