@@ -17,6 +17,7 @@ class LoanCharges extends Model
         'gst_percentage',
         'amt_type',
         'amt_value',
+        'status'
     ];
 
 }

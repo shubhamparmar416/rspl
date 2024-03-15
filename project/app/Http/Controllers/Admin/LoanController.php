@@ -108,9 +108,9 @@ class LoanController extends Controller
                                           '.$status .'
                                         </button>
                                         <div class="dropdown-menu" x-placement="bottom-start">
-                                          <a href="javascript:;" data-toggle="modal" data-target="#statusModal" class="dropdown-item" data-href="'. route('admin.loan.status',['id1' => $data->id, 'id2' => 0]).'">'.__("Pending").'</a>
-                                          <a href="javascript:;" data-toggle="modal" data-target="#statusModal" class="dropdown-item" data-href="'. route('admin.loan.status',['id1' => $data->id, 'id2' => 1]).'">'.__("Approved").'</a>
-                                          <a href="javascript:;" data-toggle="modal" data-target="#statusModal" class="dropdown-item" data-href="'. route('admin.loan.status',['id1' => $data->id, 'id2' => 2]).'">'.__("Rejected").'</a>
+                                          <a href="javascript:;"  data-id='.$data->id.' data-status="0" class="change-status" data-toggle="modal" data-target="#statusModal" class="dropdown-item" data-href="'. route('admin.loan.status',['id1' => $data->id, 'id2' => 0]).'">'.__("Pending").'</a>
+                                          <a href="javascript:;"  data-id='.$data->id.' data-status="1"  class="change-status" data-toggle="modal" data-target="#statusModal" class="dropdown-item" data-href="'. route('admin.loan.status',['id1' => $data->id, 'id2' => 1]).'">'.__("Approved").'</a>
+                                          <a href="javascript:;"  data-id='.$data->id.' data-status="2"  class="change-status" data-toggle="modal" data-target="#statusModal" class="dropdown-item" data-href="'. route('admin.loan.status',['id1' => $data->id, 'id2' => 2]).'">'.__("Rejected").'</a>
                                         </div>
                                       </div>';
                               }
@@ -171,7 +171,6 @@ class LoanController extends Controller
       }
       $data->status = $id2;
       $data->update();
-
       $msg = 'Data Updated Successfully.';
       return response()->json($msg);
     }

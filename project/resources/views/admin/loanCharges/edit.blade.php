@@ -56,6 +56,28 @@
             <label for="amt_value">{{ __('Amount Value') }}</label>
             <input type="number" class="form-control" id="amt_value" name="amt_value" placeholder="{{ __('Amount Value') }}" min="1" value="{{ $data->amt_value}}" required>
           </div>
+
+          <div class="form-group">
+            <label for="amt_type gst_applicable">{{ __('Status') }}</label> <br>
+             <Input type = 'Radio'  id="status" Name ='status' value= '1' <?PHP if($data->status == "1") echo "checked"; else echo "unchecked"; ?> > Active
+
+            <Input type = 'Radio'  id="status" Name ='status' value= '0' <?PHP if($data->status == "0") echo "checked"; else echo "unchecked"; ?> > In Active
+          </div>
+
+          <div class="form-group">
+            <label for="charge_type">{{ __('Charges Type') }}</label>
+            <!-- <input type="number" class="form-control" id="installment_interval" name="installment_interval" placeholder="{{ __('Repayment Frequency') }}" min="1" value="" required> -->
+            <select class="form-control" id="charge_type" name="charge_type" required="">
+              <option value="">Select</option>
+              <option value="1" data-id="none" <?= ($data->type == "1") ? 'selected' : '';?> > None</option>
+              <option value="2" data-id="loan_sanction" <?= ($data->type == "2") ? 'selected' : '';?>>Loan Sanction</option>
+              <option value="3" data-id="fee" <?= ($data->type == "3") ? 'selected' : '';?>>Fee</option>
+              <option value="4" data-id="annual" <?= ($data->type == "4") ? 'selected' : '';?>>Annual</option>
+              <option value="5" data-id="quaterly" <?= ($data->type == "5") ? 'selected' : '';?>>Quaterly</option>
+              <option value="6" <?= ($data->type == "6") ? 'selected' : '';?>>Half Yearly</option>
+              <option value="7" <?= ($data->type == "7") ? 'selected' : '';?>>Miscellaneous</option>
+            </select>
+          </div>  
           
           <div class="form-group">
             <h3 id="profitShow" class="text-center"></h3>

@@ -115,6 +115,14 @@
                 processing: '<img src="{{asset('assets/images/'.$gs->admin_loader)}}">'
             }
         });
+     $(function() {
+        $(".btn-area").append('<div class="col-sm-12 col-md-4 pr-3 text-right">'+
+            '<a class="btn btn-primary" href="{{route('admin.loan.charges.create')}}">'+
+        '<i class="fas fa-plus"></i> {{__('Add New Loan Charges')}}'+
+        '</a>'+
+        '</div>');
+    });
+
 
 </script>
 

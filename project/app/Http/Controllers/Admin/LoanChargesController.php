@@ -8,6 +8,8 @@ use App\Models\LoanPlan;
 use Illuminate\Http\Request;
 use Datatables;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Log; 
+
 
 use function GuzzleHttp\json_decode;
 
@@ -40,6 +42,13 @@ class LoanChargesController extends Controller
         return view('admin.loanCharges.index');
     }
 
+    public function create()
+    {
+
+        return view('admin.loanCharges.create');
+    }
+
+
     public function edit(Request $request, $id)
     {
         $data['data'] = LoanCharges::findOrFail($id);
@@ -61,7 +70,35 @@ class LoanChargesController extends Controller
 
         $data->update($input);
 
+        Log::info(" Loan Charges updated - ",['request_data' => $request->all()]);
+
         $msg = 'Loan Charges Updated Successfully.<a href="'.route('admin.loan.charges.index').'">View Loan Charges.</a>';
+        return response()->json($msg);
+    }
+
+    public function store(Request $request)
+    {
+        $rules = [
+          'name'=>'required|max:255',
+          'status'=>'required|numeric|min:1',
+        ];
+
+        $validator = Validator::make($request->all(), $rules);
+
+        if ($validator->fails()) {
+            return response()->json(array('errors' => $validator->getMessageBag()->toArray()));
+        }
+
+        $input = $request->all();
+
+        $data = new LoanCharges();
+
+        $data->fill($input)->save();
+
+        Log::info("New Loan Charges added - ",['request_data' => $request->all()]);
+
+
+        $msg = 'Loan Charges Added Successfully.<a href="'.route('admin.loan.charges.index').'">View Loan Charges.</a>';
         return response()->json($msg);
     }
 

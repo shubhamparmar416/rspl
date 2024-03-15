@@ -74,9 +74,10 @@ class LoanPlanController extends Controller
     public function create()
     {
         $data['currency'] = Currency::whereIsDefault(1)->first();
-        $data['type1'] = LoanCharges::select('id','name')->where('status', '1')->where('type', '1')->orWhere('type', '2')->get();
-        $data['type2'] = LoanCharges::select('id','name')->where('status', '1')->where('type', '3')->get();
-        $data['type3'] = LoanCharges::select('id','name')->where('status', '1')->where('type', '4')->get();
+        $data['type2'] = LoanCharges::select('id','name')->where('status', '1')->where('type', '2')->get();
+        $data['type3'] = LoanCharges::select('id','name')->where('status', '1')->where('type', '3')->get();
+        $data['type4'] = LoanCharges::select('id','name')->where('status', '1')->where('type', '4')->get();
+        $data['type7'] = LoanCharges::select('id','name')->where('status', '1')->where('type', '7')->get();
 
         return view('admin.loanplan.create', $data);
     }
@@ -100,11 +101,10 @@ class LoanPlanController extends Controller
 
         $chargesArray = array();
 
-        if(isset($request['type1']))  $chargesArray = array_merge($request['type1'],$chargesArray);
-
         if(isset($request['type2']))  $chargesArray = array_merge($request['type2'],$chargesArray);
-
         if(isset($request['type3']))  $chargesArray = array_merge($request['type3'],$chargesArray);
+        if(isset($request['type4']))  $chargesArray = array_merge($request['type4'],$chargesArray);
+        if(isset($request['type7']))  $chargesArray = array_merge($request['type7'],$chargesArray);
 
         $input = $request->all();
 
@@ -129,9 +129,11 @@ class LoanPlanController extends Controller
         $data['data'] = LoanPlan::findOrFail($id);
         $data['currency'] = Currency::whereIsDefault(1)->first();
         $data['informations'] = $data['data']->required_information ? json_decode($data['data']->required_information, true) : [];
-        $data['type1'] = LoanCharges::select('id','name')->where('status', '1')->where('type', '1')->orWhere('type', '2')->get();
-        $data['type2'] = LoanCharges::select('id','name')->where('status', '1')->where('type', '3')->get();
-        $data['type3'] = LoanCharges::select('id','name')->where('status', '1')->where('type', '4')->get();
+
+        $data['type2'] = LoanCharges::select('id','name')->where('status', '1')->where('type', '2')->get();
+        $data['type3'] = LoanCharges::select('id','name')->where('status', '1')->where('type', '3')->get();
+        $data['type4'] = LoanCharges::select('id','name')->where('status', '1')->where('type', '4')->get();
+        $data['type7'] = LoanCharges::select('id','name')->where('status', '1')->where('type', '7')->get();
 
         return view('admin.loanplan.edit', $data);
     }
@@ -143,11 +145,10 @@ class LoanPlanController extends Controller
 
         $chargesArray = array();
 
-        if(isset($request['type1']))  $chargesArray = array_merge($request['type1'],$chargesArray);
-
         if(isset($request['type2']))  $chargesArray = array_merge($request['type2'],$chargesArray);
-
         if(isset($request['type3']))  $chargesArray = array_merge($request['type3'],$chargesArray);
+        if(isset($request['type4']))  $chargesArray = array_merge($request['type4'],$chargesArray);
+        if(isset($request['type7']))  $chargesArray = array_merge($request['type7'],$chargesArray);
 
         $chargesArrayString = implode(", ",$chargesArray);
         if(count($chargesArray)) {

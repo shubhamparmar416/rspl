@@ -145,6 +145,8 @@ Route::prefix('admin')->group(function(){
         Route::get('/loan-charges/datatables', [LoanChargesController::class,'datatables'])->name('admin.loan.charges.datatables');
         Route::get('/loan-charges/edit/{id}', [LoanChargesController::class,'edit'])->name('admin.loan.charges.edit');
         Route::post('/loan-charges/update/{id}', [LoanChargesController::class,'update'])->name('admin.loan.charges.update');
+        Route::get('/loan-charges/create', [LoanChargesController::class,'create'])->name('admin.loan.charges.create');
+        Route::post('/loan-charges/store', [LoanChargesController::class,'store'])->name('admin.loan.charges.store');
 
       });
 
