@@ -7,6 +7,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta name="description" content="{{ $gs->title }}">
   <meta name="author" content="{{url('/')}}">
+  <meta name="csrf-token" content="{{ csrf_token() }}" />
   <link href="{{ asset('assets/images/'.$gs->favicon) }}" rel="icon">
   <title>{{ $gs->title }}</title>
   <link href="{{ asset('assets/admin/vendor/fontawesome-free/css/all.min.css') }}" rel="stylesheet" type="text/css">
@@ -179,6 +180,34 @@
       }
       toastr.warning("{{ session('warning') }}");
     @endif
+
+    function getStatusDataId(identifier){     
+        //alert($(identifier).data('id'));
+        var data_id = $(identifier).data('id')
+        var data_status = $(identifier).data('status')
+        if (data_id) {
+          $("#statusId").val(data_id);
+          $("#status").val(data_status);
+        }
+    }
+
+    function statusChange(){ 
+      var statusId = $("#statusId").val();   
+      var statusMsg = $("#statusMsg").val();    
+      var status = $("#status").val();    
+        $.ajax({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            type: 'POST',
+            url: "{{URL::to('/admin/loan/status-change')}}",
+            data: {'statusMsg':statusMsg, 'statusId':statusId, 'status':status},
+            success: function(response){
+                alert(response);
+                location.reload();
+            }
+        });
+    }
   </script>
 
   @yield('scripts')

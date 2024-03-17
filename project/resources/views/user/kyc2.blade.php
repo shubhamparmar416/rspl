@@ -362,7 +362,7 @@
                     } else {
                         alert(data.message);
                         $("#backgroundimage").hide(); $(".container").show();
-                        window.location.href = "{{URL::to('/user/dashboard?kyc=0')}}";
+                        //window.location.href = "{{URL::to('/user/dashboard?kyc=0')}}";
                         return false;
                     }
                 }
