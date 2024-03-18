@@ -24,7 +24,7 @@ class LoanController extends Controller
         } else {
             $datas = UserLoan::where('status', $request->status)->orderBy('id', 'desc')->get();
         }
-
+        
          return Datatables::of($datas)
                             ->editColumn('transaction_no', function (UserLoan $data) {
                                 return '<div>
@@ -67,6 +67,25 @@ class LoanController extends Controller
 
                             ->editColumn('next_installment', function (UserLoan $data) {
                                 return $data->next_installment ? $data->next_installment->toDateString() : '--';
+                            })
+
+                            ->editColumn('average_amount', function (UserLoan $data) {
+                              if ($data->status==0) {
+                                  $amount = ($data->userKycDocument->bank_details_file_name != '' && isset($data->userKycDocument->bank_details_file_name)) ? averageAmount($data->userKycDocument->bank_details_file_name,'average') : 0;
+
+                                  if($amount) {
+                                    return  '<div>
+                                          '.$amount['averageAmount'].'
+                                          <br>
+                                           <a href="javascript:;" onclick="getTransaction(this);" data-transactions='.$data->userKycDocument->bank_details_file_name.'  class="dropdown-item"><span class="text-info">Transactions</span></a>
+                                      </div>';
+                                  } else {
+                                    return '-';
+                                  }
+                              } else {
+                                 return '-';
+                              }
+
                             })
 
                             ->addColumn('status', function (UserLoan $data) {
@@ -121,7 +140,7 @@ class LoanController extends Controller
                           </div>
                         </div>';
                          })
-                        ->rawColumns(['transaction_no','user_id','loan_amount','total_installment','total_amount','next_installment','status','action'])
+                        ->rawColumns(['transaction_no','user_id','loan_amount','total_installment','total_amount','next_installment','status','average_amount','action'])
                         ->toJson();
     }
 
@@ -271,4 +290,28 @@ class LoanController extends Controller
         $data->amount = $amount;
         $data->save();
     }
+
+    public function getTransactions(Request $request)
+    {
+      $fileName = $request->fileName;
+      // get transactions for this specific file name
+      $transactions = averageAmount($fileName,'transaction');
+      // Check if the array is not empty
+      if (!empty($transactions)) {
+        // Loop through each row of the array
+        foreach ($transactions as $row) {
+            echo '<div class="modal-row">';
+            echo '<p>Narration: ' . $row['narration'] . '</p>';
+            echo '<p>Date: ' . $row['date'] . '</p>';
+            echo '<p>Balance: ' . $row['balance'] . '</p>';
+            echo '<p>Amount: ' . $row['amount'] . '</p>';
+            echo '<p>Cheque Number: ' . $row['cheque_num'] . '</p>';
+            echo '</div>';
+            echo '<hr>';
+        }
+      } else {
+        echo '<p>No data available</p>';
+      }
+
+    } // END getTransactions
 }

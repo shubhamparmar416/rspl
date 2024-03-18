@@ -34,4 +34,8 @@ class UserLoan extends Model
     public function user(){
         return $this->belongsTo(User::class)->withDefault();
     }
+
+    public function userKycDocument(){
+        return $this->belongsTo(UserKycDocument::class,'user_id','user_id')->withDefault();
+    }
 }

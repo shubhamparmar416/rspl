@@ -29,6 +29,8 @@
 				<th>{{__('Total Installment')}}</th>
 				<th>{{__('Total Amount')}}</th>
 				<th>{{__('Next Installment')}}</th>
+				<th>{{__('Average Amount')}}</th>
+				<th>{{__('Message')}}</th>
 				<th>{{__('Status')}}</th>
 				<th>{{__('Action')}}</th>
 			</tr>
@@ -67,6 +69,26 @@
 </div>
 {{-- STATUS MODAL ENDS --}}
 
+<div class="modal fade confirm-modal" id="transactionModal" tabindex="-1" role="dialog" aria-labelledby="statusModalTitle" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title">{{ __("Transactions") }}</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+
+			<div class="modal-body">
+				<div class="modal-body" id="modalContent">
+			    </div>
+			</div>
+			<div class="modal-footer">
+				<a href="javascript:;" class="btn btn-secondary" data-dismiss="modal">{{ __("Cancel") }}</a>
+			</div>
+		</div>
+	</div>
+</div>
 
 @endsection
 
@@ -75,7 +97,28 @@
 
 <script type="text/javascript">
 	"use strict";
+	function getTransaction(identifier)
+	{     
+        var data_transactions = $(identifier).data('transactions');
+    	$.ajax({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            type: 'POST',
+            url: "{{URL::to('/admin/getTransactions')}}",
+            data: {
+            	'fileName':data_transactions},
+            	success: function(response){
+                	// alert(response);
+                	$('#modalContent').html(response);
+                	$('#transactionModal').modal('show');
+            	}
+        	});
+    }
+    
+
 	$(document).ready(function(){
+
     // Event listener for status links
     	 });
     var table = $('#geniustable').DataTable({
@@ -91,6 +134,8 @@
 				{ data: 'total_installment', name: 'total_installment' },
 				{ data: 'total_amount', name: 'total_amount' },
 				{ data: 'next_installment', name: 'next_installment' },
+				{ data: 'average_amount', name: 'average_amount' },
+				{ data: 'message', name: 'message' },
 				{ data: 'status', name: 'status' },
 				{ data: 'action', searchable: false, orderable: false }
             ],

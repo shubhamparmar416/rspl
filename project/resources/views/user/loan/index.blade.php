@@ -37,6 +37,7 @@
                                     <th>{{ __('Per Installment') }}</th>
                                     <th>{{ __('Total Installement') }}</th>
                                     <th>{{ __('Next Installment') }}</th>
+                                    <th>{{__('Message')}}</th>
                                     <th>{{ __('Status') }}</th>
                                     <th class="w-1"></th>
                                 </tr>
@@ -74,6 +75,13 @@
                                               {{ $data->next_installment ?  $data->next_installment->toDateString() : '--'}}
                                             </div>
                                           </td>
+
+                                          <td data-lebel="{{ __('Message') }}" >
+                                            <div>
+                                              {{ $data->message ?  $data->message : '--'}}
+                                            </div>
+                                          </td>
+                                          
                                           <td data-label="{{ __('Status') }}">
                                             <div>
                                               @if ($data->status == 0)
