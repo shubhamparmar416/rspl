@@ -29,6 +29,7 @@
 				<th>{{__('Total Installment')}}</th>
 				<th>{{__('Total Amount')}}</th>
 				<th>{{__('Next Installment')}}</th>
+				<th>{{__('Message')}}</th>
 				<th>{{__('Status')}}</th>
 				<th>{{__('Action')}}</th>
 			</tr>
@@ -89,6 +90,7 @@
 				{ data: 'total_installment', name: 'total_installment' },
 				{ data: 'total_amount', name: 'total_amount' },
 				{ data: 'next_installment', name: 'next_installment' },
+				{ data: 'message', name: 'message' },
 				{ data: 'status', name: 'status' },
 				{ data: 'action', searchable: false, orderable: false }
             ],

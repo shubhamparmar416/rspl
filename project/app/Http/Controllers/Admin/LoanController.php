@@ -193,6 +193,7 @@ class LoanController extends Controller
             $data->next_installment = Carbon::now()->addDays($data->plan->installment_interval);
         }
         $data->status = $status;
+        $data->message = $statusMsg;
         $data->update();
         $msg = 'Data Updated Successfully.';
         return response()->json($msg);

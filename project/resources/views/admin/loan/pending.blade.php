@@ -53,13 +53,14 @@
 			<div class="modal-body">
 				<p class="text-center">{{ __("You are about to change the status.") }}</p>
 				<p class="text-center">{{ __("Do you want to proceed?") }}</p>
-				<textarea name="statusMsg" id="statusMsg" required=""></textarea>
+				<textarea name="statusMsg" class="form-control" id="statusMsg" placeholder = "Please write the message."required=""></textarea>
 				<input type="hidden" id="statusId" name="statusId" value="">
 				<input type="hidden" id="status" name="status" value="0">
 			</div>
 			<div class="modal-footer">
 				<a href="javascript:;" class="btn btn-secondary" data-dismiss="modal">{{ __("Cancel") }}</a>
 				<a href="javascript:;" class="btn btn-success" onclick="statusChange();">{{ __("Update") }}</a>
+				
 			</div>
 		</div>
 	</div>
@@ -74,7 +75,9 @@
 
 <script type="text/javascript">
 	"use strict";
-
+	$(document).ready(function(){
+    // Event listener for status links
+    	 });
     var table = $('#geniustable').DataTable({
            ordering: false,
            processing: true,
