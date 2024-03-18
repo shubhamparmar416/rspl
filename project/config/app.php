@@ -55,6 +55,7 @@ return [
     'url' => env('APP_URL', 'http://localhost'),
 
     'asset_url' => env('ASSET_URL', null),
+    'KYC_API_URL' => env('KYC_API_URL', null),
 
     /*
     |--------------------------------------------------------------------------
@@ -182,7 +183,7 @@ return [
         Cartalyst\Stripe\Laravel\StripeServiceProvider::class,
         Barryvdh\DomPDF\ServiceProvider::class,
         Nexmo\Laravel\NexmoServiceProvider::class,
-
+        Laravel\Passport\PassportServiceProvider::class,
     ],
 
     /*
