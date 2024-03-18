@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
 use App\Http\Requests\StoreKYCUPDATEDRequest;
 use App\Http\Requests\UpdateKYCUPDATEDRequest;
@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
 use Auth;
 use Illuminate\Support\Facades\Log;
+use App\Http\Controllers\Api\BaseController as controller;
 
 class KYCUPDATEDController extends Controller
 {
@@ -42,9 +43,9 @@ class KYCUPDATEDController extends Controller
             'json' => $data
 
         ]);
-        
+
         $institutionStatement = $response->getBody()->getContents();
-        
+
         $url1 = 'https://svcdemo.digitap.work/bank-data/institutions';
         $data1 = [
             'type' => 'NetBanking',
@@ -57,12 +58,12 @@ class KYCUPDATEDController extends Controller
 
         ]);
         $institutionNetbanking = $response1->getBody()->getContents();
-        
+
         $data['institutionStatement'] = json_decode($institutionStatement);
         $data['institutionNetbanking'] = json_decode($institutionNetbanking);
         $data['user'] = Auth::user();
 
-        return view('user.kycupdated', $data);
+        return $this->success($data, '');
     }
 
     /**
@@ -133,7 +134,7 @@ class KYCUPDATEDController extends Controller
 
     public function digilockerVerify()
     {
-        $random= substr(str_shuffle("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"), 0, 10);
+        $random = substr(str_shuffle("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"), 0, 10);
         $client = new \GuzzleHttp\Client([
             'verify' => false
         ]);
@@ -147,7 +148,7 @@ class KYCUPDATEDController extends Controller
             'mobile' => $_POST['dmobile'],
             'emailId' => $_POST['demail']
         ];
-        
+
         $username = '48130178';
         $password = '6RBkqcF5iarvmWeK5pLhjXrvfcEC8FLe';
         $auth = 'Basic ' . base64_encode($username . ':' . $password);
@@ -159,16 +160,16 @@ class KYCUPDATEDController extends Controller
             'json' => $data
 
         ]);
-        
+
         $result = $response->getBody()->getContents();
-        if (empty($result)) {
+        if (empty ($result)) {
             return \Response::json(['status' => 0, 'data' => []]);
         } else {
-                //Insert data into table
+            //Insert data into table
             $user_id = \Auth::id();
             $document = UserKycDocument::where('user_id', $user_id)->first();
-           // dd($document);
-            if (!empty($document)) {
+            // dd($document);
+            if (!empty ($document)) {
                 $document->api_response_digilocker = $result;
                 $document->save();
             } else {
@@ -185,7 +186,7 @@ class KYCUPDATEDController extends Controller
 
     public function digilockerVerifyCheck5()
     {
-        $random= substr(str_shuffle("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"), 0, 10);
+        $random = substr(str_shuffle("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"), 0, 10);
         $client = new \GuzzleHttp\Client([
             'verify' => false
         ]);
@@ -194,7 +195,7 @@ class KYCUPDATEDController extends Controller
         $data = [
             'transactionId' => $_POST['transactionId']
         ];
-        
+
         $username = '48130178';
         $password = '6RBkqcF5iarvmWeK5pLhjXrvfcEC8FLe';
         $auth = 'Basic ' . base64_encode($username . ':' . $password);
@@ -206,15 +207,15 @@ class KYCUPDATEDController extends Controller
             'json' => $data
 
         ]);
-        
+
         $result = $response->getBody()->getContents();
-        if (empty($result)) {
+        if (empty ($result)) {
             return \Response::json(['status' => 0, 'data' => []]);
         } else {
-                //Insert data into table
+            //Insert data into table
             $user_id = \Auth::id();
             $document = UserKycDocument::where('user_id', $user_id)->first();
-            
+
             /*$userKyc_update = User::where('id', $user_id)->first();
             $userKyc_update->kyc_status = 1;
             $userKyc_update->kyc_info = 1;
@@ -254,31 +255,31 @@ class KYCUPDATEDController extends Controller
                 $url = '';
                 $data = [];
         }
-        
+
         if ($url == '') {
             return \Response::json(['status' => 0, 'data' => []]);
         } else {
             $username = '48130178';
             $password = '6RBkqcF5iarvmWeK5pLhjXrvfcEC8FLe';
             $auth = 'Basic ' . base64_encode($username . ':' . $password);
-    
+
             $response = $client->request('POST', $url, [
                 'headers' => [
                     'Authorization' => $auth,
                 ],
                 'json' => $data
-    
+
             ]);
-            
+
             $result = $response->getBody()->getContents();
-            if (empty($result)) {
+            if (empty ($result)) {
                 return \Response::json(['status' => 0, 'data' => []]);
             } else {
-                    //Insert data into table
+                //Insert data into table
                 $user_id = \Auth::id();
                 $document = UserKycDocument::where('user_id', $user_id)->first();
-               // dd($document);
-                if (!empty($document)) {
+                // dd($document);
+                if (!empty ($document)) {
                     if ($_POST['type'] == 'aadhaar') {
                         $document->api_response_aadhar = $result;
                     } elseif ($_POST['type'] == 'pan') {
@@ -309,7 +310,7 @@ class KYCUPDATEDController extends Controller
 
     public function uploadStatement()
     {
-        $random= substr(str_shuffle("0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"), 0, 10);
+        $random = substr(str_shuffle("0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"), 0, 10);
         $client = new \GuzzleHttp\Client([
             'verify' => false
         ]);
@@ -347,33 +348,33 @@ class KYCUPDATEDController extends Controller
                 $url = '';
                 $data = [];
         }
-             /*   print_r($data);
-        die;*/
-        
+        /*   print_r($data);
+   die;*/
+
         if ($url == '') {
             return \Response::json(['status' => 0, 'data' => []]);
         } else {
             $username = '48130178';
             $password = '6RBkqcF5iarvmWeK5pLhjXrvfcEC8FLe';
             $auth = 'Basic ' . base64_encode($username . ':' . $password);
-    
+
             //dd($url);
             $response = $client->request('POST', $url, [
                 'headers' => [
                     'Authorization' => $auth,
                 ],
                 'json' => $data
-    
+
             ]);
-            
+
             $result = $response->getBody()->getContents();
 
-            if (empty($result)) {
+            if (empty ($result)) {
                 return \Response::json(['status' => 0, 'data' => []]);
             } else {
                 //$result = json_decode($result);
                 //dd($resultData->url);
-                    //Insert data into table
+                //Insert data into table
                 /*return Redirect::to($resultData->url);*/
                 $user_id = \Auth::id();
                 $document = UserKycDocument::where('user_id', $user_id)->first();
@@ -388,32 +389,32 @@ class KYCUPDATEDController extends Controller
     public function step1_document(Request $request)
     {
         $user_id = \Auth::id();
-        
-        $aadharfront = $user_id . '_aadharfront_' . time().'.'. $request->fId->extension();
+
+        $aadharfront = $user_id . '_aadharfront_' . time() . '.' . $request->fId->extension();
         $type = $request->fId->getClientMimeType();
         $size = $request->fId->getSize();
         $aadharfrontImg = $request->fId->move(storage_path('kyc'), $aadharfront);
 
-        $aadharback = $user_id . '_aadharback_' . time().'.'. $request->bId->extension();
+        $aadharback = $user_id . '_aadharback_' . time() . '.' . $request->bId->extension();
         $type = $request->bId->getClientMimeType();
         $size = $request->bId->getSize();
         $request->bId->move(storage_path('kyc'), $aadharback);
 
-        $panfront = $user_id . '_panfront_' . time().'.'. $request->fIdp->extension();
+        $panfront = $user_id . '_panfront_' . time() . '.' . $request->fIdp->extension();
         $type = $request->fIdp->getClientMimeType();
         $size = $request->fIdp->getSize();
         $request->fIdp->move(storage_path('kyc'), $panfront);
 
-        $panback = $user_id . '_panback_' . time().'.'. $request->bIdp->extension();
+        $panback = $user_id . '_panback_' . time() . '.' . $request->bIdp->extension();
         $type = $request->bIdp->getClientMimeType();
         $size = $request->bIdp->getSize();
         $request->bIdp->move(storage_path('kyc'), $panback);
-      
+
         $document = UserKycDocument::where('user_id', $user_id)->first();
 
-        $create='';
-        $update='';
-        if (!empty($document) && !empty($aadharfront) && !empty($aadharback) && !empty($panfront) && !empty($panback)) {
+        $create = '';
+        $update = '';
+        if (!empty ($document) && !empty ($aadharfront) && !empty ($aadharback) && !empty ($panfront) && !empty ($panback)) {
             $current_address = $_POST['current_address'];
             $document->current_address = $current_address;
             $document->aadhaar_front = $aadharfront;
@@ -467,7 +468,7 @@ class KYCUPDATEDController extends Controller
             'json' => $data
 
         ]);
-        
+
         $statusCheck = '';
         $statusCheckApiStatus = $response->getBody()->getContents();
         $statusCheckApiStatus = json_decode($statusCheckApiStatus);
