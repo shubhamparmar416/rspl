@@ -98,6 +98,16 @@
                                                         </span>
                                                     </label>
                                                 </div>
+                                                <div class="custom-form-group">
+                                                    <input type="radio" name="digilocker_type" value="vkyc" class="custom-form-control" id="vkyc" required>
+                                                    <label for="vkyc">
+                                                        <span class="text">Vkyc</span>
+                                                        <span class="icon">
+                                                            <img src="assets/images/passport.png" class="img-fluid"
+                                                                alt="">
+                                                        </span>
+                                                    </label>
+                                                </div>
 
                                             </fieldset>
                                         </div>
@@ -127,6 +137,9 @@
                                             </div>
                                             <div class="custom-form-group">
                                                 <button type="button" class="btn digilocker-step" onclick="verifyDocLocker();">Digilocker Verification</button>
+                                            </div>
+                                            <div class="custom-form-group">
+                                                <button type="button" class="btn " onclick="verifyVkyc();">Vkyc</button>
                                             </div>
                                         </div>
                                         <div id="nonDigiProcess" style="display: none;">
@@ -484,7 +497,10 @@
                     $('#digilocker').hide();
                     $('#nonDigiProcess').show();
                     $('.next-step').show();
+                }else if ($('#vkyc').prop('checked')) {
+                    verifyVkyc()
                 }
+
             });
         });
     </script>
@@ -652,6 +668,39 @@
             }
         }
 
+        function verifyVkyc() {
+                $.ajax({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    type: "POST",
+                    url: "{{URL::to('/user/kyc/vkyc_verify')}}",
+                    // data: {
+                    //     'dfname' : dfname,
+                    //     'dlname' : dlname,
+                    //     'dmobile' : dmobile,
+                    //     'demail' : demail
+                    // },
+                    success: function (response) {
+                        console.log(response.data.model);
+                        var jsonData = JSON.parse(response.data);
+                        alert(jsonData.model.url);
+                        window.location.href = jsonData.model.url;
+                        // var transactionId = jsonData.transactionId;
+                        // $('#digiLockerTransactionId').val(transactionId);
+                        // var popupUrl = jsonData.url;
+                        // openPopup(popupUrl);
+                        window.open(jsonData.model.url);
+                    },
+                    error: function (error) {
+                        console.log(error);
+                        // var popupUrl = 'http://www.example.com';
+                        // openPopup(popupUrl);
+                    }
+                });
+           
+        }
+
         function openPopup(popupUrl) {
             var left = (screen.width/2);
             var top = (screen.height/2);
@@ -744,6 +793,7 @@
         }
 
         function uploadStetmentApi(type) {//alert(type);
+            
             //var document = type == 'stetment' ? $('#nid').val() : $('#passport').val();
             var document = type = $("#urlGenerateType").val();
             var institutionStatement = $("#institutionStatement").val();

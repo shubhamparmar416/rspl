@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
     <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
     <title>{{$gs->title}}</title>
-    <link rel="shortcut icon" href="{{asset('assets/images/'.$gs->favicon)}}">
+    <link rel="shortcut icon" href="{{asset('assets/images/' . $gs->favicon)}}">
     <link href="{{ asset('assets/user/fontawesome-free/css/all.min.css') }}" rel="stylesheet" type="text/css">
     <link href="{{asset('assets/user/css/tabler.min.css')}}" rel="stylesheet"/>
     <link href="{{asset('assets/user/css/tabler-flags.min.css')}}" rel="stylesheet"/>
@@ -15,11 +15,38 @@
 	<link rel="stylesheet" href="{{asset('assets/front/css/toastr.min.css')}}">
     <link href="{{asset('assets/user/css/demo.min.css')}}" rel="stylesheet"/>
     <link href="{{asset('assets/user/css/custom.css')}}" rel="stylesheet"/>
+    <meta name="csrf-token" content="{{ csrf_token() }}" />
+<style>
+	.loader {
+  border: 16px solid #f3f3f3; /* Light grey */
+  border-top: 16px solid #3498db; /* Blue */
+  border-radius: 50%;
+  width: 120px;
+  height: 120px;
+  animation: spin 2s linear infinite;
+  z-index: 9999;
+  position: fixed;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+   body {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+        }
+</style>
     @stack('css')
   </head>
   
   <body >
+  <div class="loader"></div>
+
     <div class="wrapper">
+
       @includeIf('includes.user.header')
 
       @includeIf('includes.user.nav')
@@ -43,6 +70,8 @@
 
 
 <script>
+		$('.loader').hide();
+	
 	'use strict';
 
 	@if(Session::has('message'))

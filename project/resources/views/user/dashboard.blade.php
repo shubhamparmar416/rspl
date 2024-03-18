@@ -1,10 +1,13 @@
 @extends('layouts.user')
 
 @push('css')
+<style>
 
+</style>
 @endpush
 
 @section('contents')
+
 <div class="container-xl">
 
     <div class="page-header d-print-none">
@@ -13,6 +16,7 @@
   </div>
   <div class="page-body">
     <div class="container-xl">
+      
       @includeIf('includes.flash')
       @if (auth()->user()->kyc_status != 1)
         <div class="row mb-3">
@@ -30,15 +34,15 @@
           </div>
         </div>
 
-      @elseif (isset($_GET['kyc']) && $_GET['kyc'] == 1)
+      @elseif ((isset($_GET['kyc']) && $_GET['kyc'] == 1 || auth()->user()->kyc_status == 1) && auth()->user()->vkyc_status == 0)
         <div class="row mb-3">
           <div class="col-md-12">
               <div class="card">
                   <div class="card-body">
                         <div class="form-group w-100 d-flex flex-wrap align-items-center justify-content-evenly justify-content-sm-between">
-                          <h3 class="my-1 text-center text-sm-start">{{ __('Kyc updated successfully.') }}</h3>
+                          <h3 class="my-1 text-center text-sm-start">{{ __('Kyc updated successfully. Please confirm your vkyc!') }}</h3>
                           <div class="my-1">
-                            <a href="javascript:void(0)" class="btn btn-success">Done</a>
+                            <a onclick="verifyVkyc()" class="btn btn-success">Done</a>
                           </div>
                       </div>
                   </div>
@@ -170,7 +174,7 @@
                     <div class="form-group">
                         <p>{{ __('Your Referral Link') }}</p>
                         <div class="input-group input--group">
-                            <input type="text" name="key" value="{{ url('/').'?reff='.$user->affilate_code}}" class="form-control" id="cronjobURL" readonly>
+                            <input type="text" name="key" value="{{ url('/') . '?reff=' . $user->affilate_code}}" class="form-control" id="cronjobURL" readonly>
                             <button class="btn btn-sm copytext input-group-text" id="copyBoard" onclick="myFunction()"> <i class="fa fa-copy"></i> </button>
                         </div>
                     </div>
@@ -204,7 +208,7 @@
                     </tr>
                   </thead>
                   <tbody>
-                    @foreach ($transactions as $key=>$data)
+                    @foreach ($transactions as $key => $data)
                       <tr>
                         <td data-label="@lang('No')">
                           <div>
@@ -233,7 +237,7 @@
 
                         <td data-label="@lang('Date')">
                           <div>
-                            {{date('d M Y',strtotime($data->created_at))}}
+                            {{date('d M Y', strtotime($data->created_at))}}
                           </div>
                         </td>
 
@@ -255,6 +259,7 @@
 
 @push('js')
     <script>
+
       'use strict';
 
       function myFunction() {
@@ -264,5 +269,38 @@
         document.execCommand("copy");
         alert('copied');
     }
-    </script>
+
+    // VKYC REDIRECT FUNCTION
+            function verifyVkyc() {
+                $.ajax({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    type: "POST",
+                    url: "{{URL::to('/user/kyc/vkyc_verify')}}",
+                    success: function (response) {
+                        if(response.status){
+                         var jsonData = JSON.parse(response.data);
+                        if(!(jsonData.vkycCompleted)){
+                          window.location.href = jsonData.model.url;
+                          window.open(jsonData.model.url);
+                       } else{
+                        alert("Vkyc already completed!")
+                       }
+                      }
+                      else{
+                        alert(response.message)
+                      }
+
+                    },
+                    error: function (error) {
+                        console.log(error);
+                        alert("Server Error!")
+                    }
+                });
+           
+              }
+
+</script>
+
 @endpush

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
 use App\Http\Requests\StoreKYCUPDATEDRequest;
 use App\Http\Requests\UpdateKYCUPDATEDRequest;
@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
 use Auth;
 use Illuminate\Support\Facades\Log;
+use App\Http\Controllers\Api\BaseController as controller;
 
 class KYCUPDATEDController extends Controller
 {
@@ -62,7 +63,7 @@ class KYCUPDATEDController extends Controller
         $data['institutionNetbanking'] = json_decode($institutionNetbanking);
         $data['user'] = Auth::user();
 
-        return view('user.kycupdated', $data);
+        return $this->success($data, '');
     }
 
     /**
