@@ -5,11 +5,11 @@
 <div class="content-area">
   <div class="card">
     <div class="d-sm-flex align-items-center justify-content-between">
-    <h5 class=" mb-0 text-gray-800 pl-3">{{ __('Email Templates') }}</h5>
+    <h5 class=" mb-0 text-gray-800 pl-3">{{ __('Message Templates') }}</h5>
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">{{ __('Dashboard') }}</a></li>
         <li class="breadcrumb-item"><a href="javascript:;">{{ __('Email Settings') }}</a></li>
-        <li class="breadcrumb-item"><a href="{{ route('admin.mail.index') }}">{{ __('Email Templates') }}</a></li>
+        <li class="breadcrumb-item"><a href="{{ route('admin.mail.index') }}">{{ __('Message Templates') }}</a></li>
     </ol>
     </div>
   </div>

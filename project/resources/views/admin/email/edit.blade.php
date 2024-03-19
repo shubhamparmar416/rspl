@@ -61,7 +61,7 @@
 
     <div class="card-body">
       <div class="gocover" style="background: url({{asset('assets/images/'.$gs->admin_loader)}}) no-repeat scroll center center rgba(45, 45, 45, 0.5);"></div>
-        <form class="geniusform" action="{{route('admin.mail.update',$data->id)}}" method="POST" enctype="multipart/form-data">
+        <form class="geniusform" id="messageTemplate" action="{{route('admin.mail.update',$data->id)}}" method="POST" enctype="multipart/form-data">
           @include('includes.admin.form-both')
           {{ csrf_field() }}
 
@@ -76,17 +76,78 @@
             <input type="text" class="input-field" name="email_subject" placeholder="{{ __('Email Subject') }}" required="" value="{{$data->email_subject}}">
           </div>
 
+          <div id="error-message" style="color: red;"></div>
+
           <div class="form-group">
             <label>{{ __('Email Body') }} *</label>
             <small>{{ __('(In Any Language)') }}</small>
-            <textarea class="form-control summernote" name="email_body" placeholder="{{ __('Email Body') }}">{{ $data->email_body }}</textarea>
+            <textarea class="form-control summernote" id="email_body" name="email_body" placeholder="{{ __('Email Body') }}">{{ $data->email_body }}</textarea>
           </div>
 
-          <button type="submit" id="submit-btn" class="btn btn-primary w-100">{{ __('Submit') }}</button>
+           <div class="form-group">
+            <label>{{ __('SMS Body') }} *</label>
+            <small>{{ __('(In Any Language)') }}</small> <input type="checkbox" id="smsCheckbox"> Same as Email Body
+            <textarea class="form-control summernote" id="sms_body" name="sms_body" placeholder="{{ __('SMS Body') }}">{{ $data->sms_body }}</textarea>
+          </div>
+
+          <div class="form-group">
+            <label>{{ __('Whatsapp Body') }} *</label>
+            <small>{{ __('(In Any Language)') }}</small> <input type="checkbox" id="whatsappCheckbox"> Same as Email Body
+            <textarea class="form-control summernote" id="whatsapp_body" name="whatsapp_body" placeholder="{{ __('Whatsapp Body') }}">{{ $data->whatsapp_body }}</textarea>
+          </div>
+
+          <button type="button" id="submit-btn" class="btn btn-primary w-100">{{ __('Submit') }}</button>
 
       </form>
     </div>
   </div>
 
+@endsection
+@section('scripts')
+<script type="text/javascript">
+  'use strict';
+  $(document).ready(function() {
 
+      $('#smsCheckbox').change(function() {
+          if ($(this).prop('checked')) {
+            $('#sms_body').summernote('code', $('#email_body').val());
+          } else {
+            $('#sms_body').summernote('code', '');
+
+          }
+      });
+
+      $('#whatsappCheckbox').change(function() {
+          if ($(this).prop('checked')) {
+            $('#whatsapp_body').summernote('code', $('#email_body').val());
+          } else {
+            $('#whatsapp_body').summernote('code', '');
+
+          }
+      });
+
+      $('#submit-btn').click(function(event) {
+            event.preventDefault();
+            // Get the content of Summernote editor
+            var email_body = $('#email_body').summernote('code');
+            var whatsapp_body = $('#whatsapp_body').summernote('code');
+            var sms_body = $('#sms_body').summernote('code');
+
+            var emailContent = email_body.replace(/<[^>]+>/g, '').trim();
+            var whatsappContent = whatsapp_body.replace(/<[^>]+>/g, '').trim();
+            var smsContent = sms_body.replace(/<[^>]+>/g, '').trim();
+            // Check if all the content is empty
+            if (!emailContent && !whatsappContent && !smsContent) {
+                $('#error-message').text('One of the message template is mandatory.');
+            } else {
+                // Clear error message if there was one
+                $('#error-message').text('');
+                // Submit the form
+                $('#messageTemplate').submit();
+            }
+      });
+
+  });
+
+</script>
 @endsection

@@ -208,11 +208,11 @@
     <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#email_settings" aria-expanded="true"
       aria-controls="collapseTable">
       <i class="fa fa-envelope"></i>
-      <span>{{  __('Email Settings') }}</span>
+      <span>{{  __('Message Settings') }}</span>
     </a>
     <div id="email_settings" class="collapse" aria-labelledby="headingTable" data-parent="#accordionSidebar">
       <div class="bg-white py-2 collapse-inner rounded">
-        <a class="collapse-item" href="{{ route('admin.mail.index') }}">{{ __('Email Template') }}</a>
+        <a class="collapse-item" href="{{ route('admin.mail.index') }}">{{ __('Message Template') }}</a>
         <a class="collapse-item" href="{{ route('admin.mail.config') }}">{{ __('Email Configurations') }}</a>
         <a class="collapse-item" href="{{ route('admin.group.show') }}">{{ __('Group Email') }}</a>
       </div>
