@@ -52,6 +52,7 @@
     48 => 'Cartalyst\\Stripe\\Laravel\\StripeServiceProvider',
     49 => 'Barryvdh\\DomPDF\\ServiceProvider',
     50 => 'Nexmo\\Laravel\\NexmoServiceProvider',
+    51 => 'Laravel\\Passport\\PassportServiceProvider',
   ),
   'eager' => 
   array (
@@ -92,6 +93,7 @@
     34 => 'Cartalyst\\Stripe\\Laravel\\StripeServiceProvider',
     35 => 'Barryvdh\\DomPDF\\ServiceProvider',
     36 => 'Nexmo\\Laravel\\NexmoServiceProvider',
+    37 => 'Laravel\\Passport\\PassportServiceProvider',
   ),
   'deferred' => 
   array (
