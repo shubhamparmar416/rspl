@@ -51,6 +51,9 @@ Route::prefix('user')->group(function () {
 
     Route::post('/kyc/document_verify', [KYCUPDATEDController::class, 'documentVerify']);
     Route::post('/kyc/digilocker_verify', [KYCUPDATEDController::class, 'digilockerVerify']);
+    Route::POST('/kyc/vkyc_verify', [KYCUPDATEDController::class, 'vkycVerify'])->name('user.vkyc.verify');
+    Route::get('/kyc/vkyc_update', [KYCUPDATEDController::class, 'vkycUpdate'])->name('user.vkyc.update');
+
     Route::post('/kyc/digilocker_verify_check', [KYCUPDATEDController::class, 'digilockerVerifyCheck']);
     Route::post('/kyc/upload_statement', [KYCUPDATEDController::class, 'uploadStatement']);
     Route::post('/kyc/step1_document', [KYCUPDATEDController::class, 'step1_document']);

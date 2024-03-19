@@ -13,7 +13,7 @@ use Illuminate\Http\UploadedFile;
 use Auth;
 use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpFoundation\IpUtils;
-
+use Illuminate\Support\Facades\Log;
 class KYCUPDATEDController extends Controller
 {
     public function __construct()
@@ -953,5 +953,178 @@ class KYCUPDATEDController extends Controller
         } else {
             return \Response::json(['status' => 0, 'message' => ""]);
         }*/
+    }
+     // FUNCTION WHEN GET REQUEST FOR VKYC API
+    public function vkycVerify()
+    {
+        $client = new \GuzzleHttp\Client([
+            'verify' => false
+        ]);
+
+        $data = array();
+        $user_id = \Auth::id();
+        Log::info(base64_encode($user_id) . " ====> Call api for vkyc ");
+
+        // GET APPROVE DETAIL FOR VKYC
+        $document = UserKycDocument::where('user_id', $user_id)->first();
+
+        // IF DOCUMENT EMPTY USER DETAIL NOT AVALABLE
+        if (!empty ($document)) {
+            $detail = json_decode($document->api_response_pan);
+            if (!empty ($detail)) {
+
+                $detail = $detail->result;
+                $data = [
+                    "fname" => $detail->first_name,
+                    "applicationNumber" =>  $document->user_id,
+                    "mobile" => $detail->mobile,
+                    "email" => $detail->email,
+                    "skipOkyc" => "TRUE",
+                    "sendSms" => true,
+                    "sendEmail" => true,
+                    "redirectionUrl" => route('user.vkyc.update')
+                ];
+
+            }
+
+            // API CALL PARAMS
+            $url = env('KYC_API_URL') . "demo/v1/vkyc/okyc/user/activate";
+            $username = env('KYC_CLIENT_ID');
+            $password = env('KYC_CLIENT_PASSWORD');
+            $auth = 'Basic ' . base64_encode($username . ':' . $password);
+
+            $response = $client->request('POST', $url, [
+                'headers' => [
+                    'Authorization' => $auth,
+                    'ent_authorization' => env('KYC_CLIENT_TOKEN')
+                ],
+                'json' => $data
+
+            ]);
+
+            // GET RESULT FROM API
+            $result = $response->getBody()->getContents();
+            if (empty ($result)) {
+                Log::error(base64_encode($user_id) . " ====> Call api for vkyc result is empty");
+
+                return \Response::json(['status' => 0, 'data' => [], 'message' => "Something went wrong"]);
+            } else {
+                $data = json_decode($result);
+                Log::info(base64_encode($user_id) . " ===> Call api for vkyc result" . $result);
+
+                //    IF KYC DONE UPDATE IN TABLE 
+                if ($data->model->vkycCompleted == "true" || $data->model->vkycCompleted || true) {
+                    Log::info(json_encode($user_id) . " ===> Call api for vkyc if vkyc complete save result" . json_encode($data));
+                    $this->vkycStatusByUniqueId();
+                }
+                Log::info(base64_encode($user_id) . " ===> Call api for vkyc response api and redirect" . json_encode($data));
+
+                return \Response::json(['status' => 1, 'data' => $result, 'message' => '']);
+            }
+        } else {
+            Log::info(base64_encode($user_id) . " ===> Call api for vkyc but kyc not verified");
+            return \Response::json(['status' => 0, 'data' => [], 'message' => 'Kyc not verified']);
+        }
+
+    }
+
+
+    // FUNCTION WHEN GET RESPONSE FROM VKYC API
+    public function vkycUpdate(Request $request)
+    {
+        $user_id = \Auth::id();
+        $data = json_encode($request->all());
+        Log::info(base64_encode($user_id) . " ===> get response from vkyc callback" . $data);
+
+        $kyc = 0;
+        $userVKyc_update = UserKycDocument::where('user_id', $user_id)->first();
+        $userVKyc_update->api_response_vkyc = $data;
+        $userVKyc_update->save();
+        if ($request->get('vkycstatus') == "true") {
+            Log::info(base64_encode($user_id) . " ===> get response from vkyc callback and save vkyc approve" . $data);
+
+            $userVKyc_user_update = User::where('id', $user_id)->first();
+            $userVKyc_user_update->vkyc_status = 1;
+            $userVKyc_user_update->save();
+            $kyc = 1;
+        }
+        return redirect('/user/dashboard?kyc=1');
+
+    }
+
+    // FUNCTION WHEN GET REQUEST FOR VKYC API
+    public function vkycStatusByUniqueId()
+    {
+
+        $client = new \GuzzleHttp\Client([
+            'verify' => false
+        ]);
+
+        $data = array();
+        $user_id = \Auth::id();
+        $transaction_id = $user_id;
+        Log::info(base64_encode($user_id) . " ====> get vkyc data by transaction id ===> " . $transaction_id);
+
+        // GET APPROVE DETAIL FOR VKYC
+        $document = UserKycDocument::where('user_id', $user_id)->first();
+
+        // IF DOCUMENT EMPTY USER DETAIL NOT AVALABLE
+        if (!empty ($document)) {
+            $detail = json_decode($document->api_response_pan);
+            if (!empty ($detail)) {
+
+                $detail = $detail->result;
+                $data = [
+                    "uniqueId" => $user_id
+                ];
+
+            }
+
+            // API CALL PARAMS
+            $url =  env('KYC_API_URL') . 'demo/v1/vkyc/additional-info/transaction/session-info-uniqueid';
+            $username = env('KYC_CLIENT_ID');
+            $password = env('KYC_CLIENT_PASSWORD');
+            $auth = 'Basic ' . base64_encode($username . ':' . $password);
+
+            $response = $client->request('POST', $url, [
+                'headers' => [
+                    'Authorization' => $auth,
+                    'ent_authorization' => env('KYC_CLIENT_TOKEN')
+                ],
+                'json' => $data
+
+            ]);
+
+            // GET RESULT FROM API
+            $result = $response->getBody()->getContents();
+            if (empty ($result)) {
+                Log::error(base64_encode($user_id) . " ====> vkyc data data empty transaction id ===> " . $transaction_id);
+
+                return \Response::json(['status' => 0, 'data' => [], 'message' => "Something went wrong"]);
+            } else {
+                $data = json_decode($result);
+                Log::info(base64_encode($user_id) . " ===> Call api get data by transaction id ===>" . $transaction_id ." result =>" . $result);
+
+                // SAVE RESPONSE OF VKYC VERIFIED
+                $document->api_response_vkyc = $result;
+                $document->save();
+
+                //    IF KYC DONE UPDATE IN TABLE 
+                if ($data->model->vkycStatus == "APPROVED") {
+                    Log::info(base64_encode($user_id) . " ===> Call api for vkyc if vkyc complete save result" . json_encode($data));
+
+                    $userVKyc_user_update = User::where('id', $user_id)->first();
+                    $userVKyc_user_update->vkyc_status = 1;
+                    $userVKyc_user_update->save();
+                }
+                Log::info(base64_encode($user_id) . " ===> Call api for vkyc response api and redirect" . json_encode($data));
+
+                return \Response::json(['status' => 1, 'data' => $result, 'message' => '']);
+            }
+        } else {
+            Log::info(base64_encode($user_id) . " ===> Call api for vkyc but kyc not verified");
+            return \Response::json(['status' => 0, 'data' => [], 'message' => 'Kyc not verified']);
+        }
+
     }
 }
