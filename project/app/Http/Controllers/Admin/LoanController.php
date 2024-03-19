@@ -10,6 +10,7 @@ use App\Models\UserLoan;
 use Illuminate\Http\Request;
 use Datatables;
 use Illuminate\Support\Carbon;
+use App\Models\LoanMessageHistory;
 
 class LoanController extends Controller
 {
@@ -77,7 +78,7 @@ class LoanController extends Controller
                                     return  '<div>
                                           '.$amount['averageAmount'].'
                                           <br>
-                                           <a href="javascript:;" onclick="getTransaction(this);" data-transactions='.$data->userKycDocument->bank_details_file_name.'  class="dropdown-item"><span class="text-info">Transactions</span></a>
+                                           <a href="javascript:;" onclick="getTransaction(this);" data-transactions='.$data->userKycDocument->bank_details_file_name.'  style="text-decoration: none;"><span class="text-info">Transactions</span></a>
                                       </div>';
                                   } else {
                                     return '-';
@@ -197,8 +198,9 @@ class LoanController extends Controller
         $statusId = $request->statusId;
         $statusMsg = $request->statusMsg;
         $status = $request->status;
+        $loggedInUser = auth()->id();
+
         $data = UserLoan::findOrFail($statusId);
-        //dd($data);
         if ($data->status == 1) {
             $msg = 'Already Running this loan!';
             return response()->json($msg);
@@ -214,6 +216,15 @@ class LoanController extends Controller
         $data->status = $status;
         $data->message = $statusMsg;
         $data->update();
+
+        // store message in loan message history table.
+        $message = new LoanMessageHistory();
+        $message['loan_id'] = $statusId;
+        $message['user_id'] = "1";
+        $message['message'] = $statusMsg;
+        $message['role'] = 'admin';
+        $message->save();
+
         $msg = 'Data Updated Successfully.';
         return response()->json($msg);
     }

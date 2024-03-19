@@ -195,6 +195,11 @@
       var statusId = $("#statusId").val();   
       var statusMsg = $("#statusMsg").val();    
       var status = $("#status").val();    
+      if(statusMsg == '') {
+        document.getElementById('error-message').innerText = 'Message field is manadatory. ';
+      } else {
+        // Clear error message if there was one
+        document.getElementById('error-message').innerText = '';
         $.ajax({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -207,6 +212,7 @@
                 location.reload();
             }
         });
+      }
     }
   </script>
 

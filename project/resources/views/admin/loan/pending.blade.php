@@ -56,6 +56,7 @@
 				<p class="text-center">{{ __("You are about to change the status.") }}</p>
 				<p class="text-center">{{ __("Do you want to proceed?") }}</p>
 				<textarea name="statusMsg" class="form-control" id="statusMsg" placeholder = "Please write the message."required=""></textarea>
+				<p id="error-message" style="color:red;"> </p>
 				<input type="hidden" id="statusId" name="statusId" value="">
 				<input type="hidden" id="status" name="status" value="0">
 			</div>
