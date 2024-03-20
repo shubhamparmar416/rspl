@@ -20,7 +20,9 @@ class UserLoan extends Model
         'total_amount',
         'required_information',
         'message',
-        'status'
+        'status',
+        'old_loan_amount',
+        'old_per_installment_amount'
     ];
     
     protected $dates = [

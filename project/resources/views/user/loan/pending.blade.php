@@ -63,6 +63,7 @@
                                             {{ $data->next_installment ?  $data->next_installment->toDateString() : '--'}}
                                           </td>
 
+                                            
                                           <td data-lebel="{{ __('Message') }}" >
                                             {{ $data->message ?  $data->message : '--'}}
                                         </td>
@@ -77,6 +78,12 @@
                                             @else
                                                 <span class="badge bg-danger">@lang('Rejected')</span>
                                             @endif
+
+                                            @if (isset($data->old_loan_amount) && $data->old_loan_amount != NULL && stripos($data->message, '-- User Accepted.') == false)
+                                                <a style="margin-left: 1em;" href="{{ route('pending.loan.accept',$data->id) }}" class="btn"> Accept </a>
+                                              {{-- <span class="btn" style="margin-left: 1em;"> Accept </span> --}}
+                                            @endif
+
                                           </td>
                                           <td data-label="{{__('View Logs')}}">
                                             <div class="btn-list flex-nowrap">

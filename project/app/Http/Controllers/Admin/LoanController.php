@@ -221,6 +221,16 @@ class LoanController extends Controller
             }
             $data->next_installment = Carbon::now()->addDays($data->plan->installment_interval);
         }
+
+        if ($status == 0) {
+            // if status is pending
+            if($request->updateInstallmentAmount != 0 && $request->updateAmount != 0) {
+                $data->old_loan_amount = $data->loan_amount ;
+                $data->old_per_installment_amount = $data->per_installment_amount;
+                $data->loan_amount = $request->updateAmount;
+                $data->per_installment_amount = $request->updateInstallmentAmount;
+            }
+        }
         $data->status = $status;
         $data->message = $statusMsg;
         $data->update();
