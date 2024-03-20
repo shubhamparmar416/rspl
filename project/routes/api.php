@@ -10,6 +10,7 @@ use App\Http\Controllers\Api\ForgotController;
 use App\Http\Controllers\Api\PricingPlanController;
 use App\Http\Controllers\Api\ReferralController;
 use App\Http\Controllers\Api\KYCUPDATEDController;
+use App\Http\Controllers\KYCUPDATEDController as UserKYCUPDATEDController;
 use App\Http\Controllers\Api\UserLoanController;
 use App\Http\Controllers\Api\UserDpsController;
 use App\Http\Controllers\Api\UserFdrController;
@@ -71,6 +72,20 @@ Route::prefix('/user')->group(function () {
         
         // KYC
         Route::get('/kyc-form', [KYCUPDATEDController::class, 'index']);
+    
+        Route::post('/kyc/document_verify', [UserKYCUPDATEDController::class, 'documentVerify']);
+        Route::post('/kyc/digilocker_verify', [UserKYCUPDATEDController::class, 'digilockerVerify']);
+        Route::post('/kyc/digilocker_verify_check', [UserKYCUPDATEDController::class, 'digilockerVerifyCheck']);
+    
+        Route::POST('/kyc/vkyc_verify', [UserKYCUPDATEDController::class, 'vkycVerify']);
+        Route::get('/kyc/vkyc_update', [KYCUPDATEDController::class, 'vkycUpdate']);
+    
+        Route::post('/kyc/upload_statement', [UserKYCUPDATEDController::class, 'uploadStatement']);
+        Route::post('/kyc/step1_document', [UserKYCUPDATEDController::class, 'step1_document']);
+        Route::post('/kyc/step2_document', [UserKYCUPDATEDController::class, 'step2_document']);
+        Route::get('/kyc/kyc_verify_status', [KYCUPDATEDController::class, 'kycVerifyStatus']);
+        Route::post('/kyc/get_address_lat_long', [UserKYCUPDATEDController::class, 'getAddressLatLong']);
+
 
         // LOAN
         Route::get('/loan-plan', [UserLoanController::class, 'loanPlan']);
