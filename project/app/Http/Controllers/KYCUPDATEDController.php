@@ -733,7 +733,8 @@ class KYCUPDATEDController extends Controller
         $user_id = \Auth::id();
         $document = UserKycDocument::where('user_id', $user_id)->first();
         if ($document->api_response_banking_details == null) {
-            return redirect('/user/dashboard');
+            // return redirect('/user/dashboard');
+            return $this->error([], "Details not found.");
         }
         $statusCheck = '0';
         $errorArray = array();
