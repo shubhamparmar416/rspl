@@ -214,6 +214,7 @@
       <div class="bg-white py-2 collapse-inner rounded">
         <a class="collapse-item" href="{{ route('admin.mail.index') }}">{{ __('Message Template') }}</a>
         <a class="collapse-item" href="{{ route('admin.mail.config') }}">{{ __('Email Configurations') }}</a>
+        <a class="collapse-item" href="{{ route('admin.message.config') }}">{{ __('Message Configurations') }}</a>
         <a class="collapse-item" href="{{ route('admin.group.show') }}">{{ __('Group Email') }}</a>
       </div>
     </div>

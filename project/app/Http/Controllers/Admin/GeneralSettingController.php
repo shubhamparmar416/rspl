@@ -364,4 +364,12 @@ class GeneralSettingController extends Controller
         ];
         return response()->json($msg);
     }
+
+    public function messageConfigUpdate(Request $request)
+    {
+        $input = $request->all();
+        $data = Generalsetting::findOrFail(1);
+        $data->update($input);
+        return back()->withSuccess('Data Updated Successfully.');
+    }
 }

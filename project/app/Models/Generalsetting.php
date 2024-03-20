@@ -96,6 +96,7 @@ class Generalsetting extends Model
             'is_cookie',
             'cookie_button',
             'cookie_text',
+            'message_auth_key'
         ];
 
     public $timestamps = false;

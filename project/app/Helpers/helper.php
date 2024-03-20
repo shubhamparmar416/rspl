@@ -204,34 +204,56 @@ if (!function_exists('nameComparison')) {
 if (!function_exists('averageAmount')) {
     function averageAmount($fileName,$type) {
         // Read the contents of the file
-        $json_data = Storage::disk('local')->get($fileName); 
-        // $json_data = Storage::disk('local')->get('127_bank_details_1709654804_file.txt'); 
-        // $json_data = Storage::disk('local')->get('141_bank_details_1710420586_file.txt'); 
-        $data = json_decode($json_data, true);
-        $transactions = $data['accounts'][0]['transactions'];      
-        if($type == 'transaction') {
-            return $transactions;
+        if($type == 'transaction' && $fileName == '' && !Storage::exists($fileName)) {
+            return array();
         } 
-        // Initialize an empty array to store monthly totals
-        $monthlyTotals = array();
-        foreach ($transactions as $key => $value) {
-            $yearMonth = date('Y-m', strtotime($value['date']));
-            // If the yearMonth key doesn't exist in $monthlyTotals, initialize it to 0
-            if (!isset($monthlyTotals[$yearMonth])) {
-                $monthlyTotals[$yearMonth] = 0;
+
+        if(isset($fileName) && $fileName != '') 
+        {
+            if (Storage::exists($fileName)) {
+                $json_data = Storage::disk('local')->get($fileName); 
+                // $json_data = Storage::disk('local')->get('127_bank_details_1709654804_file.txt'); 
+                // $json_data = Storage::disk('local')->get('141_bank_details_1710420586_file.txt'); 
+           
+                $data = json_decode($json_data, true);
+                $transactions = $data['accounts'][0]['transactions'];      
+                if($type == 'transaction') {
+                    return $transactions;
+                } 
+                // Initialize an empty array to store monthly totals
+                $monthlyTotals = array();
+                foreach ($transactions as $key => $value) {
+                    $yearMonth = date('Y-m', strtotime($value['date']));
+                    // If the yearMonth key doesn't exist in $monthlyTotals, initialize it to 0
+                    if (!isset($monthlyTotals[$yearMonth])) {
+                        $monthlyTotals[$yearMonth] = 0;
+                    }
+                    // Add the transaction amount to the corresponding month's total
+                    $monthlyTotals[$yearMonth] += $value['amount'];
+                }
+
+                // $totalMonths = count($monthlyTotals);+
+                $monthValues = array_values($monthlyTotals);
+                $totalValues = array_sum($monthValues);
+                $averageAmount = round($totalValues/count($monthlyTotals));
+
+                return $data = array(
+                    'transaction'=> $transactions,
+                    'averageAmount'=>$averageAmount
+                );
+            } else {
+                return $data = array(
+                    'transaction'=> array(),
+                    'averageAmount'=> NULL
+                );
             }
-            // Add the transaction amount to the corresponding month's total
-            $monthlyTotals[$yearMonth] += $value['amount'];
+
+        } else {
+             return $data = array(
+                'transaction'=> array(),
+                'averageAmount'=> NULL
+            );
         }
 
-        // $totalMonths = count($monthlyTotals);+
-        $monthValues = array_values($monthlyTotals);
-        $totalValues = array_sum($monthValues);
-        $averageAmount = round($totalValues/count($monthlyTotals));
-
-        return $data = array(
-            'transaction'=> $transactions,
-            'averageAmount'=>$averageAmount
-        );
     }
 } // END averageAmount

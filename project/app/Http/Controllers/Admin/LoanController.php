@@ -11,6 +11,9 @@ use Illuminate\Http\Request;
 use Datatables;
 use Illuminate\Support\Carbon;
 use App\Models\LoanMessageHistory;
+use Illuminate\Support\Facades\Log; 
+use Illuminate\Support\Facades\Storage;
+
 
 class LoanController extends Controller
 {
@@ -71,18 +74,23 @@ class LoanController extends Controller
                             })
 
                             ->editColumn('average_amount', function (UserLoan $data) {
-                              if ($data->status==0) {
-                                  $amount = ($data->userKycDocument->bank_details_file_name != '' && isset($data->userKycDocument->bank_details_file_name)) ? averageAmount($data->userKycDocument->bank_details_file_name,'average') : 0;
+                                if ($data->status==0 ) {
+                                    if(Storage::exists($data->userKycDocument->bank_details_file_name)) {
+                                      $amount = ($data->userKycDocument->bank_details_file_name != '' && isset($data->userKycDocument->bank_details_file_name)) ? averageAmount($data->userKycDocument->bank_details_file_name,'average') : NULL;
 
-                                  if($amount) {
-                                    return  '<div>
-                                          '.$amount['averageAmount'].'
-                                          <br>
-                                           <a href="javascript:;" onclick="getTransaction(this);" data-transactions='.$data->userKycDocument->bank_details_file_name.'  style="text-decoration: none;"><span class="text-info">Transactions</span></a>
-                                      </div>';
-                                  } else {
-                                    return '-';
-                                  }
+                                      if($amount != NULL) {
+                                        return  '<div>
+                                              '.$amount['averageAmount'].'
+                                              <br>
+                                               <a href="javascript:;" onclick="getTransaction(this);" data-transactions='.$data->userKycDocument->bank_details_file_name.'  style="text-decoration: none;"><span class="text-info">Transactions</span></a>
+                                          </div>';
+                                      } else {
+                                        return '-';
+                                      }
+                                    }  else {
+                                        return '-';
+                                    }
+                                  
                               } else {
                                  return '-';
                               }
