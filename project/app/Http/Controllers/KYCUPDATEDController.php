@@ -13,6 +13,8 @@ use Illuminate\Http\UploadedFile;
 use Auth;
 use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpFoundation\IpUtils;
+use Illuminate\Support\Facades\Log;
+use App\Http\Controllers\Api\BaseController as controller;
 
 class KYCUPDATEDController extends Controller
 {
@@ -55,9 +57,9 @@ class KYCUPDATEDController extends Controller
             'json' => $data
 
         ]);
-        
+
         $institutionStatement = $response->getBody()->getContents();
-        
+
         $url1 = 'https://svcdemo.digitap.work/bank-data/institutions';
         $data1 = [
             'type' => 'NetBanking',
@@ -70,7 +72,7 @@ class KYCUPDATEDController extends Controller
 
         ]);
         $institutionNetbanking = $response1->getBody()->getContents();
-        
+
         $data['institutionStatement'] = json_decode($institutionStatement);
         $data['institutionNetbanking'] = json_decode($institutionNetbanking);
         $data['user'] = Auth::user();
@@ -146,7 +148,7 @@ class KYCUPDATEDController extends Controller
 
     public function digilockerVerify()
     {
-        $random= substr(str_shuffle("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"), 0, 10);
+        $random = substr(str_shuffle("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"), 0, 10);
         $client = new \GuzzleHttp\Client([
             'verify' => false
         ]);
@@ -178,17 +180,18 @@ class KYCUPDATEDController extends Controller
             'json' => $data
 
         ]);
-        
+
         $result = $response->getBody()->getContents();
         //dd($result);
-        if (empty($result)) {
-            return \Response::json(['status' => 0, 'data' => []]);
+        if (empty ($result)) {
+            return $this->error([]);
+            // return \Response::json(['status' => 0, 'data' => []]);
         } else {
-                //Insert data into table
+            //Insert data into table
             $user_id = \Auth::id();
             $document = UserKycDocument::where('user_id', $user_id)->first();
-           // dd($document);
-            if (!empty($document)) {
+            // dd($document);
+            if (!empty ($document)) {
                 $document->api_response_digilocker = $result;
                 $document->save();
             } else {
@@ -198,14 +201,14 @@ class KYCUPDATEDController extends Controller
             }
 
             //end insertion data
-
-            return \Response::json(['status' => 1, 'data' => $result]);
+            return $this->success($result);
+            // return \Response::json(['status' => 1, 'data' => $result]);
         }
     }
 
     public function digilockerVerifyCheck()
     {
-        $random= substr(str_shuffle("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"), 0, 10);
+        $random = substr(str_shuffle("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"), 0, 10);
         $client = new \GuzzleHttp\Client([
             'verify' => false
         ]);
@@ -214,7 +217,7 @@ class KYCUPDATEDController extends Controller
         $data = [
             'transactionId' => $_POST['transactionId']
         ];
-        
+
         $username = '48130178';
         $password = '6RBkqcF5iarvmWeK5pLhjXrvfcEC8FLe';
         $auth = base64_encode($username . ':' . $password);
@@ -226,16 +229,17 @@ class KYCUPDATEDController extends Controller
             'json' => $data
 
         ]);
-        
+
         $result = $response->getBody()->getContents();
         //dd($result);
-        if (empty($result)) {
-            return \Response::json(['status' => 0, 'data' => []]);
+        if (empty ($result)) {
+            return $this->error();
+            // return \Response::json(['status' => 0, 'data' => []]);
         } else {
-                //Insert data into table
+            //Insert data into table
             $user_id = \Auth::id();
             $document = UserKycDocument::where('user_id', $user_id)->first();
-            
+
             /*$userKyc_update = User::where('id', $user_id)->first();
             $userKyc_update->kyc_status = 1;
             $userKyc_update->kyc_info = 1;
@@ -243,8 +247,8 @@ class KYCUPDATEDController extends Controller
 
             $document->api_response_digilocker_status = $result;
             $document->save();
-
-            return \Response::json(['status' => 1, 'data' => $result]);
+            return $this->success($result);
+            // return \Response::json(['status' => 1, 'data' => $result]);
         }
     }
 
@@ -285,9 +289,10 @@ class KYCUPDATEDController extends Controller
                 $url = '';
                 $data = [];
         }
-        
+
         if ($url == '') {
-            return \Response::json(['status' => 0, 'data' => []]);
+            return $this->error([]);
+            // return \Response::json(['status' => 0, 'data' => []]);
         } else {
             $username = '48130178';
             $password = '6RBkqcF5iarvmWeK5pLhjXrvfcEC8FLe';
@@ -295,24 +300,25 @@ class KYCUPDATEDController extends Controller
             // $username = '34469987';
             // $password = 'RSzF0t3ZQNhqGqqtTyFrMmEMqxpTK728';
             $auth = 'Basic ' . base64_encode($username . ':' . $password);
-    
+
             $response = $client->request('POST', $url, [
                 'headers' => [
                     'Authorization' => $auth,
                 ],
                 'json' => $data
-    
+
             ]);
-            
+
             $result = $response->getBody()->getContents();
-            if (empty($result)) {
-                return \Response::json(['status' => 0, 'data' => []]);
+            if (empty ($result)) {
+                return $this->error([]);
+                // return \Response::json(['status' => 0, 'data' => []]);
             } else {
-                    //Insert data into table
+                //Insert data into table
                 $user_id = \Auth::id();
                 $document = UserKycDocument::where('user_id', $user_id)->first();
-               // dd($document);
-                if (!empty($document)) {
+                // dd($document);
+                if (!empty ($document)) {
                     if ($_POST['type'] == 'aadhaar') {
                         $document->api_response_aadhar = $result;
                     } elseif ($_POST['type'] == 'pan') {
@@ -334,8 +340,7 @@ class KYCUPDATEDController extends Controller
                 }
 
                 //end insertion data
-
-                return \Response::json(['status' => 1, 'data' => $result]);
+                return $this->success($result);
             }
         }
     }
@@ -343,7 +348,7 @@ class KYCUPDATEDController extends Controller
 
     public function uploadStatement()
     {
-        $random= substr(str_shuffle("0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"), 0, 10);
+        $random = substr(str_shuffle("0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"), 0, 10);
         $client = new \GuzzleHttp\Client([
             'verify' => false
         ]);
@@ -381,40 +386,42 @@ class KYCUPDATEDController extends Controller
                 $url = '';
                 $data = [];
         }
-             /*   print_r($data);
-        die;*/
-        
+        /*   print_r($data);
+   die;*/
+
         if ($url == '') {
-            return \Response::json(['status' => 0, 'data' => []]);
+            return $this->error();
+            // return \Response::json(['status' => 0, 'data' => []]);
         } else {
             $username = '48130178';
             $password = '6RBkqcF5iarvmWeK5pLhjXrvfcEC8FLe';
             $auth = 'Basic ' . base64_encode($username . ':' . $password);
-    
+
             //dd($url);
             $response = $client->request('POST', $url, [
                 'headers' => [
                     'Authorization' => $auth,
                 ],
                 'json' => $data
-    
+
             ]);
-            
+
             $result = $response->getBody()->getContents();
 
-            if (empty($result)) {
-                return \Response::json(['status' => 0, 'data' => []]);
+            if (empty ($result)) {
+                return $this->error();
+                // return \Response::json(['status' => 0, 'data' => []]);
             } else {
                 //$result = json_decode($result);
                 //dd($resultData->url);
-                    //Insert data into table
+                //Insert data into table
                 /*return Redirect::to($resultData->url);*/
                 $user_id = \Auth::id();
                 $document = UserKycDocument::where('user_id', $user_id)->first();
                 $document->api_response_banking = $result;
                 $update = $document->save();
-
-                return \Response::json(['status' => 1, 'data' => $result]);
+                return $this->success($result);
+                // return \Response::json(['status' => 1, 'data' => $result]);
             }
         }
     }
@@ -427,12 +434,12 @@ class KYCUPDATEDController extends Controller
         $voter_no = "";
         $error = 0;
         $errorArray = array();
-        $aadharfront = $user_id . '_aadharfront_' . time().'.'. $request->fId->extension();
+        $aadharfront = $user_id . '_aadharfront_' . time() . '.' . $request->fId->extension();
         $type = $request->fId->getClientMimeType();
         $size = $request->fId->getSize();
         $aadharfrontImg = $request->fId->move(storage_path('kyc'), $aadharfront);
-      
-        $imageContents = file_get_contents(storage_path("kyc/".$aadharfront));
+
+        $imageContents = file_get_contents(storage_path("kyc/" . $aadharfront));
         // if (Storage::exists($filePath)) {
         //     dd("exists");
         // }
@@ -441,24 +448,24 @@ class KYCUPDATEDController extends Controller
         if ($aadharFrontImage['status'] == 'sucess') {
             $responseAadharFrontData = json_decode($aadharFrontImage['response'], true);
 
-            if (isset($responseAadharFrontData['status'])) {
+            if (isset ($responseAadharFrontData['status'])) {
                 if ($responseAadharFrontData['status'] == 'failure') {
                     // dd($responseAadharFrontData["status"]);
                     $error = 1;
                     $errorArray[] = "Aadhar front end image is not valid. ";
                 } elseif ($responseAadharFrontData['status'] == 'success') {
-                    if (isset($responseAadharFrontData['result'][0]['type'])) {
+                    if (isset ($responseAadharFrontData['result'][0]['type'])) {
                         if ($responseAadharFrontData['result'][0]['type'] == "aadhaar_front_bottom") {
                             $aadhar_no = $responseAadharFrontData['result'][0]['details']['aadhaar']['value'];
                         }
                     }
 
-                    if (isset($responseAadharFrontData['result'][1]['type'])) {
+                    if (isset ($responseAadharFrontData['result'][1]['type'])) {
                         if ($responseAadharFrontData['result'][1]['type'] == "aadhaar_front_bottom") {
                             $aadhar_no = $responseAadharFrontData['result'][1]['details']['aadhaar']['value'];
                         }
                     }
-                    
+
                     if ($aadhar_no == "") {
                         $error = 1;
                         $errorArray[] = "Aadhar front end image is not valid. ";
@@ -475,29 +482,29 @@ class KYCUPDATEDController extends Controller
             //     Storage::delete($filePath);
             // }
         }
-        $aadharback = $user_id . '_aadharback_' . time().'.'. $request->bId->extension();
+        $aadharback = $user_id . '_aadharback_' . time() . '.' . $request->bId->extension();
         $type = $request->bId->getClientMimeType();
         $size = $request->bId->getSize();
         $request->bId->move(storage_path('kyc'), $aadharback);
 
-        $imageContents = file_get_contents(storage_path("kyc/".$aadharback));
+        $imageContents = file_get_contents(storage_path("kyc/" . $aadharback));
         $aadharBackImage = imageVerification("aadhaar", $imageContents);
 
         if ($aadharBackImage['status'] == 'sucess') {
             $responseAadhaBackData = json_decode($aadharBackImage['response'], true);
 
-            if (isset($responseAadhaBackData['status'])) {
+            if (isset ($responseAadhaBackData['status'])) {
                 if ($responseAadhaBackData['status'] == 'failure') {
                     $errorArray[] = "Aadhar back image is not valid. ";
                 } elseif ($responseAadhaBackData['status'] == 'success') {
                     $backend = 0;
-                    if (isset($responseAadhaBackData['result'][1])) {
+                    if (isset ($responseAadhaBackData['result'][1])) {
                         if ($responseAadhaBackData['result'][1]['type'] == "aadhaar_back") {
                             $backend = 1;
                         }
                     }
 
-                    if (isset($responseAadhaBackData['result'][0])) {
+                    if (isset ($responseAadhaBackData['result'][0])) {
                         if ($responseAadhaBackData['result'][0]['type'] == "aadhaar_back") {
                             $backend = 1;
                         }
@@ -519,18 +526,18 @@ class KYCUPDATEDController extends Controller
 
         // print_r("aadhar_no ".$aadhar_no);
         // dd($request->all());
-        $panfront = $user_id . '_panfront_' . time().'.'. $request->fIdp->extension();
+        $panfront = $user_id . '_panfront_' . time() . '.' . $request->fIdp->extension();
         $type = $request->fIdp->getClientMimeType();
         $size = $request->fIdp->getSize();
         $request->fIdp->move(storage_path('kyc'), $panfront);
 
-        $imageContents = file_get_contents(storage_path("kyc/".$panfront));
+        $imageContents = file_get_contents(storage_path("kyc/" . $panfront));
         $panfrontImage = imageVerification("pan", $imageContents);
 
         // dd($panfrontImage);
         if ($panfrontImage['status'] == 'sucess') {
             $responsePanData = json_decode($panfrontImage['response'], true);
-            if (isset($responsePanData['status'])) {
+            if (isset ($responsePanData['status'])) {
                 if ($responsePanData['status'] == 'failure') {
                     // dd($responsePanData["status"]);
                     $error = 1;
@@ -554,12 +561,12 @@ class KYCUPDATEDController extends Controller
             // }
         }
         // Voter image validation
-        $voterfront = $user_id . '_voterfront_' . time().'.'. $request->v_front->extension();
+        $voterfront = $user_id . '_voterfront_' . time() . '.' . $request->v_front->extension();
         $type = $request->v_front->getClientMimeType();
         $size = $request->v_front->getSize();
         $voterfrontImg = $request->v_front->move(storage_path('kyc'), $voterfront);
-      
-        $imageContents = file_get_contents(storage_path("kyc/".$voterfront));
+
+        $imageContents = file_get_contents(storage_path("kyc/" . $voterfront));
         // if (Storage::exists($filePath)) {
         //     dd("exists");
         // }
@@ -568,24 +575,24 @@ class KYCUPDATEDController extends Controller
         if ($voterfrontImage['status'] == 'sucess') {
             $responseData = json_decode($voterfrontImage['response'], true);
 
-            if (isset($responseData['status'])) {
+            if (isset ($responseData['status'])) {
                 if ($responseData['status'] == 'failure') {
                     // dd($responseData["status"]);
                     $error = 1;
                     $errorArray[] = "Voter front image is not valid. ";
                 } elseif ($responseData['status'] == 'success') {
-                    if (isset($responseData['result'][0]['type'])) {
+                    if (isset ($responseData['result'][0]['type'])) {
                         if ($responseData['result'][0]['type'] == "voterid_front_new") {
                             $voter_no = $responseData['result'][0]['details']['voterid']['value'];
                         }
                     }
 
-                    if (isset($responseData['result'][1]['type'])) {
+                    if (isset ($responseData['result'][1]['type'])) {
                         if ($responseData['result'][1]['type'] == "voterid_front_new") {
                             $voter_no = $responseData['result'][1]['details']['voterid']['value'];
                         }
                     }
-                    
+
                     if ($voter_no == "") {
                         $error = 1;
                         $errorArray[] = "Voter front image is not valid. ";
@@ -603,28 +610,28 @@ class KYCUPDATEDController extends Controller
             // }
         }
 
-        $voterback = $user_id . '_voterback_' . time().'.'. $request->v_back->extension();
+        $voterback = $user_id . '_voterback_' . time() . '.' . $request->v_back->extension();
         $type = $request->v_back->getClientMimeType();
         $size = $request->v_back->getSize();
         $request->v_back->move(storage_path('kyc'), $voterback);
 
-        $imageContents = file_get_contents(storage_path("kyc/".$voterback));
+        $imageContents = file_get_contents(storage_path("kyc/" . $voterback));
         $voterBackImage = imageVerification("voter", $imageContents);
 
         if ($voterBackImage['status'] == 'sucess') {
             $responseData = json_decode($voterBackImage['response'], true);
-            if (isset($responseData['status'])) {
+            if (isset ($responseData['status'])) {
                 if ($responseData['status'] == 'failure') {
                     $errorArray[] = "Voter back image is not valid. ";
                 } elseif ($responseData['status'] == 'success') {
                     $backend = 0;
-                    if (isset($responseData['result'][1])) {
+                    if (isset ($responseData['result'][1])) {
                         if ($responseData['result'][1]['type'] != "voterid_back_new") {
                             $backend = 1;
                         }
                     }
 
-                    if (isset($responseData['result'][0])) {
+                    if (isset ($responseData['result'][0])) {
                         if ($responseData['result'][0]['type'] != "voterid_back_new") {
                             $backend = 1;
                         }
@@ -645,7 +652,7 @@ class KYCUPDATEDController extends Controller
 
 
 
-        if ($error==1) {
+        if ($error == 1) {
             // Generate ascending numbers
             $ascendingNumbers = range(1, count($errorArray));
 
@@ -656,21 +663,21 @@ class KYCUPDATEDController extends Controller
 
             // Implode the combined array
             $errorMessage = implode(", ", $combined);
-
-            return \Response::json(['status' => 0, 'message' => "something went wrong please try again later", 'error' => $errorMessage]);
+            return $this->error($errorArray,"something went wrong please try again later");
+            // return \Response::json(['status' => 0, 'message' => "something went wrong please try again later", 'error' => $errorMessage]);
         }
 
         // $panback = $user_id . '_panback_' . time().'.'. $request->bIdp->extension();
         // $type = $request->bIdp->getClientMimeType();
         // $size = $request->bIdp->getSize();
         // $request->bIdp->move(storage_path('kyc'), $panback);
-      
+
         $document = UserKycDocument::where('user_id', $user_id)->first();
 
-        $create='';
-        $update='';
+        $create = '';
+        $update = '';
         //
-        if (!empty($document) && !empty($aadharfront) && !empty($aadharback) && !empty($panfront)) {
+        if (!empty ($document) && !empty ($aadharfront) && !empty ($aadharback) && !empty ($panfront)) {
             //$current_address = $_POST['current_address'];
             //$document->current_address = $current_address;
             $document->aadhaar_front = $aadharfront;
@@ -686,16 +693,20 @@ class KYCUPDATEDController extends Controller
             $document->api_response_voter_back_img = $voterBackImage['response'];
             $update = $document->save();
         } else {
-            $data = ['user_id' => $user_id,'aadhaar_front' => $aadharfront,'pan_front' => $panfront,'voter_no' => $_POST['voter_number'],'aadhaar_no' => $_POST['aadhar_number'],'pan_no' => $_POST['pan-number'],'api_response_aadhar_front_img' => $aadharFrontImage['response'],'api_response_aadhar_back_img' => $aadharBackImage['response'],'api_response_pan_front_img' => $panfrontImage['response'],'api_response_voter_front_img' => $voterfrontImage['response'],'api_response_voter_back_img' => $voterBackImage['response'],];
+            $data = ['user_id' => $user_id, 'aadhaar_front' => $aadharfront, 'pan_front' => $panfront, 'voter_no' => $_POST['voter_number'], 'aadhaar_no' => $_POST['aadhar_number'], 'pan_no' => $_POST['pan-number'], 'api_response_aadhar_front_img' => $aadharFrontImage['response'], 'api_response_aadhar_back_img' => $aadharBackImage['response'], 'api_response_pan_front_img' => $panfrontImage['response'], 'api_response_voter_front_img' => $voterfrontImage['response'], 'api_response_voter_back_img' => $voterBackImage['response'],];
             $create = UserKycDocument::create($data);
         }
         //$create = UserKycDocument::create($data);
         if ($create) {
-            return \Response::json(['status' => 1, 'message' => "Data Added Successfully"]);
+            return $this->success([],"Data Added Successfully");
+            // return \Response::json(['status' => 1, 'message' => "Data Added Successfully"]);
         } elseif ($update) {
-            return \Response::json(['status' => 1, 'message' => "Data Updated Successfully"]);
+            return $this->success([],"Data Updated Successfully");
+            // return \Response::json(['status' => 1, 'message' => "Data Updated Successfully"]);
         } else {
-            return \Response::json(['status' => 0, 'message' => "something went wrong please try again later", 'error' => "something went wrong please try again later."]);
+            return $this->error([],"something went wrong please try again later");
+
+            // return \Response::json(['status' => 0, 'message' => "something went wrong please try again later", 'error' => "something went wrong please try again later."]);
         }
     }
 
@@ -708,7 +719,7 @@ class KYCUPDATEDController extends Controller
         }
         $statusCheck = '0';
         $errorArray = array();
-        $addressproof = $user_id . '_addressproof_' . time().'.'. $request->fId->extension();
+        $addressproof = $user_id . '_addressproof_' . time() . '.' . $request->fId->extension();
         $type = $request->fId->getClientMimeType();
         $size = $request->fId->getSize();
         $addressproofImg = $request->fId->move(storage_path('kyc'), $addressproof);
@@ -740,77 +751,92 @@ class KYCUPDATEDController extends Controller
         $result = $response->getBody()->getContents();
         $statusCheckApiStatus = json_decode($result);
         $statusCheck = $statusCheckApiStatus->code;*/
-      
+
         $document = UserKycDocument::where('user_id', $user_id)->first();
         //dd($document->api_response_digilocker_status);
-        $update='';
+        $update = '';
         //if ($statusCheck == '200') {
-        if (!empty($document) && !empty($addressproof)) {
+        if (!empty ($document) && !empty ($addressproof)) {
             if ($document->api_response_digilocker_status != null) {
                 $api_response_digilocker_status = json_decode($document->api_response_digilocker_status);
                 //dd($api_response_digilocker_status);
                 if ($api_response_digilocker_status->model->address->dist != $_POST['district']) {
-                    return \Response::json(['status' => 0, 'message' => "District not matched."]);
-                } 
+                    return $this->error([],"District not matched.");
+                    // return \Response::json(['status' => 0, 'message' => "District not matched."]);
+                }
                 if ($api_response_digilocker_status->model->address->vtc != $_POST['city']) {
-                    return \Response::json(['status' => 0, 'message' => "City not matched."]);
-                } 
+                    return $this->error([],"City not matched.");
+                    // return \Response::json(['status' => 0, 'message' => "City not matched."]);
+                }
                 if ($api_response_digilocker_status->model->address->state != $_POST['state']) {
-                    return \Response::json(['status' => 0, 'message' => "State not matched."]);
-                } 
+                    return $this->error([],"State not matched.");
+                    // return \Response::json(['status' => 0, 'message' => "State not matched."]);
+                }
                 if ($api_response_digilocker_status->model->address->pc != $_POST['pincode']) {
-                    return \Response::json(['status' => 0, 'message' => "Pincode not matched."]);
-                } 
+                    return $this->error([],"Pincode not matched.");
+                    // return \Response::json(['status' => 0, 'message' => "Pincode not matched."]);
+                }
                 if ($api_response_digilocker_status->model->address->country != $_POST['country']) {
-                    return \Response::json(['status' => 0, 'message' => "Country not matched."]);
+                    return $this->error([],"Country not matched.");
+                    // return \Response::json(['status' => 0, 'message' => "Country not matched."]);
                 }
             } elseif ($document->api_response_aadhar_front_img != null && $document->api_response_aadhar_back_img != null) {
                 $api_response_aadhar_back_img = json_decode($document->api_response_aadhar_back_img);
                 /*print_r($api_response_aadhar_back_img->result[0]->details->address->house_number);
                 die;*/
                 $address = "";
-                if (isset($api_response_aadhar_back_img->result[1])) {
-                    if ($api_response_aadhar_back_img->result[1]->type == "aadhaar_back"){
+                if (isset ($api_response_aadhar_back_img->result[1])) {
+                    if ($api_response_aadhar_back_img->result[1]->type == "aadhaar_back") {
                         $address = $api_response_aadhar_back_img->result[1]->details->address;
-                    }  
+                    }
                 }
 
-                if (isset($api_response_aadhar_back_img->result[0])) {
-                    if ($api_response_aadhar_back_img->result[0]->type == "aadhaar_back"){
+                if (isset ($api_response_aadhar_back_img->result[0])) {
+                    if ($api_response_aadhar_back_img->result[0]->type == "aadhaar_back") {
                         $address = $api_response_aadhar_back_img->result[0]->details->address;
-                    }  
+                    }
                 }
 
                 if ($address->district != $_POST['district']) {
-                    return \Response::json(['status' => 0, 'message' => "District not matched."]);
-                } 
+                    return $this->error([],"District not matched.");
+                    
+                    // return \Response::json(['status' => 0, 'message' => "District not matched."]);
+                }
                 if ($address->city != $_POST['city']) {
-                    return \Response::json(['status' => 0, 'message' => "City not matched."]);
-                } 
+                    return $this->error([],"City not matched.");
+
+                    // return \Response::json(['status' => 0, 'message' => "City not matched."]);
+                }
                 if ($address->state != $_POST['state']) {
-                    return \Response::json(['status' => 0, 'message' => "State not matched."]);
-                } 
+                    return $this->error([],"State not matched.");
+
+                    // return \Response::json(['status' => 0, 'message' => "State not matched."]);
+                }
                 if ($address->pin != $_POST['pincode']) {
-                    return \Response::json(['status' => 0, 'message' => "Pincode not matched."]);
+                    return $this->error([],"Pincode not matched.");
+
+                    // return \Response::json(['status' => 0, 'message' => "Pincode not matched."]);
                 }
             } else {
-                return \Response::json(['status' => 2, 'message' => "Details not found."]);
+                return $this->error([],"Details not found.");
+                // return \Response::json(['status' => 2, 'message' => "Details not found."]);
             }
 
             //$document->api_response_address = $result;
             $document->addressproof = $addressproof;
-            $document->current_address = $_POST['house_no'].', '.$_POST['street'].', '.$_POST['landmark'].', '.$_POST['district'].', '.$_POST['pincode'].', '.$_POST['city'].', '.$_POST['state'].', '.$_POST['country'];
-            $document->office_current_address = $_POST['house_no1'].', '.$_POST['street1'].', '.$_POST['landmark1'].', '.$_POST['district1'].', '.$_POST['pincode1'].', '.$_POST['city1'].', '.$_POST['state1'].', '.$_POST['country1'];
+            $document->current_address = $_POST['house_no'] . ', ' . $_POST['street'] . ', ' . $_POST['landmark'] . ', ' . $_POST['district'] . ', ' . $_POST['pincode'] . ', ' . $_POST['city'] . ', ' . $_POST['state'] . ', ' . $_POST['country'];
+            $document->office_current_address = $_POST['house_no1'] . ', ' . $_POST['street1'] . ', ' . $_POST['landmark1'] . ', ' . $_POST['district1'] . ', ' . $_POST['pincode1'] . ', ' . $_POST['city1'] . ', ' . $_POST['state1'] . ', ' . $_POST['country1'];
             $update = $document->save();
         }
-            //echo '1';
-            $userKyc_update = User::where('id', $user_id)->first();
-            $userKyc_update->kyc_status = 1;
-            $userKyc_update->kyc_info = 1;
-            $userKyc_update->save();
-            return \Response::json(['status' => 1, 'message' => "Kyc updated successfully."]);
-            //return redirect('/user/dashboard?kyc=1');
-            //return redirect('/user/kyc2');
+        //echo '1';
+        $userKyc_update = User::where('id', $user_id)->first();
+        $userKyc_update->kyc_status = 1;
+        $userKyc_update->kyc_info = 1;
+        $userKyc_update->save();
+        return $this->success([],"Kyc updated successfully.");
+        // return \Response::json(['status' => 1, 'message' => "Kyc updated successfully."]);
+        //return redirect('/user/dashboard?kyc=1');
+        //return redirect('/user/kyc2');
         /*} else {
             return \Response::json(['status' => 2, 'message' => "Details not found."]);
 
@@ -832,7 +858,7 @@ class KYCUPDATEDController extends Controller
         $data = [
             'request_id' => $apiResponseBanking->request_id,
         ];
-        
+
         $username = '48130178';
         $password = '6RBkqcF5iarvmWeK5pLhjXrvfcEC8FLe';
         $auth = 'Basic ' . base64_encode($username . ':' . $password);
@@ -844,10 +870,10 @@ class KYCUPDATEDController extends Controller
             'json' => $data
 
         ]);
-        
+
         $statusCheck = '';
         $statusCheckApiStatus = $response->getBody()->getContents();
-        
+
         $document = UserKycDocument::where('user_id', $user_id)->first();
         $document->api_response_banking_status = $statusCheckApiStatus;
         $document->save();
@@ -860,7 +886,7 @@ class KYCUPDATEDController extends Controller
                 'report_type' => "json",
                 'report_subtype' => "type1"
             ];
-            
+
             $username = '48130178';
             $password = '6RBkqcF5iarvmWeK5pLhjXrvfcEC8FLe';
             $auth = 'Basic ' . base64_encode($username . ':' . $password);
@@ -872,17 +898,17 @@ class KYCUPDATEDController extends Controller
                 'json' => $data
 
             ]);
-            
+
             $result = $response->getBody()->getContents();
             //dd($result);
-            $filaName = $user_id . '_bank_details_' . time().'_file.txt';
+            $filaName = $user_id . '_bank_details_' . time() . '_file.txt';
             Storage::disk('local')->put($filaName, $result);
             $result = json_decode($result);
             $document = UserKycDocument::where('user_id', $user_id)->first();
 
             if ($document->api_response_digilocker_status != null) {
                 $api_response_digilocker_status = json_decode($document->api_response_digilocker_status);
-                
+
                 if (str_contains($result->customer_info->name, $api_response_digilocker_status->model->name)) {
                     return \Response::json(['status' => 0, 'message' => "Name is not matched."]);
                 }
@@ -897,13 +923,13 @@ class KYCUPDATEDController extends Controller
             }
 
             unset($result->accounts->transactions);
-            
+
             $document->api_response_banking_details = json_encode($result);
             $document->bank_details_file_name = $filaName;
             $document->save();
-            
+
             $document = UserKycDocument::where('user_id', $user_id)->first();
-            
+
             return redirect('/user/kyc2');
         } else {
             return redirect('/user/dashboard?kyc=0');
@@ -918,7 +944,7 @@ class KYCUPDATEDController extends Controller
             return redirect('/user/dashboard');
         }
 
-        $random= substr(str_shuffle("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"), 0, 10);
+        $random = substr(str_shuffle("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"), 0, 10);
         $client = new \GuzzleHttp\Client([
             'verify' => false
         ]);
@@ -953,5 +979,180 @@ class KYCUPDATEDController extends Controller
         } else {
             return \Response::json(['status' => 0, 'message' => ""]);
         }*/
+    }
+    // FUNCTION WHEN GET REQUEST FOR VKYC API
+    public function vkycVerify()
+    {
+        $client = new \GuzzleHttp\Client([
+            'verify' => false
+        ]);
+
+        $data = array();
+        $user_id = \Auth::id();
+        Log::info(base64_encode($user_id) . " ====> Call api for vkyc ");
+
+        // GET APPROVE DETAIL FOR VKYC
+        $document = UserKycDocument::where('user_id', $user_id)->first();
+
+        // IF DOCUMENT EMPTY USER DETAIL NOT AVALABLE
+        if (!empty ($document)) {
+            $detail = json_decode($document->api_response_pan);
+            if (!empty ($detail)) {
+
+                $detail = $detail->result;
+                $data = [
+                    "fname" => $detail->first_name,
+                    "applicationNumber" => $document->user_id,
+                    "mobile" => $detail->mobile,
+                    "email" => $detail->email,
+                    "skipOkyc" => "TRUE",
+                    "sendSms" => true,
+                    "sendEmail" => true,
+                    "redirectionUrl" => route('user.vkyc.update')
+                ];
+
+            }
+
+            // API CALL PARAMS
+            $url = env('KYC_API_URL') . "demo/v1/vkyc/okyc/user/activate";
+            $username = env('KYC_CLIENT_ID');
+            $password = env('KYC_CLIENT_PASSWORD');
+            $auth = 'Basic ' . base64_encode($username . ':' . $password);
+
+            $response = $client->request('POST', $url, [
+                'headers' => [
+                    'Authorization' => $auth,
+                    'ent_authorization' => env('KYC_CLIENT_TOKEN')
+                ],
+                'json' => $data
+
+            ]);
+
+            // GET RESULT FROM API
+            $result = $response->getBody()->getContents();
+            if (empty ($result)) {
+                Log::error(base64_encode($user_id) . " ====> Call api for vkyc result is empty");
+                return $this->error([],"Something went wrong");
+                // return \Response::json(['status' => 0, 'data' => [], 'message' => "Something went wrong"]);
+            } else {
+                $data = json_decode($result);
+                Log::info(base64_encode($user_id) . " ===> Call api for vkyc result" . $result);
+
+                //    IF KYC DONE UPDATE IN TABLE 
+                if ($data->model->vkycCompleted == "true" || $data->model->vkycCompleted || true) {
+                    Log::info(json_encode($user_id) . " ===> Call api for vkyc if vkyc complete save result" . json_encode($data));
+                    $this->vkycStatusByUniqueId();
+                }
+                Log::info(base64_encode($user_id) . " ===> Call api for vkyc response api and redirect" . json_encode($data));
+              return  $this->success($result);
+                // return \Response::json(['status' => 1, 'data' => $result, 'message' => '']);
+            }
+        } else {
+            Log::info(base64_encode($user_id) . " ===> Call api for vkyc but kyc not verified");
+            return  $this->success([],'Kyc not verified');
+           
+            // return \Response::json(['status' => 0, 'data' => [], 'message' => 'Kyc not verified']);
+        }
+
+    }
+
+
+    // FUNCTION WHEN GET RESPONSE FROM VKYC API
+    public function vkycUpdate(Request $request)
+    {
+        $user_id = \Auth::id();
+        $data = json_encode($request->all());
+        Log::info(base64_encode($user_id) . " ===> get response from vkyc callback" . $data);
+
+        $kyc = 0;
+        $userVKyc_update = UserKycDocument::where('user_id', $user_id)->first();
+        $userVKyc_update->api_response_vkyc = $data;
+        $userVKyc_update->save();
+        if ($request->get('vkycstatus') == "true") {
+            Log::info(base64_encode($user_id) . " ===> get response from vkyc callback and save vkyc approve" . $data);
+
+            $userVKyc_user_update = User::where('id', $user_id)->first();
+            $userVKyc_user_update->vkyc_status = 1;
+            $userVKyc_user_update->save();
+            $kyc = 1;
+        }
+        return redirect('/user/dashboard?kyc=1');
+
+    }
+
+    // FUNCTION WHEN GET REQUEST FOR VKYC API
+    public function vkycStatusByUniqueId()
+    {
+
+        $client = new \GuzzleHttp\Client([
+            'verify' => false
+        ]);
+
+        $data = array();
+        $user_id = \Auth::id();
+        $transaction_id = $user_id;
+        Log::info(base64_encode($user_id) . " ====> get vkyc data by transaction id ===> " . $transaction_id);
+
+        // GET APPROVE DETAIL FOR VKYC
+        $document = UserKycDocument::where('user_id', $user_id)->first();
+
+        // IF DOCUMENT EMPTY USER DETAIL NOT AVALABLE
+        if (!empty ($document)) {
+            $detail = json_decode($document->api_response_pan);
+            if (!empty ($detail)) {
+
+                $detail = $detail->result;
+                $data = [
+                    "uniqueId" => $user_id
+                ];
+
+            }
+
+            // API CALL PARAMS
+            $url = env('KYC_API_URL') . 'demo/v1/vkyc/additional-info/transaction/session-info-uniqueid';
+            $username = env('KYC_CLIENT_ID');
+            $password = env('KYC_CLIENT_PASSWORD');
+            $auth = 'Basic ' . base64_encode($username . ':' . $password);
+
+            $response = $client->request('POST', $url, [
+                'headers' => [
+                    'Authorization' => $auth,
+                    'ent_authorization' => env('KYC_CLIENT_TOKEN')
+                ],
+                'json' => $data
+
+            ]);
+
+            // GET RESULT FROM API
+            $result = $response->getBody()->getContents();
+            if (empty ($result)) {
+                Log::error(base64_encode($user_id) . " ====> vkyc data data empty transaction id ===> " . $transaction_id);
+
+                return \Response::json(['status' => 0, 'data' => [], 'message' => "Something went wrong"]);
+            } else {
+                $data = json_decode($result);
+                Log::info(base64_encode($user_id) . " ===> Call api get data by transaction id ===>" . $transaction_id . " result =>" . $result);
+
+                // SAVE RESPONSE OF VKYC VERIFIED
+                $document->api_response_vkyc = $result;
+                $document->save();
+
+                //    IF KYC DONE UPDATE IN TABLE 
+                if ($data->model->vkycStatus == "APPROVED") {
+                    Log::info(base64_encode($user_id) . " ===> Call api for vkyc if vkyc complete save result" . json_encode($data));
+
+                    $userVKyc_user_update = User::where('id', $user_id)->first();
+                    $userVKyc_user_update->vkyc_status = 1;
+                    $userVKyc_user_update->save();
+                }
+                Log::info(base64_encode($user_id) . " ===> Call api for vkyc response api and redirect" . json_encode($data));
+
+                return \Response::json(['status' => 1, 'data' => $result, 'message' => '']);
+            }
+        } else {
+            Log::info(base64_encode($user_id) . " ===> Call api for vkyc but kyc not verified");
+            return \Response::json(['status' => 0, 'data' => [], 'message' => 'Kyc not verified']);
+        }
+
     }
 }

@@ -186,6 +186,9 @@
         var data_id = $(identifier).data('id')
         var data_status = $(identifier).data('status')
         if (data_id) {
+          if(data_status != 0) {
+            $(".update").hide();
+          }
           $("#statusId").val(data_id);
           $("#status").val(data_status);
         }
@@ -194,19 +197,47 @@
     function statusChange(){ 
       var statusId = $("#statusId").val();   
       var statusMsg = $("#statusMsg").val();    
-      var status = $("#status").val();    
+      var status = $("#status").val();
+      var  updateInstallmentAmount = 0;
+      var  updateAmount = 0;
+
+      if(status == 0) {
+        if($("#update_amount").val() || $("#update_installment_amount").val() ) 
+        {
+          if(!$("#update_installment_amount").val()) {
+            document.getElementById('error-message').innerText = 'Update Per Installment Amount field is manadatory if Update Amount value is added. ';
+              return;
+          } else {
+            updateInstallmentAmount = $("#update_installment_amount").val();
+          }
+
+          if(!$("#update_amount").val()) {
+            document.getElementById('error-message').innerText = 'Update Amount field is manadatory if Update  Per Installment Amount value is added. ';
+              return;
+          } else {
+            updateAmount = $("#update_amount").val();
+          }
+
+        }
+      }   
+      if(statusMsg == '') {
+        document.getElementById('error-message').innerText = 'Message field is manadatory. ';
+      } else {
+        // Clear error message if there was one
+        document.getElementById('error-message').innerText = '';
         $.ajax({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             },
             type: 'POST',
             url: "{{URL::to('/admin/loan/status-change')}}",
-            data: {'statusMsg':statusMsg, 'statusId':statusId, 'status':status},
+            data: {'statusMsg':statusMsg, 'statusId':statusId, 'status':status, 'updateInstallmentAmount':updateInstallmentAmount, 'updateAmount':updateAmount},
             success: function(response){
                 alert(response);
                 location.reload();
             }
         });
+      }
     }
   </script>
 

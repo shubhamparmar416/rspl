@@ -1,8 +1,7 @@
 <?php
 
-namespace App\Http\Controllers\User;
+namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\Controller;
 use App\Models\BankPlan;
 use App\Models\Currency;
 use App\Models\InstallmentLog;
@@ -11,48 +10,46 @@ use App\Models\Transaction;
 use App\Models\UserLoan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use App\Http\Controllers\Api\BaseController as controller;
 
 class UserLoanController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware('auth');
-    }
+ 
 
     public function index()
     {
         $data['loans'] = UserLoan::whereUserId(auth()->id())->orderby('id', 'desc')->paginate(10);
-        return view('user.loan.index', $data);
+        return $this->success($data, '');
     }
 
     public function pending()
     {
         $data['loans'] = UserLoan::whereStatus(0)->whereUserId(auth()->id())->orderby('id', 'desc')->paginate(10);
-        return view('user.loan.pending', $data);
+        return $this->success($data, '');
     }
 
     public function running()
     {
         $data['loans'] = UserLoan::whereStatus(1)->whereUserId(auth()->id())->orderby('id', 'desc')->paginate(10);
-        return view('user.loan.running', $data);
+        return $this->success($data, '');
     }
 
     public function paid()
     {
         $data['loans'] = UserLoan::whereStatus(3)->whereUserId(auth()->id())->orderby('id', 'desc')->paginate(10);
-        return view('user.loan.paid', $data);
+        return $this->success($data, '');
     }
 
     public function rejected()
     {
         $data['loans'] = UserLoan::whereStatus(2)->whereUserId(auth()->id())->orderby('id', 'desc')->paginate(10);
-        return view('user.loan.rejected', $data);
+        return $this->success($data, '');
     }
 
     public function loanPlan()
     {
         $data['plans'] = LoanPlan::orderBy('id', 'desc')->whereStatus(1)->paginate(12);
-        return view('user.loan.plan', $data);
+        return $this->success($data, '');
     }
 
     public function loanAmount(Request $request)
@@ -69,9 +66,9 @@ class UserLoanController extends Controller
             $data['currency'] = globalCurrency();
             $data['perInstallment'] = ($amount * $plan->per_installment)/100;
 
-            return view('user.loan.apply', $data);
+            return $this->success($data, '');
         } else {
-            return redirect()->back()->with('warning', 'Request Money should be between minium and maximum amount!');
+            return $this->error([0 => 'Request Money should be between minium and maximum amount!']);
         }
     }
 
@@ -81,18 +78,18 @@ class UserLoanController extends Controller
         $user = auth()->user();
 
         if ($user->bank_plan_id === null) {
-            return redirect()->route('user.loans.plan')->with('warning', 'You have to buy a plan to loan');
+            return $this->error([0 => 'You have to buy a plan to loan']);
         }
 
         if (now()->gt($user->plan_end_date)) {
-            return redirect()->route('user.loans.plan')->with('warning', 'Plan Date Expired.');
+            return $this->error([0 => 'Plan Date Expired.']);
         }
 
         $bank_plan = BankPlan::whereId($user->bank_plan_id)->first();
         $monthlyLoans = UserLoan::whereUserId(auth()->id())->whereMonth('created_at', '=', date('m'))->whereStatus('approve')->sum('loan_amount');
 
         if ($monthlyLoans > $bank_plan->loan_amount) {
-            return redirect()->route('user.loans.plan')->with('warning', 'Monthly loan limit over.');
+            return $this->error([0 => 'Monthly loan limit over.']);
         }
 
         $data = new UserLoan();
@@ -149,24 +146,15 @@ class UserLoanController extends Controller
         $trans->user_id = $user->id;
         $trans->save();
 
-        return redirect()->route('user.loans.index')->with('message', 'Loan Requesting Successfully');
+        return $this->success([], 'Loan Requesting Successfully');
     }
 
     public function log($id)
     {
+        $data = array();
         $loan = UserLoan::findOrfail($id);
-        $logs = InstallmentLog::whereTransactionNo($loan->transaction_no)->whereUserId(auth()->id())->orderby('id', 'desc')->paginate(20);
-        $currency = Currency::whereIsDefault(1)->first();
-
-        return view('user.loan.log', compact('logs', 'currency'));
-    }
-
-    public function pendingLoanAccept($id)
-    {
-        $loan = UserLoan::findOrfail($id);
-        $loan->message = $loan->message.' -- User Accepted. ';
-        $loan->save();
-        
-        return redirect()->back()->with('sucess','Loan sucessfully accepted!');
+        $data['logs'] = InstallmentLog::whereTransactionNo($loan->transaction_no)->whereUserId(auth()->id())->orderby('id', 'desc')->paginate(20);
+        $data['currency'] = Currency::whereIsDefault(1)->first();
+        return $this->success($data, '');
     }
 }

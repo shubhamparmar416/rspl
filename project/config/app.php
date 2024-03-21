@@ -182,7 +182,7 @@ return [
         Cartalyst\Stripe\Laravel\StripeServiceProvider::class,
         Barryvdh\DomPDF\ServiceProvider::class,
         Nexmo\Laravel\NexmoServiceProvider::class,
-
+        Laravel\Passport\PassportServiceProvider::class,
     ],
 
     /*
