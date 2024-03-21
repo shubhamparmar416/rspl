@@ -64,10 +64,13 @@ class UserLoanController extends Controller
         $max_amount = convertedAmount($plan->max_amount);
 
         if ($amount >= $min_amount && $amount <= $max_amount) {
+            $total_installment = $plan->total_installment/12;
+
             $data['data'] = $plan;
             $data['loanAmount'] = $amount;
             $data['currency'] = globalCurrency();
-            $data['perInstallment'] = ($amount * $plan->per_installment)/100;
+            //$data['perInstallment'] = ($amount * $plan->per_installment)/100;
+            $data['perInstallment'] = round($amount/$plan->total_installment);
 
             return view('user.loan.apply', $data);
         } else {
@@ -167,6 +170,6 @@ class UserLoanController extends Controller
         $loan->message = $loan->message.' -- User Accepted. ';
         $loan->save();
         
-        return redirect()->back()->with('sucess','Loan sucessfully accepted!');
+        return redirect()->back()->with('sucess', 'Loan sucessfully accepted!');
     }
 }

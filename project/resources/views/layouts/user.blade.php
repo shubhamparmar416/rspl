@@ -45,7 +45,7 @@
   <body >
   <div class="loader"></div>
 
-    <div class="wrapper">
+    <div class="wrapper" style="width: 100%;">
       @includeIf('includes.user.header')
 
       @includeIf('includes.user.nav')
