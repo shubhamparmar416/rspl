@@ -120,9 +120,6 @@ class EmailController extends Controller
         //--- Redirect Section Ends
     }
 
-
-
-
     public function update(Request $request, $id)
     {
         $data = EmailTemplate::findOrFail($id);
@@ -132,6 +129,12 @@ class EmailController extends Controller
         $msg = 'Data Updated Successfully.'.'<a href="'.route("admin.mail.index").'">View Template Lists</a>';
         return response()->json($msg);
         //--- Redirect Section Ends
+    } 
+
+    public function messageConfig()
+    {
+        $config = Generalsetting::findOrFail(1);
+        return view('admin.email.message',compact('config'));
     }
 
 }

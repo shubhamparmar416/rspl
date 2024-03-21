@@ -55,8 +55,24 @@
 			<div class="modal-body">
 				<p class="text-center">{{ __("You are about to change the status.") }}</p>
 				<p class="text-center">{{ __("Do you want to proceed?") }}</p>
-				<textarea name="statusMsg" class="form-control" id="statusMsg" placeholder = "Please write the message."required=""></textarea>
+
+				<div class="form-group">
+					<label for="Message">{{ __('Message') }} </label>
+					<textarea name="statusMsg" class="form-control" id="statusMsg" placeholder = "Please write the message."required=""></textarea>
+				</div>
+
 				<p id="error-message" style="color:red;"> </p>
+
+				<div class="form-group update">
+	            	<label for="Update Amount">{{ __('Update Amount') }} </label>
+	            	<input type="number" class="form-control" id="update_amount" name="update_amount" placeholder="{{ __('Update Amount') }}">
+	          	</div>
+
+	          	<div class="form-group update">
+	            	<label for="Update Per Installment Amount">{{ __('Update Per Installment Amount') }} </label>
+	            	<input type="number" class="form-control" id="update_installment_amount" name="update_installment_amount" placeholder="{{ __('Update  Per Installment Amount') }}">
+	          	</div>
+
 				<input type="hidden" id="statusId" name="statusId" value="">
 				<input type="hidden" id="status" name="status" value="0">
 			</div>

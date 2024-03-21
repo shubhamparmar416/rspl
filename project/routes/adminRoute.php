@@ -352,6 +352,7 @@ Route::prefix('admin')->group(function () {
         Route::get('/email-templates/{id}', [EmailController::class,'edit'])->name('admin.mail.edit');
         Route::post('/email-templates/{id}', [EmailController::class,'update'])->name('admin.mail.update');
         Route::get('/email-config', [EmailController::class,'config'])->name('admin.mail.config');
+        Route::get('/message-config', [EmailController::class,'messageConfig'])->name('admin.message.config');
         Route::get('/groupemail', [EmailController::class,'groupemail'])->name('admin.group.show');
         Route::post('/groupemailpost', [EmailController::class,'groupemailpost'])->name('admin.group.submit');
       });
@@ -369,6 +370,8 @@ Route::prefix('admin')->group(function () {
 
 
       Route::group(['middleware'=>'permissions:Payment Setting'], function () {
+
+        Route::post('/general-settings/update/message', [ GeneralSettingController::class,'generalupdate'])->name('admin.gs.message.update');
         Route::post('/general-settings/update/all', [ GeneralSettingController::class,'generalupdate'])->name('admin.gs.update');
         Route::get('/paymentgateway/datatables', [PaymentGatewayController::class,'datatables'])->name('admin.payment.datatables'); //JSON REQUEST
         Route::get('/paymentgateway', [PaymentGatewayController::class,'index'])->name('admin.payment.index');

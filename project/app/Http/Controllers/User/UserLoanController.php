@@ -160,4 +160,13 @@ class UserLoanController extends Controller
 
         return view('user.loan.log', compact('logs', 'currency'));
     }
+
+    public function pendingLoanAccept($id)
+    {
+        $loan = UserLoan::findOrfail($id);
+        $loan->message = $loan->message.' -- User Accepted. ';
+        $loan->save();
+        
+        return redirect()->back()->with('sucess','Loan sucessfully accepted!');
+    }
 }
