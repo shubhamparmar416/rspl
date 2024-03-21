@@ -71,7 +71,7 @@ Route::prefix('/user')->group(function () {
         Route::get('/referrer-commissions', [ReferralController::class, 'commissions']);
         
         // KYC
-        Route::get('/kyc-form', [KYCUPDATEDController::class, 'index']);
+        Route::get('/kyc/form', [KYCUPDATEDController::class, 'index']);
     
         Route::post('/kyc/document_verify', [UserKYCUPDATEDController::class, 'documentVerify']);
         Route::post('/kyc/digilocker_verify', [UserKYCUPDATEDController::class, 'digilockerVerify']);

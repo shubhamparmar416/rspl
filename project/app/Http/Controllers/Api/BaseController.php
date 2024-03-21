@@ -15,7 +15,7 @@ class BaseController extends Controller
     public function error($errors = [],$message = '')
     {
         $error = config('constants.api.ERROR');
-        return response()->json(array('status' => 0 ,'code' => $error, 'data' => [], 'errors' => $errors, 'message' => ''));
+        return response()->json(array('status' => 0 ,'code' => $error, 'data' => [], 'errors' => $errors, 'message' => $message));
     }
 
 

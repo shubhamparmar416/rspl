@@ -1,0 +1,588 @@
+{
+	"info": {
+		"_postman_id": "8203205f-b51c-4c0a-8d2e-13ed9d71581e",
+		"name": "rspl",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "20310008",
+		"_collection_link": "https://solar-eclipse-746608.postman.co/workspace/New-Team-Workspace~71516ca0-0d2b-4e5c-8256-df982af7e779/collection/20310008-8203205f-b51c-4c0a-8d2e-13ed9d71581e?action=share&source=collection_link&creator=20310008"
+	},
+	"item": [
+		{
+			"name": "kyc",
+			"item": [
+				{
+					"name": "kyc form",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {
+							"accept": true
+						}
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/kyc/form",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"kyc",
+								"form"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "kyc_verify_status",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {
+							"accept": true
+						}
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/kyc/kyc_verify_status",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"kyc",
+								"kyc_verify_status"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "document verify",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {
+							"accept": true
+						}
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"document\": \"123456789\", //aadhar or pan num \r\n    \"type\": \"aadhaar\"  //like aadhaar/pan\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/kyc/document_verify",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"kyc",
+								"document_verify"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "digilocker_verify",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {
+							"accept": true
+						}
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"dfname\": \"123456789\",\r\n    \"dmobile\": \"123456789\",\r\n    \"dlname\": \"aadhaar\",\r\n    \"demail\": \"aadhaar\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/kyc/digilocker_verify",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"kyc",
+								"digilocker_verify"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "digilocker_verify check",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {
+							"accept": true
+						}
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"transactionId\": \"123456789\"\r\n  \r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/kyc/digilocker_verify_check",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"kyc",
+								"digilocker_verify_check"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "vkyc_verify",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {
+							"accept": true
+						}
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/kyc/vkyc_verify",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"kyc",
+								"vkyc_verify"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "upload_statement",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {
+							"accept": true
+						}
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"institutionStatement\" : \"aaa\",\r\n    \"type\" : \"stetment\" //stetment/netBanking\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/kyc/upload_statement",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"kyc",
+								"upload_statement"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get_address_lat_long",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {
+							"accept": true
+						}
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"latitude\" : \"111\",\r\n    \"longitude\" : \"11\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/kyc/get_address_lat_long",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"kyc",
+								"get_address_lat_long"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "step1_document",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {
+							"accept": true
+						}
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"latitude\" : \"111\",\r\n    \"longitude\" : \"11\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/kyc/step1_document",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"kyc",
+								"step1_document"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "step2_document",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {
+							"accept": true
+						}
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"latitude\" : \"111\",\r\n    \"longitude\" : \"11\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/kyc/step2_document",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"kyc",
+								"step2_document"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "login",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "email",
+							"value": "radhu2460@gmail.com",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "12345678",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{url}}/login",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "profile",
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bear eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIzIiwianRpIjoiNzc4ODM4MWRlYTdlZjA1ZGYzMzIzMjc3NGFjY2Q2ZjA1MTg1OGVhZWY4MjJjYTE0NDhkOWY1YmI1MjZmNWE2NmQ2YWYzNTUyNjZhNGYwNzkiLCJpYXQiOjE3MTA3NTEyMjAuNjkzMTc4LCJuYmYiOjE3MTA3NTEyMjAuNjkzMTg4LCJleHAiOjE3NDIyODcyMjAuNjg0MTUyLCJzdWIiOiIxMjgiLCJzY29wZXMiOltdfQ.e8duB8SjZrDuSC1upPvigQ10RTuF41aWpOgsSaRaa25csrkRumDhEhkDimECtXie1LG2o9Qnv672OigtIdX0Gnaa--7LGmggI-i0DR-xZUP8f_LHS62etab7XkBJu8af4K2G-q9lURNlGWDq0dXSr_d_FHZh1j9ofP4vIMJpOJ0L9TiqfbQad0QX-7bT6Tifhgis9KBLsibV7hxT4H3Uzlyv-eHFTdX6Fd5ZSWpzFkKX8F3E6uyA1i_7rII_PlStWrgZ1RCU0yiMVfyDpTUqYmNM7uPzd06Ss9VzDNDXZxmrsHROCzxQzS0d4C1yWyXvVxD3oa4Utg7JsEMfecVuVUoL7w9RXags40Dli52FPhs-rTXKwz-LWjaSB3WXqxT-uhRVgUdT1qAYrvya0RLFm7a68DtfFjMmwMf7zzQvs9eyO5rrqQuEATrN7tI_Q45gp_xJi-uhdU3xNOeXQYnG6ub2FfrEIBRmswe2vY3sA_9AMvtRguVg1hWEZfFc8a4qraX9WMA7Y9mUOxzhHviSbPJUqxAI4bU3QxrPUBazcRRvOHL7V8cPE5DcfWfa8nyDk6uhN1fYmsXoiLVWTX-9WaaM_GL6clFsdDkVdPye31m79oVrsNwycqJGzJFdu7_0zIzU54U58bOQkQDUfE7xVwmbhlPPfVvsG2DQr-Nw9eA",
+						"type": "text",
+						"disabled": true
+					},
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/details",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"details"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "url",
+			"value": "http://localhost/rspl/user/api",
+			"type": "string"
+		},
+		{
+			"key": "token",
+			"value": "",
+			"type": "string"
+		}
+	]
+}

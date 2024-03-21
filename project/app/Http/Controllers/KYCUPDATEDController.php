@@ -146,160 +146,34 @@ class KYCUPDATEDController extends Controller
         //
     }
 
-    public function digilockerVerify()
+    public function digilockerVerify(Request $request)
     {
-        $random = substr(str_shuffle("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"), 0, 10);
-        $client = new \GuzzleHttp\Client([
-            'verify' => false
-        ]);
+        try {
+            $random = substr(str_shuffle("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"), 0, 10);
+            $client = new \GuzzleHttp\Client([
+                'verify' => false
+            ]);
 
-        //$url = 'https://api.digitap.ai/ent/v1/kyc/generate-url';
-        $url = 'https://apidemo.digitap.work/ent/v1/kyc/generate-url';
-        // $url = 'https://svcdemo.digitap.work/ent/v1/kyc/generate-url';
+            //$url = 'https://api.digitap.ai/ent/v1/kyc/generate-url';
+            $url = 'https://apidemo.digitap.work/ent/v1/kyc/generate-url';
+            // $url = 'https://svcdemo.digitap.work/ent/v1/kyc/generate-url';
 
-        $data = [
-            'serviceId' => '4',
-            'uid' => $random,
-            'firstName' => $_POST['dfname'],
-            'lastName' => $_POST['dlname'],
-            'mobile' => $_POST['dmobile'],
-            'emailId' => $_POST['demail']
-        ];
+            $data = [
+                'serviceId' => '4',
+                'uid' => $random,
+                'firstName' => $request->input('dfname'),
+                'lastName' => $request->input('dlname'),
+                'mobile' => $request->input('dmobile'),
+                'emailId' => $request->input('demail')
+            ];
 
-        $username = '48130178';
-        $password = '6RBkqcF5iarvmWeK5pLhjXrvfcEC8FLe';
-        //$username = '34469987';
-        //$password = 'RSzF0t3ZQNhqGqqtTyFrMmEMqxpTK728';
 
-        $auth = base64_encode($username . ':' . $password);
-
-        $response = $client->request('POST', $url, [
-            'headers' => [
-                'Authorization' => $auth,
-            ],
-            'json' => $data
-
-        ]);
-
-        $result = $response->getBody()->getContents();
-        //dd($result);
-        if (empty ($result)) {
-            return $this->error([]);
-            // return \Response::json(['status' => 0, 'data' => []]);
-        } else {
-            //Insert data into table
-            $user_id = \Auth::id();
-            $document = UserKycDocument::where('user_id', $user_id)->first();
-            // dd($document);
-            if (!empty ($document)) {
-                $document->api_response_digilocker = $result;
-                $document->save();
-            } else {
-                $insertData = array();
-                $insertData = array('user_id' => $user_id, 'api_response_digilocker' => $result);
-                UserKycDocument::create($insertData);
-            }
-
-            //end insertion data
-            return $this->success($result);
-            // return \Response::json(['status' => 1, 'data' => $result]);
-        }
-    }
-
-    public function digilockerVerifyCheck()
-    {
-        $random = substr(str_shuffle("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"), 0, 10);
-        $client = new \GuzzleHttp\Client([
-            'verify' => false
-        ]);
-
-        $url = 'https://apidemo.digitap.work/ent/v1/kyc/get-digilocker-details';
-        $data = [
-            'transactionId' => $_POST['transactionId']
-        ];
-
-        $username = '48130178';
-        $password = '6RBkqcF5iarvmWeK5pLhjXrvfcEC8FLe';
-        $auth = base64_encode($username . ':' . $password);
-
-        $response = $client->request('POST', $url, [
-            'headers' => [
-                'ent_authorization' => $auth,
-            ],
-            'json' => $data
-
-        ]);
-
-        $result = $response->getBody()->getContents();
-        //dd($result);
-        if (empty ($result)) {
-            return $this->error();
-            // return \Response::json(['status' => 0, 'data' => []]);
-        } else {
-            //Insert data into table
-            $user_id = \Auth::id();
-            $document = UserKycDocument::where('user_id', $user_id)->first();
-
-            /*$userKyc_update = User::where('id', $user_id)->first();
-            $userKyc_update->kyc_status = 1;
-            $userKyc_update->kyc_info = 1;
-            $userKyc_update->save();*/
-
-            $document->api_response_digilocker_status = $result;
-            $document->save();
-            return $this->success($result);
-            // return \Response::json(['status' => 1, 'data' => $result]);
-        }
-    }
-
-    public function documentVerify()
-    {
-
-        $client = new \GuzzleHttp\Client([
-            'verify' => false
-        ]);
-
-        switch ($_POST['type']) {
-            case ('aadhaar'):
-                $url = 'https://svcdemo.digitap.work/validation/kyc/v1/aadhaar';
-                //$url = 'https://api.digitap.ai/validation/kyc/v1/aadhaar';
-                $data = [
-                    'aadhaar' => $_POST['document'],
-                    'client_ref_num' => 'test',
-                ];
-                break;
-
-            case ('pan'):
-                $url = 'https://svcdemo.digitap.work/validation/kyc/v1/pan_details';
-                $data = [
-                    'pan' => $_POST['document'],
-                    'client_ref_num' => 'test',
-                ];
-                break;
-
-            case ('voter'):
-                $url = 'https://svcdemo.digitap.work/validation/kyc/v1/voter';
-                $data = [
-                    'epic_number' => $_POST['document'],
-                    'client_ref_num' => 'test',
-                ];
-                break;
-
-            default:
-                $url = '';
-                $data = [];
-        }
-
-        if ($url == '') {
-            return $this->error([]);
-            // return \Response::json(['status' => 0, 'data' => []]);
-        } else {
             $username = '48130178';
             $password = '6RBkqcF5iarvmWeK5pLhjXrvfcEC8FLe';
+            //$username = '34469987';
+            //$password = 'RSzF0t3ZQNhqGqqtTyFrMmEMqxpTK728';
 
-            // $username = '34469987';
-            // $password = 'RSzF0t3ZQNhqGqqtTyFrMmEMqxpTK728';
-            $auth = 'Basic ' . base64_encode($username . ':' . $password);
+            $auth = base64_encode($username . ':' . $password);
 
             $response = $client->request('POST', $url, [
                 'headers' => [
@@ -310,6 +184,7 @@ class KYCUPDATEDController extends Controller
             ]);
 
             $result = $response->getBody()->getContents();
+            //dd($result);
             if (empty ($result)) {
                 return $this->error([]);
                 // return \Response::json(['status' => 0, 'data' => []]);
@@ -319,115 +194,259 @@ class KYCUPDATEDController extends Controller
                 $document = UserKycDocument::where('user_id', $user_id)->first();
                 // dd($document);
                 if (!empty ($document)) {
-                    if ($_POST['type'] == 'aadhaar') {
-                        $document->api_response_aadhar = $result;
-                    } elseif ($_POST['type'] == 'pan') {
-                        $document->api_response_pan = $result;
-                    }
+                    $document->api_response_digilocker = $result;
                     $document->save();
-                    /*$userKyc_update = User::where('id', $user_id)->first();
-                    $userKyc_update->kyc_status = 1;
-                    $userKyc_update->kyc_info = 1;
-                    $userKyc_update->save();*/
                 } else {
                     $insertData = array();
-                    if ($_POST['type'] == 'aadhaar') {
-                        $insertData = array('user_id' => $user_id, 'api_response_aadhar' => $result);
-                    } elseif ($_POST['type'] == 'pan') {
-                        $insertData = array('user_id' => $user_id, 'api_response_pan' => $result);
-                    }
+                    $insertData = array('user_id' => $user_id, 'api_response_digilocker' => $result);
                     UserKycDocument::create($insertData);
                 }
 
                 //end insertion data
                 return $this->success($result);
+                // return \Response::json(['status' => 1, 'data' => $result]);
             }
+        } catch (\Throwable $e) {
+            return $this->error([], "Server error");
         }
     }
 
-
-    public function uploadStatement()
+    public function digilockerVerifyCheck(Request $request)
     {
-        $random = substr(str_shuffle("0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"), 0, 10);
-        $client = new \GuzzleHttp\Client([
-            'verify' => false
-        ]);
-        //print_r($_POST);
-        switch ($_POST['type']) {
-            case ('stetment'):
-                $url = 'https://svcdemo.digitap.work/bank-data/generateurl';
-                $data = [
-                    'client_ref_num' => $random,
-                    'txn_completed_cburl' => url('/user/kyc/kyc_verify_status/'),
-                    'institution_id' => $_POST['institutionStatement'],
-                    'destination' => 'statementupload',
-                    'acceptance' => 'atleastOneTransactionInRange',
-                    'return_url' => url('/user/kyc/kyc_verify_status/'),
-                    /*'return_url' => url('/user/kyc/').'/?transID='.$random.'&status=cancle',*/
-                ];
-                break;
+        try {
+            $random = substr(str_shuffle("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"), 0, 10);
+            $client = new \GuzzleHttp\Client([
+                'verify' => false
+            ]);
 
-            case ('netBanking'):
-                $transID = mt_rand(10000000, 99999999);
-                $_SESSION['transID'] = $transID;
-                $url = 'https://svcdemo.digitap.work/bank-data/generateurl';
-                $data = [
-                    'client_ref_num' => $random,
-                    'txn_completed_cburl' => url('/user/kyc/kyc_verify_status/'),
-                    'institution_id' => $_POST['institutionNetbanking'],
-                    'destination' => 'netbanking',
-                    'acceptance' => 'atleastOneTransactionInRange',
-                    'return_url' => url('/user/kyc/kyc_verify_status/'),
-                    /*'return_url' => url('/user/kyc/').'/?transID='.$random.'&status=cancle',*/
-                ];
-                break;
+            $url = 'https://apidemo.digitap.work/ent/v1/kyc/get-digilocker-details';
+            $data = [
+                'transactionId' => $request->input('transactionId')
+            ];
 
-            default:
-                $url = '';
-                $data = [];
-        }
-        /*   print_r($data);
-   die;*/
-
-        if ($url == '') {
-            return $this->error();
-            // return \Response::json(['status' => 0, 'data' => []]);
-        } else {
             $username = '48130178';
             $password = '6RBkqcF5iarvmWeK5pLhjXrvfcEC8FLe';
-            $auth = 'Basic ' . base64_encode($username . ':' . $password);
+            $auth = base64_encode($username . ':' . $password);
 
-            //dd($url);
             $response = $client->request('POST', $url, [
                 'headers' => [
-                    'Authorization' => $auth,
+                    'ent_authorization' => $auth,
                 ],
                 'json' => $data
 
             ]);
 
             $result = $response->getBody()->getContents();
-
+            //dd($result);
             if (empty ($result)) {
                 return $this->error();
                 // return \Response::json(['status' => 0, 'data' => []]);
             } else {
-                //$result = json_decode($result);
-                //dd($resultData->url);
                 //Insert data into table
-                /*return Redirect::to($resultData->url);*/
                 $user_id = \Auth::id();
                 $document = UserKycDocument::where('user_id', $user_id)->first();
-                $document->api_response_banking = $result;
-                $update = $document->save();
+
+                /*$userKyc_update = User::where('id', $user_id)->first();
+                $userKyc_update->kyc_status = 1;
+                $userKyc_update->kyc_info = 1;
+                $userKyc_update->save();*/
+
+                $document->api_response_digilocker_status = $result;
+                $document->save();
                 return $this->success($result);
                 // return \Response::json(['status' => 1, 'data' => $result]);
             }
+        } catch (\Throwable $e) {
+            return $this->error([], "Server error");
+        }
+    }
+
+    public function documentVerify(Request $request)
+    {
+        try {
+            $client = new \GuzzleHttp\Client([
+                'verify' => false
+            ]);
+
+            $type = $request->input('type');
+            $document_r = $request->input('document');
+            switch ($type) {
+                case ('aadhaar'):
+                    $url = 'https://svcdemo.digitap.work/validation/kyc/v1/aadhaar';
+                    //$url = 'https://api.digitap.ai/validation/kyc/v1/aadhaar';
+                    $data = [
+                        'aadhaar' => $document_r,
+                        'client_ref_num' => 'test',
+                    ];
+                    break;
+
+                case ('pan'):
+                    $url = 'https://svcdemo.digitap.work/validation/kyc/v1/pan_details';
+                    $data = [
+                        'pan' => $document_r,
+                        'client_ref_num' => 'test',
+                    ];
+                    break;
+
+                case ('voter'):
+                    $url = 'https://svcdemo.digitap.work/validation/kyc/v1/voter';
+                    $data = [
+                        'epic_number' => $document_r,
+                        'client_ref_num' => 'test',
+                    ];
+                    break;
+
+                default:
+                    $url = '';
+                    $data = [];
+            }
+
+            if ($url == '') {
+                return $this->error([]);
+                // return \Response::json(['status' => 0, 'data' => []]);
+            } else {
+                $username = '48130178';
+                $password = '6RBkqcF5iarvmWeK5pLhjXrvfcEC8FLe';
+
+                // $username = '34469987';
+                // $password = 'RSzF0t3ZQNhqGqqtTyFrMmEMqxpTK728';
+                $auth = 'Basic ' . base64_encode($username . ':' . $password);
+
+                $response = $client->request('POST', $url, [
+                    'headers' => [
+                        'Authorization' => $auth,
+                    ],
+                    'json' => $data
+
+                ]);
+
+                $result = $response->getBody()->getContents();
+                if (empty ($result)) {
+                    return $this->error([]);
+                    // return \Response::json(['status' => 0, 'data' => []]);
+                } else {
+                    //Insert data into table
+                    $user_id = \Auth::id();
+                    $document = UserKycDocument::where('user_id', $user_id)->first();
+                    // dd($document);
+                    if (!empty ($document)) {
+                        if ($type == 'aadhaar') {
+                            $document->api_response_aadhar = $result;
+                        } elseif ($type == 'pan') {
+                            $document->api_response_pan = $result;
+                        }
+                        $document->save();
+                        /*$userKyc_update = User::where('id', $user_id)->first();
+                        $userKyc_update->kyc_status = 1;
+                        $userKyc_update->kyc_info = 1;
+                        $userKyc_update->save();*/
+                    } else {
+                        $insertData = array();
+                        if ($type == 'aadhaar') {
+                            $insertData = array('user_id' => $user_id, 'api_response_aadhar' => $result);
+                        } elseif ($_POST['type'] == 'pan') {
+                            $insertData = array('user_id' => $user_id, 'api_response_pan' => $result);
+                        }
+                        UserKycDocument::create($insertData);
+                    }
+
+                    //end insertion data
+                    return $this->success($result);
+                }
+            }
+        } catch (\Throwable $e) {
+            return $this->error([], "Server error");
+        }
+    }
+
+
+    public function uploadStatement(Request $request)
+    {
+        try {
+            $random = substr(str_shuffle("0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"), 0, 10);
+            $client = new \GuzzleHttp\Client([
+                'verify' => false
+            ]);
+            //print_r($_POST);
+            switch ($request->get('type')) {
+                case ('stetment'):
+                    $url = 'https://svcdemo.digitap.work/bank-data/generateurl';
+                    $data = [
+                        'client_ref_num' => $random,
+                        'txn_completed_cburl' => url('/user/kyc/kyc_verify_status/'),
+                        'institution_id' => $request->get('institutionStatement'),
+                        'destination' => 'statementupload',
+                        'acceptance' => 'atleastOneTransactionInRange',
+                        'return_url' => url('/user/kyc/kyc_verify_status/'),
+                        /*'return_url' => url('/user/kyc/').'/?transID='.$random.'&status=cancle',*/
+                    ];
+                    break;
+
+                case ('netBanking'):
+                    $transID = mt_rand(10000000, 99999999);
+                    $_SESSION['transID'] = $transID;
+                    $url = 'https://svcdemo.digitap.work/bank-data/generateurl';
+                    $data = [
+                        'client_ref_num' => $random,
+                        'txn_completed_cburl' => url('/user/kyc/kyc_verify_status/'),
+                        'institution_id' => $request->get('institutionNetbanking'),
+                        'destination' => 'netbanking',
+                        'acceptance' => 'atleastOneTransactionInRange',
+                        'return_url' => url('/user/kyc/kyc_verify_status/'),
+                        /*'return_url' => url('/user/kyc/').'/?transID='.$random.'&status=cancle',*/
+                    ];
+                    break;
+
+                default:
+                    $url = '';
+                    $data = [];
+            }
+            /*   print_r($data);
+       die;*/
+
+            if ($url == '') {
+                return $this->error();
+                // return \Response::json(['status' => 0, 'data' => []]);
+            } else {
+                $username = '48130178';
+                $password = '6RBkqcF5iarvmWeK5pLhjXrvfcEC8FLe';
+                $auth = 'Basic ' . base64_encode($username . ':' . $password);
+
+                //dd($url);
+                $response = $client->request('POST', $url, [
+                    'headers' => [
+                        'Authorization' => $auth,
+                    ],
+                    'json' => $data
+
+                ]);
+
+                $result = $response->getBody()->getContents();
+
+                if (empty ($result)) {
+                    return $this->error();
+                    // return \Response::json(['status' => 0, 'data' => []]);
+                } else {
+                    //$result = json_decode($result);
+                    //dd($resultData->url);
+                    //Insert data into table
+                    /*return Redirect::to($resultData->url);*/
+                    $user_id = \Auth::id();
+                    $document = UserKycDocument::where('user_id', $user_id)->first();
+                    $document->api_response_banking = $result;
+                    $update = $document->save();
+                    return $this->success($result);
+                    // return \Response::json(['status' => 1, 'data' => $result]);
+                }
+            }
+        } catch (\Throwable $e) {
+            return $this->error([], "Server error");
         }
     }
 
     public function step1_document(Request $request)
     {
+        try{
         $user_id = \Auth::id();
         $aadhar_no = "";
         $pan_no = "";
@@ -663,7 +682,7 @@ class KYCUPDATEDController extends Controller
 
             // Implode the combined array
             $errorMessage = implode(", ", $combined);
-            return $this->error($errorArray,"something went wrong please try again later");
+            return $this->error($errorArray, "something went wrong please try again later");
             // return \Response::json(['status' => 0, 'message' => "something went wrong please try again later", 'error' => $errorMessage]);
         }
 
@@ -698,24 +717,29 @@ class KYCUPDATEDController extends Controller
         }
         //$create = UserKycDocument::create($data);
         if ($create) {
-            return $this->success([],"Data Added Successfully");
+            return $this->success([], "Data Added Successfully");
             // return \Response::json(['status' => 1, 'message' => "Data Added Successfully"]);
         } elseif ($update) {
-            return $this->success([],"Data Updated Successfully");
+            return $this->success([], "Data Updated Successfully");
             // return \Response::json(['status' => 1, 'message' => "Data Updated Successfully"]);
         } else {
-            return $this->error([],"something went wrong please try again later");
+            return $this->error([], "something went wrong please try again later");
 
             // return \Response::json(['status' => 0, 'message' => "something went wrong please try again later", 'error' => "something went wrong please try again later."]);
         }
+    } catch (\Throwable $e) {
+        return $this->error([], "Server error");
+    }
     }
 
     public function step2_document(Request $request)
     {
+        try{
         $user_id = \Auth::id();
         $document = UserKycDocument::where('user_id', $user_id)->first();
         if ($document->api_response_banking_details == null) {
-            return redirect('/user/dashboard');
+            // return redirect('/user/dashboard');
+            return $this->error([], "Details not found.");
         }
         $statusCheck = '0';
         $errorArray = array();
@@ -761,23 +785,23 @@ class KYCUPDATEDController extends Controller
                 $api_response_digilocker_status = json_decode($document->api_response_digilocker_status);
                 //dd($api_response_digilocker_status);
                 if ($api_response_digilocker_status->model->address->dist != $_POST['district']) {
-                    return $this->error([],"District not matched.");
+                    return $this->error([], "District not matched.");
                     // return \Response::json(['status' => 0, 'message' => "District not matched."]);
                 }
                 if ($api_response_digilocker_status->model->address->vtc != $_POST['city']) {
-                    return $this->error([],"City not matched.");
+                    return $this->error([], "City not matched.");
                     // return \Response::json(['status' => 0, 'message' => "City not matched."]);
                 }
                 if ($api_response_digilocker_status->model->address->state != $_POST['state']) {
-                    return $this->error([],"State not matched.");
+                    return $this->error([], "State not matched.");
                     // return \Response::json(['status' => 0, 'message' => "State not matched."]);
                 }
                 if ($api_response_digilocker_status->model->address->pc != $_POST['pincode']) {
-                    return $this->error([],"Pincode not matched.");
+                    return $this->error([], "Pincode not matched.");
                     // return \Response::json(['status' => 0, 'message' => "Pincode not matched."]);
                 }
                 if ($api_response_digilocker_status->model->address->country != $_POST['country']) {
-                    return $this->error([],"Country not matched.");
+                    return $this->error([], "Country not matched.");
                     // return \Response::json(['status' => 0, 'message' => "Country not matched."]);
                 }
             } elseif ($document->api_response_aadhar_front_img != null && $document->api_response_aadhar_back_img != null) {
@@ -798,27 +822,27 @@ class KYCUPDATEDController extends Controller
                 }
 
                 if ($address->district != $_POST['district']) {
-                    return $this->error([],"District not matched.");
-                    
+                    return $this->error([], "District not matched.");
+
                     // return \Response::json(['status' => 0, 'message' => "District not matched."]);
                 }
                 if ($address->city != $_POST['city']) {
-                    return $this->error([],"City not matched.");
+                    return $this->error([], "City not matched.");
 
                     // return \Response::json(['status' => 0, 'message' => "City not matched."]);
                 }
                 if ($address->state != $_POST['state']) {
-                    return $this->error([],"State not matched.");
+                    return $this->error([], "State not matched.");
 
                     // return \Response::json(['status' => 0, 'message' => "State not matched."]);
                 }
                 if ($address->pin != $_POST['pincode']) {
-                    return $this->error([],"Pincode not matched.");
+                    return $this->error([], "Pincode not matched.");
 
                     // return \Response::json(['status' => 0, 'message' => "Pincode not matched."]);
                 }
             } else {
-                return $this->error([],"Details not found.");
+                return $this->error([], "Details not found.");
                 // return \Response::json(['status' => 2, 'message' => "Details not found."]);
             }
 
@@ -833,7 +857,7 @@ class KYCUPDATEDController extends Controller
         $userKyc_update->kyc_status = 1;
         $userKyc_update->kyc_info = 1;
         $userKyc_update->save();
-        return $this->success([],"Kyc updated successfully.");
+        return $this->success([], "Kyc updated successfully.");
         // return \Response::json(['status' => 1, 'message' => "Kyc updated successfully."]);
         //return redirect('/user/dashboard?kyc=1');
         //return redirect('/user/kyc2');
@@ -842,6 +866,9 @@ class KYCUPDATEDController extends Controller
 
             return redirect('/user/dashboard?kyc=0');
         }*/
+    } catch (\Throwable $e) {
+        return $this->error([], "Server error");
+    }
     }
 
     public function kycVerifyStatus()
@@ -938,122 +965,130 @@ class KYCUPDATEDController extends Controller
 
     function getAddressLatLong(Request $request)
     {
-        $user_id = \Auth::id();
-        $document = UserKycDocument::where('user_id', $user_id)->first();
-        if ($document->api_response_banking_details == null) {
-            return redirect('/user/dashboard');
-        }
-
-        $random = substr(str_shuffle("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"), 0, 10);
-        $client = new \GuzzleHttp\Client([
-            'verify' => false
-        ]);
-
-        $url = 'https://api.digitap.ai/ent/v1/address-verification';
-        $data = [
-            'uniqueId' => $random,
-            'latitude' => $_POST['latitude'],
-            'longitude' => $_POST['longitude']
-        ];
-
-        $username = '34469987';
-        $password = 'RSzF0t3ZQNhqGqqtTyFrMmEMqxpTK728';
-        $auth = base64_encode($username . ':' . $password);
-
-        $response = $client->request('POST', $url, [
-            'headers' => [
-                'Authorization' => $auth,
-            ],
-            'json' => $data
-
-        ]);
-
-        $result = $response->getBody()->getContents();
-        $document = UserKycDocument::where('user_id', $user_id)->first();
-        $document->api_response_address = $result;
-        $document->save();
-        return $result;
-        //return '';
-        /*if ($result) {
-            return \Response::json(['status' => 1, 'message' => "", 'response' => $result]);
-        } else {
-            return \Response::json(['status' => 0, 'message' => ""]);
-        }*/
-    }
-    // FUNCTION WHEN GET REQUEST FOR VKYC API
-    public function vkycVerify()
-    {
-        $client = new \GuzzleHttp\Client([
-            'verify' => false
-        ]);
-
-        $data = array();
-        $user_id = \Auth::id();
-        Log::info(base64_encode($user_id) . " ====> Call api for vkyc ");
-
-        // GET APPROVE DETAIL FOR VKYC
-        $document = UserKycDocument::where('user_id', $user_id)->first();
-
-        // IF DOCUMENT EMPTY USER DETAIL NOT AVALABLE
-        if (!empty ($document)) {
-            $detail = json_decode($document->api_response_pan);
-            if (!empty ($detail)) {
-
-                $detail = $detail->result;
-                $data = [
-                    "fname" => $detail->first_name,
-                    "applicationNumber" => $document->user_id,
-                    "mobile" => $detail->mobile,
-                    "email" => $detail->email,
-                    "skipOkyc" => "TRUE",
-                    "sendSms" => true,
-                    "sendEmail" => true,
-                    "redirectionUrl" => route('user.vkyc.update')
-                ];
-
+        try {
+            $user_id = \Auth::id();
+            $document = UserKycDocument::where('user_id', $user_id)->first();
+            if ($document->api_response_banking_details == null) {
+                return redirect('/user/dashboard');
             }
 
-            // API CALL PARAMS
-            $url = env('KYC_API_URL') . "demo/v1/vkyc/okyc/user/activate";
-            $username = env('KYC_CLIENT_ID');
-            $password = env('KYC_CLIENT_PASSWORD');
-            $auth = 'Basic ' . base64_encode($username . ':' . $password);
+            $random = substr(str_shuffle("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"), 0, 10);
+            $client = new \GuzzleHttp\Client([
+                'verify' => false
+            ]);
+
+            $url = 'https://api.digitap.ai/ent/v1/address-verification';
+            $data = [
+                'uniqueId' => $random,
+                'latitude' => $request->input('latitude'),
+                'longitude' => $request->input('longitude')
+            ];
+
+            $username = '34469987';
+            $password = 'RSzF0t3ZQNhqGqqtTyFrMmEMqxpTK728';
+            $auth = base64_encode($username . ':' . $password);
 
             $response = $client->request('POST', $url, [
                 'headers' => [
                     'Authorization' => $auth,
-                    'ent_authorization' => env('KYC_CLIENT_TOKEN')
                 ],
                 'json' => $data
 
             ]);
 
-            // GET RESULT FROM API
             $result = $response->getBody()->getContents();
-            if (empty ($result)) {
-                Log::error(base64_encode($user_id) . " ====> Call api for vkyc result is empty");
-                return $this->error([],"Something went wrong");
-                // return \Response::json(['status' => 0, 'data' => [], 'message' => "Something went wrong"]);
+            $document = UserKycDocument::where('user_id', $user_id)->first();
+            $document->api_response_address = $result;
+            $document->save();
+            return $result;
+            //return '';
+            /*if ($result) {
+                return \Response::json(['status' => 1, 'message' => "", 'response' => $result]);
             } else {
-                $data = json_decode($result);
-                Log::info(base64_encode($user_id) . " ===> Call api for vkyc result" . $result);
-
-                //    IF KYC DONE UPDATE IN TABLE 
-                if ($data->model->vkycCompleted == "true" || $data->model->vkycCompleted || true) {
-                    Log::info(json_encode($user_id) . " ===> Call api for vkyc if vkyc complete save result" . json_encode($data));
-                    $this->vkycStatusByUniqueId();
-                }
-                Log::info(base64_encode($user_id) . " ===> Call api for vkyc response api and redirect" . json_encode($data));
-              return  $this->success($result);
-                // return \Response::json(['status' => 1, 'data' => $result, 'message' => '']);
-            }
-        } else {
-            Log::info(base64_encode($user_id) . " ===> Call api for vkyc but kyc not verified");
-            return  $this->success([],'Kyc not verified');
-           
-            // return \Response::json(['status' => 0, 'data' => [], 'message' => 'Kyc not verified']);
+                return \Response::json(['status' => 0, 'message' => ""]);
+            }*/
+        } catch (\Throwable $e) {
+            return $this->error([], "Server error");
         }
+    }
+    // FUNCTION WHEN GET REQUEST FOR VKYC API
+    public function vkycVerify()
+    {
 
+        try {
+            $client = new \GuzzleHttp\Client([
+                'verify' => false
+            ]);
+
+            $data = array();
+            $user_id = \Auth::id();
+            Log::info(base64_encode($user_id) . " ====> Call api for vkyc ");
+
+            // GET APPROVE DETAIL FOR VKYC
+            $document = UserKycDocument::where('user_id', $user_id)->first();
+
+            // IF DOCUMENT EMPTY USER DETAIL NOT AVALABLE
+            if (!empty ($document)) {
+                $detail = json_decode($document->api_response_pan);
+                if (!empty ($detail)) {
+
+                    $detail = $detail->result;
+                    $data = [
+                        "fname" => $detail->first_name,
+                        "applicationNumber" => $document->user_id,
+                        "mobile" => $detail->mobile,
+                        "email" => $detail->email,
+                        "skipOkyc" => "TRUE",
+                        "sendSms" => true,
+                        "sendEmail" => true,
+                        "redirectionUrl" => route('user.vkyc.update')
+                    ];
+
+                }
+
+                // API CALL PARAMS
+                $url = env('KYC_API_URL') . "demo/v1/vkyc/okyc/user/activate";
+                $username = env('KYC_CLIENT_ID');
+                $password = env('KYC_CLIENT_PASSWORD');
+                $auth = 'Basic ' . base64_encode($username . ':' . $password);
+
+                $response = $client->request('POST', $url, [
+                    'headers' => [
+                        'Authorization' => $auth,
+                        'ent_authorization' => env('KYC_CLIENT_TOKEN')
+                    ],
+                    'json' => $data
+
+                ]);
+
+                // GET RESULT FROM API
+                $result = $response->getBody()->getContents();
+                if (empty ($result)) {
+                    Log::error(base64_encode($user_id) . " ====> Call api for vkyc result is empty");
+                    return $this->error([], "Something went wrong");
+                    // return \Response::json(['status' => 0, 'data' => [], 'message' => "Something went wrong"]);
+                } else {
+                    $data = json_decode($result);
+                    Log::info(base64_encode($user_id) . " ===> Call api for vkyc result" . $result);
+
+                    //    IF KYC DONE UPDATE IN TABLE 
+                    if ($data->model->vkycCompleted == "true" || $data->model->vkycCompleted || true) {
+                        Log::info(json_encode($user_id) . " ===> Call api for vkyc if vkyc complete save result" . json_encode($data));
+                        $this->vkycStatusByUniqueId();
+                    }
+                    Log::info(base64_encode($user_id) . " ===> Call api for vkyc response api and redirect" . json_encode($data));
+                    return $this->success($result);
+                    // return \Response::json(['status' => 1, 'data' => $result, 'message' => '']);
+                }
+            } else {
+                Log::info(base64_encode($user_id) . " ===> Call api for vkyc but kyc not verified");
+                return $this->success([], 'Kyc not verified');
+
+                // return \Response::json(['status' => 0, 'data' => [], 'message' => 'Kyc not verified']);
+            }
+        } catch (\Throwable $e) {
+            return $this->error([], "Server error");
+        }
     }
 
 
@@ -1083,7 +1118,7 @@ class KYCUPDATEDController extends Controller
     // FUNCTION WHEN GET REQUEST FOR VKYC API
     public function vkycStatusByUniqueId()
     {
-
+         try{
         $client = new \GuzzleHttp\Client([
             'verify' => false
         ]);
@@ -1127,8 +1162,9 @@ class KYCUPDATEDController extends Controller
             $result = $response->getBody()->getContents();
             if (empty ($result)) {
                 Log::error(base64_encode($user_id) . " ====> vkyc data data empty transaction id ===> " . $transaction_id);
+                return $this->error([], "Something went wrong");
 
-                return \Response::json(['status' => 0, 'data' => [], 'message' => "Something went wrong"]);
+                // return \Response::json(['status' => 0, 'data' => [], 'message' => "Something went wrong"]);
             } else {
                 $data = json_decode($result);
                 Log::info(base64_encode($user_id) . " ===> Call api get data by transaction id ===>" . $transaction_id . " result =>" . $result);
@@ -1146,13 +1182,16 @@ class KYCUPDATEDController extends Controller
                     $userVKyc_user_update->save();
                 }
                 Log::info(base64_encode($user_id) . " ===> Call api for vkyc response api and redirect" . json_encode($data));
-
-                return \Response::json(['status' => 1, 'data' => $result, 'message' => '']);
+                $this->success($result);
+                // return \Response::json(['status' => 1, 'data' => $result, 'message' => '']);
             }
         } else {
             Log::info(base64_encode($user_id) . " ===> Call api for vkyc but kyc not verified");
-            return \Response::json(['status' => 0, 'data' => [], 'message' => 'Kyc not verified']);
+            $this->error([],'Kyc not verified');
+            // return \Response::json(['status' => 0, 'data' => [], 'message' => 'Kyc not verified']);
         }
-
+    } catch (\Throwable $e) {
+        return $this->error([], "Server error");
+    }
     }
 }
