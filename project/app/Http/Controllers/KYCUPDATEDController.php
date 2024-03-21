@@ -446,6 +446,7 @@ class KYCUPDATEDController extends Controller
 
     public function step1_document(Request $request)
     {
+        try{
         $user_id = \Auth::id();
         $aadhar_no = "";
         $pan_no = "";
@@ -726,10 +727,14 @@ class KYCUPDATEDController extends Controller
 
             // return \Response::json(['status' => 0, 'message' => "something went wrong please try again later", 'error' => "something went wrong please try again later."]);
         }
+    } catch (\Throwable $e) {
+        return $this->error([], "Server error");
+    }
     }
 
     public function step2_document(Request $request)
     {
+        try{
         $user_id = \Auth::id();
         $document = UserKycDocument::where('user_id', $user_id)->first();
         if ($document->api_response_banking_details == null) {
@@ -861,6 +866,9 @@ class KYCUPDATEDController extends Controller
 
             return redirect('/user/dashboard?kyc=0');
         }*/
+    } catch (\Throwable $e) {
+        return $this->error([], "Server error");
+    }
     }
 
     public function kycVerifyStatus()
@@ -1110,7 +1118,7 @@ class KYCUPDATEDController extends Controller
     // FUNCTION WHEN GET REQUEST FOR VKYC API
     public function vkycStatusByUniqueId()
     {
-
+         try{
         $client = new \GuzzleHttp\Client([
             'verify' => false
         ]);
@@ -1154,8 +1162,9 @@ class KYCUPDATEDController extends Controller
             $result = $response->getBody()->getContents();
             if (empty ($result)) {
                 Log::error(base64_encode($user_id) . " ====> vkyc data data empty transaction id ===> " . $transaction_id);
+                return $this->error([], "Something went wrong");
 
-                return \Response::json(['status' => 0, 'data' => [], 'message' => "Something went wrong"]);
+                // return \Response::json(['status' => 0, 'data' => [], 'message' => "Something went wrong"]);
             } else {
                 $data = json_decode($result);
                 Log::info(base64_encode($user_id) . " ===> Call api get data by transaction id ===>" . $transaction_id . " result =>" . $result);
@@ -1173,13 +1182,16 @@ class KYCUPDATEDController extends Controller
                     $userVKyc_user_update->save();
                 }
                 Log::info(base64_encode($user_id) . " ===> Call api for vkyc response api and redirect" . json_encode($data));
-
-                return \Response::json(['status' => 1, 'data' => $result, 'message' => '']);
+                $this->success($result);
+                // return \Response::json(['status' => 1, 'data' => $result, 'message' => '']);
             }
         } else {
             Log::info(base64_encode($user_id) . " ===> Call api for vkyc but kyc not verified");
-            return \Response::json(['status' => 0, 'data' => [], 'message' => 'Kyc not verified']);
+            $this->error([],'Kyc not verified');
+            // return \Response::json(['status' => 0, 'data' => [], 'message' => 'Kyc not verified']);
         }
-
+    } catch (\Throwable $e) {
+        return $this->error([], "Server error");
+    }
     }
 }
