@@ -15,6 +15,7 @@ class Deposit extends Model
         'method',
         'charge_id',
         'status',
+        'loan_plan_id'
     ];
 
     public function user(){

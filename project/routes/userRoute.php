@@ -43,6 +43,8 @@ use Illuminate\Support\Facades\Route;
 
 Route::prefix('user')->group(function () {
 
+    Route::get('/emiBounce', [UserLoanController::class,'emiBounce'])->name('admin.emiBounce');
+
     Route::get('/login', [UserLoginController::class, 'showLoginForm'])->name('user.login');
     Route::post('/login', [UserLoginController::class, 'login'])->name('user.login.submit');
 

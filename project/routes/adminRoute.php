@@ -60,6 +60,7 @@ Route::prefix('admin')->group(function () {
         return redirect()->route('admin.dashboard')->with('cache', 'System Cache Has Been Removed.');
     })->name('admin.cache.clear');
     //-----------------------------Clear cache end----------------
+
       Route::post('/getTransactions', [LoanController::class,'getTransactions'])->name('admin.transactions');
       Route::get('/login', [LoginController::class,'showLoginForm'])->name('admin.login');
       Route::post('/login', [LoginController::class,'login'])->name('admin.login.submit');

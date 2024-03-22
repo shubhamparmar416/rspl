@@ -150,6 +150,7 @@ class RazorpayController extends Controller
             $amountToAdd = $input['amount']/$currency->value;
 
             $deposit = new Deposit();
+            $deposit['loan_plan_id'] = $loan_plan;
             $deposit['deposit_number'] = $order_data['item_number'];
             $deposit['user_id'] = auth()->user()->id;
             $deposit['currency_id'] = $request->currency_id;
@@ -166,6 +167,13 @@ class RazorpayController extends Controller
             $given_installment = $userLoanDtl->given_installment + 1;
             $paid_amount = $userLoanDtl->paid_amount + $amountToAdd;
             $userLoanDtl->given_installment = $given_installment;
+
+            if($userLoanDtl->next_installment != NULL) {
+
+                $userLoanDtl->prev_installment = $userLoanDtl->next_installment;
+                $userLoanDtl->next_installment = $userLoanDtl->next_installment->addDays($userLoanDtl->plan->installment_interval);
+            }
+            
             $userLoanDtl->paid_amount = $paid_amount;
             $userLoanDtl->save();
 
