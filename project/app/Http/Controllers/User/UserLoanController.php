@@ -7,6 +7,7 @@ use App\Models\BankPlan;
 use App\Models\Currency;
 use App\Models\InstallmentLog;
 use App\Models\LoanPlan;
+use App\Models\LoanCharges;
 use App\Models\Transaction;
 use App\Models\UserLoan;
 use Illuminate\Http\Request;
@@ -58,19 +59,50 @@ class UserLoanController extends Controller
     public function loanAmount(Request $request)
     {
         $plan = LoanPlan::whereId($request->planId)->first();
-        $amount = $request->amount;
 
+        // Get Sanction loan charges ID
+        $sanctionCharges = LoanCharges::where('type','2')->pluck('id')->toArray();
+        $planCharges = explode(', ', $plan->loan_charges);
+
+        $array1_lower = array_map('strtolower', $sanctionCharges);
+        $array2_lower = array_map('strtolower', $planCharges);
+
+        $planSactionCharges = array_intersect($array1_lower, $array2_lower);
+
+        $planSactionChargesData = LoanCharges::select('amt_type','amt_value')->whereIn('id',$planSactionCharges)->get();
+
+        $amount = $request->amount;
+        $otherCharges = 0;
         $min_amount = convertedAmount($plan->min_amount);
         $max_amount = convertedAmount($plan->max_amount);
 
         if ($amount >= $min_amount && $amount <= $max_amount) {
             $total_installment = $plan->total_installment/12;
 
+           foreach( $planSactionChargesData as $charges) {
+              if($charges['amt_type'] && $charges['amt_type'] != NULL) {
+                switch($charges['amt_type']) {
+                    case 'percentage':
+                        $otherCharges += ($amount * $charges['amt_value']) / 100;
+                    break;
+
+                    case 'price':
+                        $otherCharges +=  $charges['amt_value'];
+                    break;
+                }
+              }
+           }
+
             $data['data'] = $plan;
             $data['loanAmount'] = $amount;
             $data['currency'] = globalCurrency();
             //$data['perInstallment'] = ($amount * $plan->per_installment)/100;
             $data['perInstallment'] = round($amount/$plan->total_installment);
+            $totalAmount = $data['perInstallment'] * $plan->total_installment;
+
+            $data['totalAmount'] = $totalAmount + $otherCharges;
+            $data['otherCharges'] = $otherCharges;
+
 
             return view('user.loan.apply', $data);
         } else {

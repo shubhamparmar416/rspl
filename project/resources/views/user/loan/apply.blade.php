@@ -55,9 +55,16 @@
 
                             <tr>
                                 <td>
+                                    <p class="strong mb-1">{{__('Sanction Charges')}}</p>
+                                </td>
+                                <td class="text-end">{{ $otherCharges.' '.$currency->sign }}</td>
+                            </tr>
+
+                            <tr>
+                                <td>
                                     <p class="strong mb-1 text-danger">{{__('Total Amount To Pay')}}</p>
                                 </td>
-                                <td class="text-end text-danger">{{ $perInstallment * $data->total_installment.' '.$currency->sign }}</td>
+                                <td class="text-end text-danger">{{ $totalAmount.' '.$currency->sign }}</td>
                             </tr>
 
                         </tbody>
