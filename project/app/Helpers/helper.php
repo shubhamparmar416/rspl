@@ -257,3 +257,79 @@ if (!function_exists('averageAmount')) {
 
     }
 } // END averageAmount
+
+if (!function_exists('esign')) {
+    function esign()
+    {
+        $url = 'https://api.digitap.ai/v1/generate-esign';
+        //$url = 'https://api.digitap.ai/';
+
+        // Authentication credentials
+        // $username = '48130178';
+        // $password = '6RBkqcF5iarvmWeK5pLhjXrvfcEC8FLe';
+        $username = '34469987';
+        $password = 'RSzF0t3ZQNhqGqqtTyFrMmEMqxpTK728';
+
+        $fileContents = file_get_contents(storage_path("kyc/" . 'FINAL_LOAN_DOCKET_FFO_LMS.pdf'));
+
+        $signer = array(
+            'email' => 'kishore.karunakaran@digitap.ai',
+            'location' => 'Bangalore',
+            'mobile' => '7200777414',
+            'name' => 'Kishore',
+        );
+
+        // Data to be sent (if any)
+        $data = array(
+            'uniqueId' => 'Invoice_03_09_2020',
+            'signers' => $signer,
+            'reason'=>'Loan agreement',
+            'templateId'=>'Loan_0001',
+            'fileName' => $fileContents,
+            //'fileName' => 'Loan_Agreement_03_09_2020.pdf',
+           // “multiSignerDocId”=>“1234”
+        );
+
+        try {
+            // Initialize cURL session
+            $ch = curl_init();
+
+            // Set cURL options
+            curl_setopt($ch, CURLOPT_URL, $url); // Set URL
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true); // Return the response as a string
+            curl_setopt($ch, CURLOPT_POST, true); // Set as POST request
+
+            // Set data (if any)
+            if (!empty($data)) {
+                curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
+            }
+
+            // Set Basic Authentication
+            curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
+            curl_setopt($ch, CURLOPT_USERPWD, $username . ':' . $password);
+
+            // Execute cURL request
+            $response = curl_exec($ch);
+            //dd($response);
+            $responseData = array();
+            // Check for errors
+            if ($response === false) {
+                echo 'Error: ' . curl_error($ch);
+                 $responseData['status'] = "error";
+                $responseData['response'] = curl_error($ch);
+            } else {
+                // Output the response
+                $responseData['status'] = "sucess";
+                $responseData['response'] = $response;
+            }
+
+            // Close cURL session
+            curl_close($ch);
+            return  $responseData;
+        } catch (Exception $e) {
+            return $responseData['status'] = "error";
+            $responseData['response'] = $e->getMessage();
+        }
+    }
+} // END esign
+

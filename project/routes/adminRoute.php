@@ -137,9 +137,10 @@ Route::prefix('admin')->group(function () {
         Route::get('/pending-loan', [LoanController::class,'pending'])->name('admin.loan.pending');
         Route::get('/rejected-loan', [LoanController::class,'rejected'])->name('admin.loan.rejected');
         Route::get('/loan/status/{id1}/{id2}', [LoanController::class,'status'])->name('admin.loan.status');
-        Route::post('/loan/status-change', [LoanController::class,'status1'])->name('admin.loan.status1');
+        Route::post('/loan/status-change', [LoanController::class,'status1'])->name('admin.loan.status1'); // change status 
         Route::get('/loan/show/{id}', [LoanController::class,'show'])->name('admin.loan.show');
         Route::get('/loan-log/show/{id}', [LoanController::class,'logShow'])->name('admin.loan.log.show');
+        Route::get('/esign', [LoanController::class,'esign'])->name('admin.loan.esign');
 
         // Loan charges
         Route::get('/loan-charges', [LoanChargesController::class,'index'])->name('admin.loan.charges.index');

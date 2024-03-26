@@ -262,4 +262,10 @@ class UserLoanController extends Controller
             }
         }
     } // END emiBounce
+
+    public function esign() {
+
+        $response = esign();
+        dd($response);
+    } // END esign
 }

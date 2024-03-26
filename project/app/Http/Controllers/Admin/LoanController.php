@@ -105,7 +105,11 @@ class LoanController extends Controller
                                     $status= __('Running');
                                 } elseif ($data->status==3) {
                                     $status=__('Completed');
-                                } else {
+                                } 
+                                elseif ($data->status==4) {
+                                    $status=__('Esign Pending');
+                                }
+                                else {
                                     $status=__('Rejected');
                                 }
 
@@ -123,13 +127,25 @@ class LoanController extends Controller
                                     return '<div class="btn-group mb-1">
                                     <span class="badge bg-'.$status_sign.'">'.$status .'</span>
                                 </div>';
-                                } else {
+                                } else if ($data->status== 4) {
+                                    if($data->esign_url) {
+                                        return '<div class="btn-group mb-1">
+                                        <a href='.$data->esign_url.' target="_blank" class="button"> Download Esign Doc </a>
+
+                                        <a href="javascript:;" onclick="getStatusDataId(this);" data-id='.$data->id.' data-status="1"  class="dropdown-item" data-toggle="modal" data-target="#statusModal" class="dropdown-item">'.__("Approved").'</a>
+                                        </div>';
+                                    } else {
+                                        return ' Esign Pending';
+                                    }
+                                } 
+                                else {
                                     return '<div class="btn-group mb-1">
                                         <button type="button" class="btn btn-'.$status_sign.' btn-sm btn-rounded dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                           '.$status .'
                                         </button>
                                         <div class="dropdown-menu" x-placement="bottom-start">
                                           <a href="javascript:;" onclick="getStatusDataId(this);" data-id='.$data->id.' data-status="0" class="dropdown-item"  data-toggle="modal" data-target="#statusModal" class="dropdown-item">'.__("Pending").'</a>
+                                           <a href="javascript:;" onclick="getStatusDataId(this);" data-id='.$data->id.' data-status="4" class="dropdown-item"  data-toggle="modal" data-target="#statusModal" class="dropdown-item">'.__("Esign").'</a>
                                           <a href="javascript:;" onclick="getStatusDataId(this);" data-id='.$data->id.' data-status="1"  class="dropdown-item" data-toggle="modal" data-target="#statusModal" class="dropdown-item">'.__("Approved").'</a>
                                           <a href="javascript:;" onclick="getStatusDataId(this);" data-id='.$data->id.' data-status="2"  class="dropdown-item" data-toggle="modal" data-target="#statusModal" class="dropdown-item">'.__("Rejected").'</a>
                                         </div>
@@ -343,4 +359,11 @@ class LoanController extends Controller
       }
 
     } // END getTransactions
+
+    public function esign() {
+        $datas = UserLoan::orderBy('id', 'desc')->get();
+
+        return view('admin.loan.esign', compact('datas'));
+
+    }
 }

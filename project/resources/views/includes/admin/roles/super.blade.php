@@ -35,6 +35,7 @@
         <a class="collapse-item" href="{{ route('admin.loan.plan.index') }}">{{ __('Loan Plans') }}</a>
         <a class="collapse-item" href="{{ route('admin.loan.index') }}">{{ __('All Loans') }}</a>
         <a class="collapse-item" href="{{ route('admin.loan.pending') }}">{{ __('Pending Loan') }}</a>
+        <a class="collapse-item" href="{{ route('admin.loan.esign') }}">{{ __('Esign Loan') }}</a>
         <a class="collapse-item" href="{{ route('admin.loan.running') }}">{{ __('Running Loan') }}</a>
         <a class="collapse-item" href="{{ route('admin.loan.completed') }}">{{ __('Paid Loan') }}</a>
         <a class="collapse-item" href="{{ route('admin.loan.rejected') }}">{{ __('Rejected Loan') }}</a>
