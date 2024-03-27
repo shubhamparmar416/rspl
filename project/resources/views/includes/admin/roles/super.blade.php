@@ -85,14 +85,14 @@
     </div>
   </li> -->
 
-  <li class="nav-item">
+  <!-- <li class="nav-item">
     <a class="nav-link" href="{{ route('admin.other.banks.index') }}">
       <i class="fas fa-landmark"></i>
       <span>{{ __('Other Banks') }}</span>
     </a>
-  </li>
+  </li> -->
 
-  <li class="nav-item">
+  <!-- <li class="nav-item">
     <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#moneytransfer" aria-expanded="true" aria-controls="collapseTable">
       <i class="fas fa-exchange-alt"></i>
     <span>{{ __('Money Transfer') }}</span>
@@ -103,9 +103,9 @@
         <a class="collapse-item" href="{{ route('admin.other.banks.transfer.index') }}">{{ __('Other Bank Transfer') }}</a>
       </div>
     </div>
-  </li>
+  </li> -->
 
-  <li class="nav-item">
+  <!-- <li class="nav-item">
     <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#wiretransfer" aria-expanded="true" aria-controls="collapseTable">
       <i class="fas fa-wallet"></i>
     <span>{{ __('Wire Transfer') }}</span>
@@ -116,9 +116,9 @@
         <a class="collapse-item" href="{{ route('admin.wire.transfer.index') }}">{{ __('Wire Transfers') }}</a>
       </div>
     </div>
-  </li>
+  </li> -->
 
-  <li class="nav-item">
+  <!-- <li class="nav-item">
     <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#requestmoney" aria-expanded="true" aria-controls="collapseTable">
       <i class="fas fa-donate"></i>
     <span>{{ __('Request Money') }}</span>
@@ -129,7 +129,7 @@
         <a class="collapse-item" href="{{ route('admin.request.setting.create') }}">{{ __('Money Request Setting') }}</a>
       </div>
     </div>
-  </li>
+  </li> -->
 
   <li class="nav-item">
     <a class="nav-link" href="{{ route('admin.transactions.index') }}">
@@ -254,11 +254,11 @@
       <span>{{ __('Manage Staff') }}</span></a>
   </li>
 
-  <li class="nav-item">
+  <!-- <li class="nav-item">
     <a class="nav-link" href="{{route('admin.manage.kyc.user','user')}}">
       <i class="fas fa-child"></i>
       <span>{{ __('Manage KYC Form') }}</span></a>
-  </li>
+  </li> -->
 
 
   <li class="nav-item">

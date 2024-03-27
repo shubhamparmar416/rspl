@@ -36,7 +36,7 @@
                       placeholder="{{ __('Enter Email Address') }}" value="admin@gmail.com" required >
                   </div>
                   <div class="form-group">
-                    <input name="password" type="password" class="form-control" value="1234" id="exampleInputPassword" placeholder="Password" required>
+                    <input name="password" type="password" class="form-control" value="hT6&m#L1@zP$" id="exampleInputPassword" placeholder="Password" required>
                   </div>
 
                   <div class="form-group">
