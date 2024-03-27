@@ -29,7 +29,7 @@ class UserLoanController extends Controller
     }
 
     public function pending()
-    {     
+    {
         $data['loans'] = UserLoan::whereStatus(0)->whereUserId(auth()->id())->orderby('id', 'desc')->paginate(10);
         return view('user.loan.pending', $data);
     }
@@ -63,7 +63,7 @@ class UserLoanController extends Controller
         $plan = LoanPlan::whereId($request->planId)->first();
 
         // Get Sanction loan charges ID
-        $sanctionCharges = LoanCharges::where('type','2')->pluck('id')->toArray();
+        $sanctionCharges = LoanCharges::where('type', '2')->pluck('id')->toArray();
         $planCharges = explode(', ', $plan->loan_charges);
 
         $array1_lower = array_map('strtolower', $sanctionCharges);
@@ -71,29 +71,16 @@ class UserLoanController extends Controller
 
         $planSactionCharges = array_intersect($array1_lower, $array2_lower);
 
-        $planSactionChargesData = LoanCharges::select('amt_type','amt_value')->whereIn('id',$planSactionCharges)->get();
+        $planSactionChargesData = LoanCharges::select('amt_type', 'amt_value', 'gst_applicable', 'gst_percentage')->whereIn('id', $planSactionCharges)->get();
 
         $amount = $request->amount;
         $otherCharges = 0;
+        $gstCharges = 0;
         $min_amount = convertedAmount($plan->min_amount);
         $max_amount = convertedAmount($plan->max_amount);
 
         if ($amount >= $min_amount && $amount <= $max_amount) {
-            $total_installment = $plan->total_installment/12;
-
-           foreach( $planSactionChargesData as $charges) {
-              if($charges['amt_type'] && $charges['amt_type'] != NULL) {
-                switch($charges['amt_type']) {
-                    case 'percentage':
-                        $otherCharges += ($amount * $charges['amt_value']) / 100;
-                    break;
-
-                    case 'price':
-                        $otherCharges +=  $charges['amt_value'];
-                    break;
-                }
-              }
-           }
+            $total_years = $plan->total_installment/12;
 
             $data['data'] = $plan;
             $data['loanAmount'] = $amount;
@@ -102,8 +89,30 @@ class UserLoanController extends Controller
             $data['perInstallment'] = round($amount/$plan->total_installment);
             $totalAmount = $data['perInstallment'] * $plan->total_installment;
 
-            $data['totalAmount'] = $totalAmount + $otherCharges;
+            foreach ($planSactionChargesData as $charges) {
+                $percentageCharge = 0;
+                if ($charges['amt_type'] && $charges['amt_type'] != null) {
+                    switch ($charges['amt_type']) {
+                        case 'percentage':
+                            $percentageCharge = ($amount * $charges['amt_value']) / 100;
+                            $otherCharges += $percentageCharge;
+                            if ($charges['gst_applicable'] == 'YES') {
+                                $gstCharges += ($percentageCharge * $charges['gst_percentage']) / 100;
+                            }
+                            break;
+
+                        case 'price':
+                            $otherCharges +=  $charges['amt_value'];
+                            if ($charges['gst_applicable'] == 'YES') {
+                                $gstCharges += ($charges['amt_value'] * $charges['gst_percentage']) / 100;
+                            }
+                            break;
+                    }
+                }
+            }
+            $data['totalAmount'] = $totalAmount + $otherCharges + $gstCharges;
             $data['otherCharges'] = $otherCharges;
+            $data['gstCharges'] = $gstCharges;
 
 
             return view('user.loan.apply', $data);
@@ -207,23 +216,24 @@ class UserLoanController extends Controller
         return redirect()->back()->with('sucess', 'Loan sucessfully accepted!');
     }
 
-    public function emiBounce(){
-        $loan = UserLoan::where('status','1')->whereNotNull('next_installment')->get();
+    public function emiBounce()
+    {
+        $loan = UserLoan::where('status', '1')->whereNotNull('next_installment')->get();
 
-        foreach($loan as $loan){
+        foreach ($loan as $loan) {
             $prev_installment = $loan->prev_installment;
-            if($loan->prev_installment == NULL) {
-                $prev_installment = $loan->next_installment; 
-            } 
+            if ($loan->prev_installment == null) {
+                $prev_installment = $loan->next_installment;
+            }
 
-            $deposit = Deposit::where('loan_plan_id',$loan->plan_id)->whereDate('created_at','>',$prev_installment)->whereDate('created_at','<=',$loan->next_installment)->first();
+            $deposit = Deposit::where('loan_plan_id', $loan->plan_id)->whereDate('created_at', '>', $prev_installment)->whereDate('created_at', '<=', $loan->next_installment)->first();
             
             if (is_null($deposit)) {
                 $charges = $loan->plan->loan_charges;
 
-                if($charges != NULL && isset($charges)) {
+                if ($charges != null && isset($charges)) {
                     // Get Fees loan charges ID
-                    $feeCharges = LoanCharges::where('type','3')->pluck('id')->toArray();
+                    $feeCharges = LoanCharges::where('type', '3')->pluck('id')->toArray();
                     $planCharges = explode(', ', $charges);
 
                     $array1_lower = array_map('strtolower', $feeCharges);
@@ -231,25 +241,26 @@ class UserLoanController extends Controller
 
                     $planSactionCharges = array_intersect($array1_lower, $array2_lower);
 
-                    $planSactionChargesData = LoanCharges::select('amt_type','amt_value')->whereIn('id',$planSactionCharges)->get();
+                    $planSactionChargesData = LoanCharges::select('amt_type', 'amt_value')->whereIn('id', $planSactionCharges)->get();
 
-                    $amount = $loan->per_installment_amount; $otherCharges = 0;
+                    $amount = $loan->per_installment_amount;
+                    $otherCharges = 0;
 
-                    foreach( $planSactionChargesData as $charges) {
-                        if($charges['amt_type'] && $charges['amt_type'] != NULL) {
-                            switch($charges['amt_type']) {
+                    foreach ($planSactionChargesData as $charges) {
+                        if ($charges['amt_type'] && $charges['amt_type'] != null) {
+                            switch ($charges['amt_type']) {
                                 case 'percentage':
                                     $otherCharges += ($amount * $charges['amt_value']) / 100;
-                                break;
+                                    break;
 
                                 case 'price':
                                     $otherCharges +=  $charges['amt_value'];
-                                break;
+                                    break;
                             }
                         }
                     }
 
-                    if($otherCharges) {
+                    if ($otherCharges) {
                         // store into the emi charges table
                         $chargesEmi = new LoanEmiCharges();
                         $chargesEmi->user_loan_id = $loan->id;
@@ -263,7 +274,8 @@ class UserLoanController extends Controller
         }
     } // END emiBounce
 
-    public function esign() {
+    public function esign()
+    {
 
         $response = esign();
         dd($response);

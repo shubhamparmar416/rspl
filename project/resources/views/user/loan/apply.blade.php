@@ -62,6 +62,13 @@
 
                             <tr>
                                 <td>
+                                    <p class="strong mb-1">{{__('GST Charges')}}</p>
+                                </td>
+                                <td class="text-end">{{ $gstCharges.' '.$currency->sign }}</td>
+                            </tr>
+
+                            <tr>
+                                <td>
                                     <p class="strong mb-1 text-danger">{{__('Total Amount To Pay')}}</p>
                                 </td>
                                 <td class="text-end text-danger">{{ $totalAmount.' '.$currency->sign }}</td>
